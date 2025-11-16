@@ -1,0 +1,34 @@
+{
+  "name": "neo-forge-core",
+  "version": "0.5.1",
+  "description": "NΞØ SMART FACTORY — Core Engine (Hardhat + Polygon)",
+  "main": "index.js",
+  "scripts": {
+    "test": "npx hardhat test",
+    "compile": "npx hardhat compile",
+    "deploy": "npx hardhat run scripts/deploy.js --network polygon",
+    "deploy:amoy": "npx hardhat run scripts/deploy.js --network amoy",
+    "simulate": "node scripts/simulate.js",
+    "verify": "npx hardhat verify --network polygon"
+  },
+  "keywords": [
+    "blockchain",
+    "ethereum",
+    "polygon",
+    "smart-contracts",
+    "factory",
+    "tokens"
+  ],
+  "author": "NΞØ Protocol",
+  "license": "MIT",
+  "dependencies": {
+    "@openzeppelin/contracts": "^5.0.0",
+    "dotenv": "^16.4.0",
+    "ethers": "^6.10.0"
+  },
+  "devDependencies": {
+    "@nomicfoundation/hardhat-toolbox": "^4.0.0",
+    "hardhat": "^2.22.0"
+  }
+}
+
