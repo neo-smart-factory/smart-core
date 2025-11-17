@@ -1,5 +1,5 @@
 {
-  "name": "neo-forge-core",
+  "name": "neo-smart-factory-core",
   "version": "0.5.1",
   "description": "NΞØ SMART FACTORY — Core Engine (Hardhat + Polygon)",
   "main": "index.js",
