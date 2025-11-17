@@ -15,6 +15,7 @@ describe("IgnitionToken", function () {
   beforeEach(async function () {
     [owner, user1, user2] = await ethers.getSigners();
 
+    // IgnitionToken herda de NeoTokenBase (base purificada)
     const Token = await ethers.getContractFactory("IgnitionToken");
     token = await Token.deploy(
       TOKEN_NAME,
