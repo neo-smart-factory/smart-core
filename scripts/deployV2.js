@@ -19,8 +19,8 @@ async function main() {
     const TOKEN_CONFIG = {
         name: process.env.TOKEN_NAME || "Neo Protocol",
         symbol: process.env.TOKEN_SYMBOL || "NEO",
-        mintPrice: process.env.MINT_PRICE || hre.ethers.parseEther("0.003"),      // 0.003 ETH
-        mintAmount: process.env.MINT_AMOUNT || hre.ethers.parseEther("1000"),   // 1000 tokens
+        mintPrice: process.env.MINT_PRICE ? hre.ethers.parseEther(process.env.MINT_PRICE) : hre.ethers.parseEther("0.003"),
+        mintAmount: process.env.MINT_AMOUNT ? hre.ethers.parseEther(process.env.MINT_AMOUNT) : hre.ethers.parseEther("1000"),
         initialOwner: process.env.INITIAL_OWNER || "0x470a8c640fFC2C16aEB6bE803a948420e2aE8456" // NODE NEØ
     };
 

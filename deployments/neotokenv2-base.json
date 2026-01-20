@@ -1,16 +1,16 @@
 {
   "network": "base",
   "chainId": "8453",
-  "tokenAddress": "0x31E5C82BCe01f1ec2e5561C52173753C8ABF7736",
+  "tokenAddress": "0x41F4ff3d45DED9C1332e4908F637B75fe83F5d6B",
   "tokenName": "NEOFlowOFF",
   "tokenSymbol": "NEOFLW",
   "owner": "0x470a8c640fFC2C16aEB6bE803a948420e2aE8456",
   "deployer": "0x470a8c640fFC2C16aEB6bE803a948420e2aE8456",
-  "mintPrice": "100000000000000000",
+  "mintPrice": "3000000000000000",
   "mintAmount": "1000000000000000000000",
   "maxSupply": "1000000000000000000000000000",
   "publicMintEnabled": true,
-  "deployedAt": "2026-01-20T17:38:42.829Z",
-  "blockNumber": 41070687,
-  "txHash": "0x0672bdebb8eaa92ab9318c7de37146a7b1b844b9b5cb71ee77ebcf4ab685a610"
+  "deployedAt": "2026-01-20T20:36:07.217Z",
+  "blockNumber": 41076009,
+  "txHash": "0x81e894d0a4e576d0455bcccafd962d7b2a71042a8200b526e2f38ca1e8f74c90"
 }
