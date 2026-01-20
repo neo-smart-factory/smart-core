@@ -27,7 +27,7 @@ contract NeoERC20 is ERC20, ERC20Burnable, ERC20Pausable, Ownable {
         string memory name,
         string memory symbol,
         uint256 totalSupply,
-        uint8 decimals,
+        uint8 /* decimals */,
         bool mintable,
         bool burnable,
         bool pausable,
