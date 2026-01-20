@@ -13,7 +13,7 @@
 - **Symbol:** NEOFLW
 - **Type:** ERC20 with ERC20Permit (Gasless transactions)
 - **Max Supply:** 1,000,000,000 NEOFLW (1 billion)
-- **Public Mint Price:** 0.1 ETH
+- **Public Mint Price:** 0.003 ETH
 - **Public Mint Amount:** 1,000 NEOFLW per mint
 - **Owner:** 0x470a8c640fFC2C16aEB6bE803a948420e2aE8456
 
@@ -39,8 +39,8 @@
 // Connect to contract
 const token = await ethers.getContractAt("NeoTokenV2", "0xF4Fbd30e3Ea69457adD30F7C3D6fde25f7D8Db26");
 
-// Mint tokens (requires 0.1 ETH)
-await token.publicMint({ value: ethers.parseEther("0.1") });
+// Mint tokens (requires 0.003 ETH)
+await token.publicMint({ value: ethers.parseEther("0.003") });
 ```
 
 ### 2. Configure Bridge (When Ready)

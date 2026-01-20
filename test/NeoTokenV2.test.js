@@ -15,7 +15,7 @@ describe("NeoTokenV2", function () {
 
     const TOKEN_NAME = "NEOFlowOFF";
     const TOKEN_SYMBOL = "NEOFLW";
-    const MINT_PRICE = ethers.parseEther("0.1");
+    const MINT_PRICE = ethers.parseEther("0.003");
     const MINT_AMOUNT = ethers.parseEther("1000");
     const MAX_SUPPLY = ethers.parseEther("1000000000"); // 1 bilhão
 

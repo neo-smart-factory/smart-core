@@ -23,7 +23,7 @@ BASESCAN_KEY=sua_chave_basescan
 # Token Configuration (opcional, usa defaults se não configurado)
 TOKEN_NAME=Neo Protocol
 TOKEN_SYMBOL=NEO
-MINT_PRICE=100000000000000000        # 0.1 ETH/POL em wei
+MINT_PRICE=3000000000000000        # 0.003 ETH em wei
 MINT_AMOUNT=1000000000000000000000   # 1000 tokens em wei
 INITIAL_OWNER=0x470a8c640fFC2C16aEB6bE803a948420e2aE8456
 ```
@@ -50,7 +50,7 @@ O script mostrará o comando de verificação. Exemplo:
 npx hardhat verify --network polygon 0xCONTRACT_ADDRESS \
   "Neo Protocol" \
   "NEO" \
-  "100000000000000000" \
+  "3000000000000000" \
   "1000000000000000000000" \
   "0x470a8c640fFC2C16aEB6bE803a948420e2aE8456"
 ```
@@ -65,7 +65,7 @@ Se você **NÃO** configurar variáveis de ambiente, o script usa:
 |-----------|--------------|
 | **Name** | Neo Protocol |
 | **Symbol** | NEO |
-| **Mint Price** | 0.1 POL |
+| **Mint Price** | 0.003 ETH |
 | **Mint Amount** | 1000 tokens |
 | **Owner** | 0x470a8c640fFC2C16aEB6bE803a948420e2aE8456 (NODE NEØ) |
 | **Max Supply** | 1,000,000,000 tokens (hardcoded) |
@@ -84,7 +84,7 @@ await token.setBridgeMinter("0xBridgeAddress");
 ### 2. Testar Mint Público
 
 ```javascript
-await token.publicMint({ value: ethers.parseEther("0.1") });
+await token.publicMint({ value: ethers.parseEther("0.003") });
 ```
 
 ### 3. Desabilitar Mint (Se Necessário)
@@ -137,7 +137,7 @@ Exemplo:
   "tokenName": "Neo Protocol",
   "tokenSymbol": "NEO",
   "owner": "0x470a8c640fFC2C16aEB6bE803a948420e2aE8456",
-  "mintPrice": "100000000000000000",
+  "mintPrice": "3000000000000000",
   "mintAmount": "1000000000000000000000",
   "maxSupply": "1000000000000000000000000000",
   "deployedAt": "2026-01-20T16:24:00.000Z",
@@ -184,7 +184,7 @@ npx hardhat run scripts/deployV2.js --network amoy
 # https://faucet.polygon.technology/
 
 # Testar mint
-cast send $TOKEN_ADDRESS "publicMint()" --value 0.1ether --private-key $PRIVATE_KEY --rpc-url $AMOY_RPC
+cast send $TOKEN_ADDRESS "publicMint()" --value 0.003ether --private-key $PRIVATE_KEY --rpc-url $AMOY_RPC
 
 # Verificar balance
 cast call $TOKEN_ADDRESS "balanceOf(address)(uint256)" $YOUR_ADDRESS --rpc-url $AMOY_RPC

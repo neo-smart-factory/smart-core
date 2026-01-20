@@ -2,6 +2,13 @@
 pragma solidity ^0.8.20;
 
 /**
+ *  █▄░█ █▀▀ █▀█   █▀ █▀▄▀█ ▄▀█ █▀█ ▀█▀
+ *  █░▀█ ██▄ █▄█   ▄█ █░▀░█ █▀█ █▀▄ ░█░
+ *
+ *  TOKENIZE-SE | NEO SMART FACTORY v0.5.3
+ */
+ 
+/**
  * @title BridgeValidator
  * @notice Biblioteca de validação para o sistema de bridge
  * @dev Funções auxiliares para validação de dados e segurança
