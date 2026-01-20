@@ -5,13 +5,10 @@ import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
 /**
- *  ##  ##  #####  ####    ######  ##    ####  ######  ####  #####  ##  ##
- *  ### ##  ##    ##  ##   ##     ####  ##       ##   ##  ## ##  ##  #### 
- *  ## ###  ####  ##  ##   ####  ##  ## ##       ##   ##  ## #####    ##  
- *  ##  ##  ##    ##  ##   ##    ###### ##       ##   ##  ## ##  ##   ##  
- *  ##  ##  #####  ####    ##    ##  ##  ####    ##    ####  ##  ##   ##  
+ *  █▄░█ █▀▀ █▀█   █▀ █▀▄▀█ ▄▀█ █▀█ ▀█▀
+ *  █░▀█ ██▄ █▄█   ▄█ █░▀░█ █▀█ █▀▄ ░█░
  *
- *  NEO SMART FACTORY v0.5.2 - FOUNDATION | TOKENIZE-SE
+ *  TOKENIZE-SE | NEO SMART FACTORY v0.5.3
  */
 contract NeoTokenBase is ERC20, Ownable {
     uint256 public immutable PRICE;
@@ -66,4 +63,3 @@ contract NeoTokenBase is ERC20, Ownable {
         payable(owner()).transfer(address(this).balance);
     }
 }
-

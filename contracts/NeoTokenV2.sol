@@ -2,13 +2,11 @@
 pragma solidity ^0.8.20;
 
 /**
- *  ##  ##  #####  ####    ######  ##    ####  ######  ####  #####  ##  ##
- *  ### ##  ##    ##  ##   ##     ####  ##       ##   ##  ## ##  ##  #### 
- *  ## ###  ####  ##  ##   ####  ##  ## ##       ##   ##  ## #####    ##  
- *  ##  ##  ##    ##  ##   ##    ###### ##       ##   ##  ## ##  ##   ##  
- *  ##  ##  #####  ####    ##    ##  ##  ####    ##    ####  ##  ##   ##  
+ *  █▄░█ █▀▀ █▀█   █▀ █▀▄▀█ ▄▀█ █▀█ ▀█▀
+ *  █░▀█ ██▄ █▄█   ▄█ █░▀░█ █▀█ █▀▄ ░█░
  *
- *  NEO SMART FACTORY v0.5.3 - FOUNDATION | TOKENIZE-SE
+ *  NEO SMART FACTORY v0.5.3 - PROTOCOL | TOKENIZE-SE
+ *
  *  Official Repository: https://github.com/neo-smart-token-factory/smart-core
  *  Maintained by: NEO Protocol (team@neosmart.factory)
  *  
