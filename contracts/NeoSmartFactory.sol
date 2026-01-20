@@ -62,6 +62,10 @@ contract NeoSmartFactory is Ownable, ReentrancyGuard {
     mapping(address => uint256[]) public creatorProtocols;
     mapping(address => bool) public authorizedCreators;
     
+    // Contadores e Taxas
+    uint256 public protocolCounter;
+    uint256 public creationFee;
+    
     // Limites de Segurança
     uint256 public constant MAX_VESTING_SCHEDULES = 20;
 

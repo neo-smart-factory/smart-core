@@ -1,0 +1,36 @@
+{
+    "network": "base",
+    "chainId": "8453",
+    "tokenAddress": "0xF4Fbd30e3Ea69457adD30F7C3D6fde25f7D8Db26",
+    "tokenName": "NEOFlowOFF",
+    "tokenSymbol": "NEOFLW",
+    "version": "v0.5.3",
+    "contractType": "NeoTokenV2",
+    "owner": "0x470a8c640fFC2C16aEB6bE803a948420e2aE8456",
+    "deployer": "0x470a8c640fFC2C16aEB6bE803a948420e2aE8456",
+    "mintPrice": "100000000000000000",
+    "mintAmount": "1000000000000000000000",
+    "maxSupply": "1000000000000000000000000000",
+    "publicMintEnabled": true,
+    "verified": true,
+    "deployedAt": "2026-01-20T13:28:00.000Z",
+    "verifiedAt": "2026-01-20T13:30:00.000Z",
+    "explorerUrl": "https://basescan.org/address/0xF4Fbd30e3Ea69457adD30F7C3D6fde25f7D8Db26",
+    "sourceCodeUrl": "https://basescan.org/address/0xF4Fbd30e3Ea69457adD30F7C3D6fde25f7D8Db26#code",
+    "features": [
+        "ERC20",
+        "ERC20Burnable",
+        "ERC20Permit",
+        "Ownable2Step",
+        "MultichainReady",
+        "AntiBotProtection",
+        "SupplyCap"
+    ],
+    "metadata": {
+        "projectLead": "NODE NEØ",
+        "web3Identity": "neoprotocol.eth",
+        "email": "neo@neoprotocol.space",
+        "website": "https://neoprotocol.space",
+        "motto": "Expand until silence becomes structure"
+    }
+}

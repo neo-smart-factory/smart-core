@@ -38,12 +38,25 @@ module.exports = {
     },
   },
   etherscan: {
-    apiKey: {
-      polygon: process.env.POLYGONSCAN_KEY || "",
-      polygonAmoy: process.env.AMOYSCAN_KEY || "",
-      base: process.env.BASESCAN_KEY || "",
-      baseSepolia: process.env.BASESCAN_KEY || "",
-    },
+    apiKey: process.env.BASESCAN_KEY || process.env.POLYGONSCAN_KEY || "",
+    customChains: [
+      {
+        network: "base",
+        chainId: 8453,
+        urls: {
+          apiURL: "https://api.basescan.org/api",
+          browserURL: "https://basescan.org"
+        }
+      },
+      {
+        network: "baseSepolia",
+        chainId: 84532,
+        urls: {
+          apiURL: "https://api-sepolia.basescan.org/api",
+          browserURL: "https://sepolia.basescan.org"
+        }
+      }
+    ]
   },
   paths: {
     sources: "./contracts",
