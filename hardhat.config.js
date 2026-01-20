@@ -26,11 +26,23 @@ module.exports = {
       accounts: process.env.PRIVATE_KEY ? [process.env.PRIVATE_KEY] : [],
       chainId: 80002,
     },
+    base: {
+      url: process.env.BASE_RPC || "https://mainnet.base.org",
+      accounts: process.env.PRIVATE_KEY ? [process.env.PRIVATE_KEY] : [],
+      chainId: 8453,
+    },
+    baseSepolia: {
+      url: process.env.BASE_SEPOLIA_RPC || "https://sepolia.base.org",
+      accounts: process.env.PRIVATE_KEY ? [process.env.PRIVATE_KEY] : [],
+      chainId: 84532,
+    },
   },
   etherscan: {
     apiKey: {
       polygon: process.env.POLYGONSCAN_KEY || "",
       polygonAmoy: process.env.AMOYSCAN_KEY || "",
+      base: process.env.BASESCAN_KEY || "",
+      baseSepolia: process.env.BASESCAN_KEY || "",
     },
   },
   paths: {

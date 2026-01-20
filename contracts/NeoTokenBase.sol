@@ -5,12 +5,15 @@ import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
 /**
- * @title NeoTokenBase
- * @notice Base purificada para tokens NΞØ SMART FACTORY
- * @dev Baseado em SmartContracts.Tools (erc20-token-generator) - purificado e adaptado para Polygon
  * 
- * Base original: https://github.com/Smart-Contracts-Solutions/erc20-token-generator
- * Purificação: Removido bloat, padronizado para Polygon, estrutura mínima e modular
+ *  ███╗   ██╗     ███████╗    ███████╗ █████╗  ██████╗████████╗ ██████╗ ██████╗ ██╗   ██╗
+ *  ████╗  ██║     ██╔════╝    ██╔════╝██╔══██╗██╔════╝╚══██╔══╝██╔═══██╗██╔══██╗╚██╗ ██╔╝
+ *  ██╔██╗ ██║     ███████╗    █████╗  ███████║██║        ██║   ██║   ██║██████╔╝ ╚████╔╝ 
+ *  ██║╚██╗██║     ╚════██║    ██╔══╝  ██╔══██║██║        ██║   ██║   ██║██╔══██╗  ╚██╔╝  
+ *  ██║ ╚████║     ███████║    ██║     ██║  ██║╚██████╗   ██║   ╚██████╔╝██║  ██║   ██║   
+ *  ╚═╝  ╚═══╝     ╚══════╝    ╚═╝     ╚═╝  ╚═╝ ╚═════╝   ╚═╝    ╚═════╝ ╚═╝  ╚═╝   ╚═╝   
+ *
+ *  NΞØ SMART FACTORY v0.5.2 — FOUNDATION
  */
 contract NeoTokenBase is ERC20, Ownable {
     uint256 public immutable PRICE;
@@ -25,7 +28,7 @@ contract NeoTokenBase is ERC20, Ownable {
         string memory symbol_,
         uint256 price_,
         uint256 initialSupply_
-    ) ERC20(name_, symbol_) {
+    ) ERC20(name_, symbol_) Ownable(msg.sender) {
         PRICE = price_;
         INITIAL_SUPPLY = initialSupply_;
     }

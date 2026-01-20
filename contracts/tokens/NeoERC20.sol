@@ -7,6 +7,18 @@ import "@openzeppelin/contracts/token/ERC20/extensions/ERC20Pausable.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
 /**
+ * 
+ *  ███╗   ██╗     ███████╗    ███████╗ █████╗  ██████╗████████╗ ██████╗ ██████╗ ██╗   ██╗
+ *  ████╗  ██║     ██╔════╝    ██╔════╝██╔══██╗██╔════╝╚══██╔══╝██╔═══██╗██╔══██╗╚██╗ ██╔╝
+ *  ██╔██╗ ██║     ███████╗    █████╗  ███████║██║        ██║   ██║   ██║██████╔╝ ╚████╔╝ 
+ *  ██║╚██╗██║     ╚════██║    ██╔══╝  ██╔══██║██║        ██║   ██║   ██║██╔══██╗  ╚██╔╝  
+ *  ██║ ╚████║     ███████║    ██║     ██║  ██║╚██████╗   ██║   ╚██████╔╝██║  ██║   ██║   
+ *  ╚═╝  ╚═══╝     ╚══════╝    ╚═╝     ╚═╝  ╚═╝ ╚═════╝   ╚═╝    ╚═════╝ ╚═╝  ╚═╝   ╚═╝   
+ *
+ *  NΞØ SMART FACTORY v0.5.2 — FOUNDATION
+ */
+
+/**
  * @title NeoERC20
  * @notice Token ERC20 customizável criado pela NeoSmartFactory
  * @dev Suporta mint, burn e pause conforme configuração
@@ -25,12 +37,10 @@ contract NeoERC20 is ERC20, ERC20Burnable, ERC20Pausable, Ownable {
         bool burnable,
         bool pausable,
         address creator
-    ) ERC20(name, symbol) {
+    ) ERC20(name, symbol) Ownable(creator) {
         isMintable = mintable;
         isBurnable = burnable;
         isPausable = pausable;
-        
-        _transferOwnership(creator);
         
         if (totalSupply > 0) {
             _mint(creator, totalSupply);
@@ -69,12 +79,12 @@ contract NeoERC20 is ERC20, ERC20Burnable, ERC20Pausable, Ownable {
         _unpause();
     }
 
-    function _beforeTokenTransfer(
+    function _update(
         address from,
         address to,
-        uint256 amount
+        uint256 value
     ) internal override(ERC20, ERC20Pausable) {
-        super._beforeTokenTransfer(from, to, amount);
+        super._update(from, to, value);
     }
 }
 

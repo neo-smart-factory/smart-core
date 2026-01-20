@@ -9,6 +9,18 @@ import "./vesting/NeoVesting.sol";
 import "./rewards/NeoRewards.sol";
 
 /**
+ * 
+ *  ███╗   ██╗     ███████╗    ███████╗ █████╗  ██████╗████████╗ ██████╗ ██████╗ ██╗   ██╗
+ *  ████╗  ██║     ██╔════╝    ██╔════╝██╔══██╗██╔════╝╚══██╔══╝██╔═══██╗██╔══██╗╚██╗ ██╔╝
+ *  ██╔██╗ ██║     ███████╗    █████╗  ███████║██║        ██║   ██║   ██║██████╔╝ ╚████╔╝ 
+ *  ██║╚██╗██║     ╚════██║    ██╔══╝  ██╔══██║██║        ██║   ██║   ██║██╔══██╗  ╚██╔╝  
+ *  ██║ ╚████║     ███████║    ██║     ██║  ██║╚██████╗   ██║   ╚██████╔╝██║  ██║   ██║   
+ *  ╚═╝  ╚═══╝     ╚══════╝    ╚═╝     ╚═╝  ╚═╝ ╚═════╝   ╚██████╔╝██║  ██║   ██║   
+ *
+ *  NΞØ SMART FACTORY v0.5.2 — FOUNDATION
+ */
+
+/**
  * @title NeoSmartFactory
  * @notice Fábrica descentralizada para criação de protocolos completos
  * @dev Sistema modular que permite criar tokens, vestings, recompensas e badges
@@ -50,8 +62,8 @@ contract NeoSmartFactory is Ownable, ReentrancyGuard {
     mapping(address => uint256[]) public creatorProtocols;
     mapping(address => bool) public authorizedCreators;
     
-    uint256 public protocolCounter;
-    uint256 public creationFee;
+    // Limites de Segurança
+    uint256 public constant MAX_VESTING_SCHEDULES = 20;
 
     // Eventos
     event ProtocolCreated(
@@ -70,10 +82,11 @@ contract NeoSmartFactory is Ownable, ReentrancyGuard {
         string symbol
     );
 
-    event VestingCreated(
+    event VestingScheduleAdded(
         uint256 indexed protocolId,
         address indexed vestingAddress,
-        address beneficiary
+        address indexed beneficiary,
+        uint256 amount
     );
 
     event RewardsCreated(
@@ -81,7 +94,9 @@ contract NeoSmartFactory is Ownable, ReentrancyGuard {
         address indexed rewardsAddress
     );
 
-    constructor(uint256 _creationFee) {
+    event ProtocolStatusChanged(uint256 indexed protocolId, bool active);
+
+    constructor(uint256 _creationFee) Ownable(msg.sender) {
         creationFee = _creationFee;
         authorizedCreators[msg.sender] = true;
     }
@@ -100,10 +115,11 @@ contract NeoSmartFactory is Ownable, ReentrancyGuard {
         require(msg.value >= creationFee, "Insufficient fee");
         require(bytes(tokenConfig.name).length > 0, "Invalid token name");
         require(bytes(tokenConfig.symbol).length > 0, "Invalid token symbol");
+        require(vestingConfigs.length <= MAX_VESTING_SCHEDULES, "Too many vesting schedules");
 
         protocolId = protocolCounter++;
         
-        // Criar token ERC20
+        // Criar token ERC20 - Minta para o Factory primeiro para distribuir
         NeoERC20 token = new NeoERC20(
             tokenConfig.name,
             tokenConfig.symbol,
@@ -112,7 +128,7 @@ contract NeoSmartFactory is Ownable, ReentrancyGuard {
             tokenConfig.mintable,
             tokenConfig.burnable,
             tokenConfig.pausable,
-            msg.sender
+            address(this) // Factory recebe o supply inicial
         );
 
         address vestingAddress = address(0);
@@ -127,22 +143,32 @@ contract NeoSmartFactory is Ownable, ReentrancyGuard {
             vestingAddress = address(vesting);
 
             // Configurar vestings
+            uint256 totalVestingRequested = 0;
             for (uint256 i = 0; i < vestingConfigs.length; i++) {
-                require(
-                    vestingConfigs[i].totalAmount <= tokenConfig.totalSupply,
-                    "Vesting amount exceeds supply"
-                );
+                VestingConfig memory v = vestingConfigs[i];
                 
-                token.transfer(vestingAddress, vestingConfigs[i].totalAmount);
+                // Validações robustas
+                require(v.beneficiary != address(0), "Invalid beneficiary");
+                require(v.totalAmount > 0, "Amount must be > 0");
+                require(v.duration > 0, "Duration must be > 0");
+                require(v.cliff <= v.duration, "Cliff > duration");
+                require(v.startTime >= block.timestamp, "Start time in past");
+                
+                totalVestingRequested += v.totalAmount;
+                require(totalVestingRequested <= tokenConfig.totalSupply, "Vesting exceeds supply");
+
+                token.transfer(vestingAddress, v.totalAmount);
                 
                 vesting.createVestingSchedule(
-                    vestingConfigs[i].beneficiary,
-                    vestingConfigs[i].totalAmount,
-                    vestingConfigs[i].startTime,
-                    vestingConfigs[i].duration,
-                    vestingConfigs[i].cliff,
-                    vestingConfigs[i].revocable
+                    v.beneficiary,
+                    v.totalAmount,
+                    v.startTime,
+                    v.duration,
+                    v.cliff,
+                    v.revocable
                 );
+
+                emit VestingScheduleAdded(protocolId, vestingAddress, v.beneficiary, v.totalAmount);
             }
         }
 
@@ -154,6 +180,15 @@ contract NeoSmartFactory is Ownable, ReentrancyGuard {
             );
             rewardsAddress = address(rewards);
         }
+
+        // Transferir tokens restantes para o criador
+        uint256 remainingTokens = token.balanceOf(address(this));
+        if (remainingTokens > 0) {
+            token.transfer(msg.sender, remainingTokens);
+        }
+
+        // Transferir ownership do token para o criador (se o token for Ownable)
+        token.transferOwnership(msg.sender);
 
         // Registrar protocolo
         protocols[protocolId] = Protocol({
@@ -180,15 +215,21 @@ contract NeoSmartFactory is Ownable, ReentrancyGuard {
 
         emit TokenCreated(protocolId, address(token), tokenConfig.name, tokenConfig.symbol);
         
-        if (vestingAddress != address(0)) {
-            emit VestingCreated(protocolId, vestingAddress, vestingConfigs[0].beneficiary);
-        }
-        
         if (rewardsAddress != address(0)) {
             emit RewardsCreated(protocolId, rewardsAddress);
         }
 
         return protocolId;
+    }
+
+    /**
+     * @notice Alterna o status ativo do protocolo (apenas Owner ou Criador)
+     */
+    function toggleProtocolActive(uint256 protocolId) external {
+        Protocol storage p = protocols[protocolId];
+        require(msg.sender == owner() || msg.sender == p.creator, "Not authorized");
+        p.active = !p.active;
+        emit ProtocolStatusChanged(protocolId, p.active);
     }
 
     /**
