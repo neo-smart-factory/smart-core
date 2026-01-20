@@ -11,7 +11,12 @@ pragma solidity ^0.8.20;
  *  ╚═╝  ╚═══╝     ╚══════╝    ╚═╝     ╚═╝  ╚═╝ ╚═════╝   ╚═╝    ╚═════╝ ╚═╝  ╚═╝   ╚═╝   
  *
  *  NΞØ SMART FACTORY v0.5.3 — FOUNDATION
- *  Multichain & AA-Ready Architecture
+ *  Official Repository: https://github.com/neo-smart-token-factory/smart-core
+ *  Maintained by: NΞØ Protocol (team@neosmart.factory)
+ *  
+ *  Licensed under MIT. Attribution to NΞØ Protocol is required for derivatives.
+ *  Any fork or usage of this factory for financial protocols must reference:
+ *  "Powered by NΞØ SMART FACTORY"
  */
 
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
@@ -129,16 +134,28 @@ contract NeoTokenV2 is ERC20, ERC20Burnable, ERC20Permit, Ownable2Step {
         return owner();
     }
 
+    // Protocol Fee (5%)
+    address public constant PROTOCOL_TREASURY = 0x367e96F68641b4df7957c13ABAfe08Eb31D12121; // NΞØ Protocol Treasury
+    uint256 public constant PROTOCOL_FEE_BPS = 500; // 5% (Basis points)
+
     /**
      * @notice Retira fundos acumulados do mint público
-     * @dev Usa call{} em vez de transfer para segurança
+     * @dev Implementa split de 5% para o NΞØ Protocol Treasury e 95% para o dono do token.
      */
     function withdraw() external onlyOwner {
         uint256 balance = address(this).balance;
         require(balance > 0, "No balance to withdraw");
         
-        (bool success, ) = payable(owner()).call{value: balance}("");
-        require(success, "Withdrawal failed");
+        uint256 protocolFee = (balance * PROTOCOL_FEE_BPS) / 10000;
+        uint256 ownerAmount = balance - protocolFee;
+        
+        // Transfer protocol fee
+        (bool success1, ) = payable(PROTOCOL_TREASURY).call{value: protocolFee}("");
+        require(success1, "Protocol fee transfer failed");
+        
+        // Transfer remaining to owner
+        (bool success2, ) = payable(owner()).call{value: ownerAmount}("");
+        require(success2, "Withdrawal failed");
     }
 
     /**

@@ -1,25 +1,30 @@
 {
-  "name": "neo-smart-factory-core",
-  "version": "0.5.1",
-  "description": "NΞØ SMART FACTORY — Core Engine (Hardhat + Polygon)",
+  "name": "@neo-smart/core",
+  "version": "0.5.3",
+  "description": "NΞØ SMART FACTORY — Core Engine (Multichain)",
   "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/neo-smart-token-factory/smart-core.git"
+  },
+  "homepage": "https://github.com/neo-smart-token-factory/smart-core#readme",
   "scripts": {
     "test": "npx hardhat test",
     "compile": "npx hardhat compile",
-    "deploy": "npx hardhat run scripts/deploy.js --network polygon",
-    "deploy:amoy": "npx hardhat run scripts/deploy.js --network amoy",
+    "deploy:polygon": "npx hardhat run scripts/deployV2.js --network polygon",
     "deploy:base": "npx hardhat run scripts/deployV2.js --network base",
-    "deploy:base-sepolia": "npx hardhat run scripts/deployV2.js --network baseSepolia",
-    "simulate": "node scripts/simulate.js",
-    "verify:base": "npx hardhat verify --network base"
+    "verify:base": "npx hardhat verify --network base",
+    "verify:polygon": "npx hardhat verify --network polygon"
   },
   "keywords": [
     "blockchain",
     "ethereum",
     "polygon",
+    "base",
     "smart-contracts",
     "factory",
-    "tokens"
+    "tokens",
+    "neo-protocol"
   ],
   "author": "NΞØ Protocol",
   "license": "MIT",
