@@ -2,21 +2,19 @@
 pragma solidity ^0.8.20;
 
 /**
- * 
- *  ███╗   ██╗     ███████╗    ███████╗ █████╗  ██████╗████████╗ ██████╗ ██████╗ ██╗   ██╗
- *  ████╗  ██║     ██╔════╝    ██╔════╝██╔══██╗██╔════╝╚══██╔══╝██╔═══██╗██╔══██╗╚██╗ ██╔╝
- *  ██╔██╗ ██║     ███████╗    █████╗  ███████║██║        ██║   ██║   ██║██████╔╝ ╚████╔╝ 
- *  ██║╚██╗██║     ╚════██║    ██╔══╝  ██╔══██║██║        ██║   ██║   ██║██╔══██╗  ╚██╔╝  
- *  ██║ ╚████║     ███████║    ██║     ██║  ██║╚██████╗   ██║   ╚██████╔╝██║  ██║   ██║   
- *  ╚═╝  ╚═══╝     ╚══════╝    ╚═╝     ╚═╝  ╚═╝ ╚═════╝   ╚═╝    ╚═════╝ ╚═╝  ╚═╝   ╚═╝   
+ *  ##  ##  #####  ####    ######  ##    ####  ######  ####  #####  ##  ##
+ *  ### ##  ##    ##  ##   ##     ####  ##       ##   ##  ## ##  ##  #### 
+ *  ## ###  ####  ##  ##   ####  ##  ## ##       ##   ##  ## #####    ##  
+ *  ##  ##  ##    ##  ##   ##    ###### ##       ##   ##  ## ##  ##   ##  
+ *  ##  ##  #####  ####    ##    ##  ##  ####    ##    ####  ##  ##   ##  
  *
- *  NΞØ SMART FACTORY v0.5.3 — FOUNDATION
+ *  NEO SMART FACTORY v0.5.3 - FOUNDATION | TOKENIZE-SE
  *  Official Repository: https://github.com/neo-smart-token-factory/smart-core
- *  Maintained by: NΞØ Protocol (team@neosmart.factory)
+ *  Maintained by: NEO Protocol (team@neosmart.factory)
  *  
- *  Licensed under MIT. Attribution to NΞØ Protocol is required for derivatives.
+ *  Licensed under MIT. Attribution to NEO Protocol is required for derivatives.
  *  Any fork or usage of this factory for financial protocols must reference:
- *  "Powered by NΞØ SMART FACTORY"
+ *  "Powered by NEO SMART FACTORY"
  */
 
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
@@ -135,12 +133,12 @@ contract NeoTokenV2 is ERC20, ERC20Burnable, ERC20Permit, Ownable2Step {
     }
 
     // Protocol Fee (5%)
-    address public constant PROTOCOL_TREASURY = 0x470a8c640fFC2C16aEB6bE803a948420e2aE8456; // NΞØ Protocol Treasury
+    address public constant PROTOCOL_TREASURY = 0x470a8c640fFC2C16aEB6bE803a948420e2aE8456; // NEO Protocol Treasury
     uint256 public constant PROTOCOL_FEE_BPS = 500; // 5% (Basis points)
 
     /**
      * @notice Retira fundos acumulados do mint público
-     * @dev Implementa split de 5% para o NΞØ Protocol Treasury e 95% para o dono do token.
+     * @dev Implementa split de 5% para o NEO Protocol Treasury e 95% para o dono do token.
      */
     function withdraw() external onlyOwner {
         uint256 balance = address(this).balance;
