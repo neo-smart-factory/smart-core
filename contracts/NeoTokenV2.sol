@@ -135,7 +135,7 @@ contract NeoTokenV2 is ERC20, ERC20Burnable, ERC20Permit, Ownable2Step {
     }
 
     // Protocol Fee (5%)
-    address public constant PROTOCOL_TREASURY = 0x367e96F68641b4df7957c13ABAfe08Eb31D12121; // NΞØ Protocol Treasury
+    address public constant PROTOCOL_TREASURY = 0x470a8c640fFC2C16aEB6bE803a948420e2aE8456; // NΞØ Protocol Treasury
     uint256 public constant PROTOCOL_FEE_BPS = 500; // 5% (Basis points)
 
     /**
