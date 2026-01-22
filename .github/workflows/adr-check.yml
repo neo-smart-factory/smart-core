@@ -1,0 +1,26 @@
+name: Architecture Guard
+
+on:
+    pull_request:
+        types: [opened, edited, synchronize]
+
+jobs:
+    check-adr:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Check PR for ADR reference
+              run: |
+                  PR_TITLE="${{ github.event.pull_request.title }}"
+                  PR_BODY="${{ github.event.pull_request.body }}"
+
+                  # Check if commit type is feat or refactor
+                  if [[ $PR_TITLE =~ ^feat.* ]] || [[ $PR_TITLE =~ ^refactor.* ]]; then
+                    echo "Feature or Refactor detected, checking for ADR reference..."
+                    
+                    if [[ ! $PR_BODY =~ ADR-[0-9]{3} ]]; then
+                      echo "Error: High-impact changes (feat/refactor) must reference an ADR in the PR description (e.g., ADR-001)."
+                      exit 1
+                    fi
+                  fi
+
+                  echo "Architecture check passed."
