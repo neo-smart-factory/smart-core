@@ -1,0 +1,40 @@
+name: Docs Guard
+
+on:
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  check-docs:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Check for code and doc changes
+        run: |
+          # Get the list of changed files
+          CHANGED_FILES=$(git diff --name-only origin/${{ github.base_ref }} ${{ github.sha }})
+          
+          CODE_CHANGED=false
+          DOCS_CHANGED=false
+          
+          echo "Files changed:"
+          echo "$CHANGED_FILES"
+          
+          for file in $CHANGED_FILES; do
+            if [[ $file == docs/* ]] || [[ $file == *.md ]]; then
+              DOCS_CHANGED=true
+            else
+              CODE_CHANGED=true
+            fi
+          done
+          
+          if [ "$CODE_CHANGED" = true ] && [ "$DOCS_CHANGED" = false ]; then
+            echo "Error: Code changes require documentation updates."
+            exit 1
+          fi
+          
+          echo "Documentation check passed."
