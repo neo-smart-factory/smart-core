@@ -11,7 +11,7 @@
 
 ## 🧱 Vínculos
 - **Issue(s):** # (adicione o número da issue, ex: #123)
-- **ADR(s):** [ADR-00X](DECISION_LOG.md) (se aplicável)
+- **ADR(s):** [ADR-00X](https://github.com/neo-smart-token-factory/docs/blob/main/architecture/adr/decision-log.md) (se aplicável)
 
 ---
 *Ao submeter este PR, confirmo que as alterações seguem os padrões de commit da NΞØ Organization.*

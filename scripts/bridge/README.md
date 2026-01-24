@@ -70,7 +70,7 @@ BRIDGE_RELAYER_KEY=0x...
 crontab -e
 
 # Adicionar linha (relay a cada 5 minutos)
-*/5 * * * * cd /path/to/forge-core/scripts/bridge && node relay.js all >> /var/log/bridge-relay.log 2>&1
+*/5 * * * * cd /path/to/smart-core/scripts/bridge && node relay.js all >> /var/log/bridge-relay.log 2>&1
 ```
 
 ### PM2 (Monitor Contínuo)

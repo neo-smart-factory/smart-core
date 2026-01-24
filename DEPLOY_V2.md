@@ -9,7 +9,7 @@
 ### 1. Configurar .env
 
 ```bash
-# forge-core/.env
+# smart-core/.env
 PRIVATE_KEY=sua_chave_privada_aqui
 
 # Polygon Mainnet
@@ -32,7 +32,7 @@ INITIAL_OWNER=0x470a8c640fFC2C16aEB6bE803a948420e2aE8456
 
 ```bash
 # Polygon Mainnet
-cd forge-core
+cd smart-core
 npx hardhat run scripts/deployV2.js --network polygon
 
 # Base Mainnet
@@ -125,7 +125,7 @@ await token.withdraw();
 Após o deploy, as informações são salvas em:
 
 ```
-forge-core/deployments/neotokenv2-{network}.json
+smart-core/deployments/neotokenv2-{network}.json
 ```
 
 Exemplo:
@@ -194,9 +194,9 @@ cast call $TOKEN_ADDRESS "balanceOf(address)(uint256)" $YOUR_ADDRESS --rpc-url $
 
 ## 📚 Referências
 
-- **Contrato**: `forge-core/contracts/NeoTokenV2.sol`
-- **Documentação**: `docs/NEOTOKENV2.md`
-- **Bridge System**: `docs/MANUAL_BRIDGE.md`
+- **Contrato**: `contracts/NeoTokenV2.sol`
+- **NeoTokenV2 (spec)**: [docs — architecture/specs/neotoken-v2.md](https://github.com/neo-smart-token-factory/docs/blob/main/architecture/specs/neotoken-v2.md)
+- **Bridge System**: [docs — operations/guides/manual-bridge.md](https://github.com/neo-smart-token-factory/docs/blob/main/operations/guides/manual-bridge.md)
 
 ---
 

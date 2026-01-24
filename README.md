@@ -15,35 +15,42 @@ This is the core engine of the NΞØ SMART FACTORY. It contains the smart contra
 ## 🛠 Usage
 
 ### Prerequisites
+
 - Node.js & NPM
 - Hardhat
 
 ### Installation
+
 ```bash
 npm install @neo-smart/core
 ```
 
 ### Compile
+
 ```bash
 npx hardhat compile
 ```
 
 ### Deploy (Base Example)
+
 ```bash
 npm run deploy:base
 ```
 
 ## 🤝 Community & Support
+
 - **Docs**: [docs.neosmart.factory](https://github.com/neo-smart-token-factory/docs)
 - **Twitter**: [@neosmart_factory](https://twitter.com/neosmart_factory)
 - **Email**: team@neosmart.factory
 
 ## 📜 Attribution & Licensing
+
 This project is licensed under the **MIT License**.
 
 While you are free to fork and use this code, we require **Attribution** to NΞØ Protocol for all derivative works.
 
 **Derived projects must:**
+
 1. Keep the original header in the smart contracts.
 2. Reference "Powered by NΞØ SMART FACTORY" in the project description or documentation.
 
