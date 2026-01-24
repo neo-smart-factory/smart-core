@@ -1,0 +1,336 @@
+;; █▄░█ █▀▀ █▀█   █▀ █▀▄▀█ ▄▀█ █▀█ ▀█▀
+;; █░▀█ ██▄ █▄█   ▄█ █░▀░█ █▀█ █▀▄ ░█░
+;;
+;; NΞØ SMART FACTORY v0.5.3 - NΞØ PROTOCOL | TOKENIZE-SE
+;;
+;; Developed by: NEO Protocol (neo@neoprotocol.space)
+;; Website: https://neoprotocol.space
+;;
+;; LICENSED UNDER CREATIVE COMMONS (CC BY-NC-ND 4.0)
+;; This software is intellectual property of NΞØ Protocol.
+;; Commercial use and derivative works are strictly prohibited without permission.
+
+#include "imports/stdlib.fc";
+#include "imports/params.fc";
+#include "imports/op-codes.fc";
+#include "imports/jetton-utils.fc";
+
+;; Storage Structure (Optimized for NeoTokenV2 logic)
+;; total_supply: coins
+;; admin_address: MsgAddress
+;; content: Cell
+;; jetton_wallet_code: Cell
+;; max_supply: coins         (Novo)
+;; mint_price: coins         (Novo)
+;; mint_amount: coins        (Novo)
+;; public_mint_enabled: int  (Novo: -1 true, 0 false)
+;; bridge_minter: MsgAddress (Novo)
+;; minters_dict: Cell        (Novo: map address->bool for anti-bot)
+
+;; Constants
+const int PROTOCOL_FEE_BPS = 500; ;; 5%
+const slice PROTOCOL_TREASURY = "EQBHCoxkD_wsFq62voA6lIQg4q6EVmAAAA"; ;; Placeholder
+
+;; Função auxiliar para criar slice de endereço vazio
+slice hole_address() asm "b{00} PUSHSLICE";
+
+(int, slice, cell, cell, int, int, int, int, slice, cell) load_data() inline {
+    slice ds = get_data().begin_parse();
+    int total_supply = ds~load_coins();
+    slice admin_address = ds~load_msg_addr();
+    cell content = ds~load_ref();
+    cell jetton_wallet_code = ds~load_ref();
+    
+    if (ds.slice_refs() > 0) {
+        cell extra_cell = ds~load_ref();
+        slice extra = extra_cell.begin_parse();
+        return (
+            total_supply, admin_address, content, jetton_wallet_code,
+            extra~load_coins(),     ;; max_supply
+            extra~load_coins(),     ;; mint_price
+            extra~load_coins(),     ;; mint_amount
+            extra~load_int(1),      ;; public_mint_enabled
+            extra~load_msg_addr(),  ;; bridge_minter
+            extra~load_dict()       ;; minters_dict
+        );
+    }
+    
+    ;; Default/Init state safe fallback
+    return (
+        total_supply, admin_address, content, jetton_wallet_code,
+        1000000000000000000000000000, ;; 1B default max
+        0, 0, 0,                      ;; price, amount, enabled=false
+        hole_address(),               ;; bridge_minter empty
+        new_dict()                    ;; empty dict
+    );
+}
+
+() save_data(int total_supply, slice admin, cell content, cell wallet_code, 
+             int max_supply, int mint_price, int mint_amount, int mint_enabled, 
+             slice bridge_minter, cell minters_dict) impure inline {
+    
+    cell extra = begin_cell()
+        .store_coins(max_supply)
+        .store_coins(mint_price)
+        .store_coins(mint_amount)
+        .store_int(mint_enabled, 1)
+        .store_slice(bridge_minter)
+        .store_dict(minters_dict)
+        .end_cell();
+        
+    set_data(begin_cell()
+            .store_coins(total_supply)
+            .store_slice(admin)
+            .store_ref(content)
+            .store_ref(wallet_code)
+            .store_ref(extra)
+            .end_cell()
+    );
+}
+
+;; Mint utilitário
+() mint_tokens(slice to_address, cell jetton_wallet_code, int amount, cell master_msg) impure {
+    cell state_init = calculate_jetton_wallet_state_init(to_address, my_address(), jetton_wallet_code);
+    slice to_wallet_address = calculate_jetton_wallet_address(state_init);
+    
+    var msg = begin_cell()
+        .store_uint(0x18, 6)
+        .store_slice(to_wallet_address)
+        .store_coins(0) ;; Será preenchido com CARRY_REMAINING_GAS (mode 64) ou amount específico
+        .store_uint(4 + 2 + 1, 1 + 4 + 4 + 64 + 32 + 1 + 1 + 1)
+        .store_ref(state_init)
+        .store_ref(master_msg);
+    
+    ;; Usamos mode 64 para carregar o gás restante da mensagem de entrada
+    ;; Mas cuidado: se for internal mint, precisamos garantir funds.
+    ;; Aqui assumimos msg enviada com mode 64 pelo caller
+    send_raw_message(msg.end_cell(), 64); 
+}
+
+() recv_internal(int msg_value, cell in_msg_full, slice in_msg_body) impure {
+    if (in_msg_body.slice_empty?()) { return (); }
+    slice cs = in_msg_full.begin_parse();
+    int flags = cs~load_uint(4);
+    if (flags & 1) { return (); } ;; ignore bounced
+    
+    slice sender_address = cs~load_msg_addr();
+    int op = in_msg_body~load_uint(32);
+    int query_id = in_msg_body~load_uint(64);
+
+    (int total_supply, slice admin_address, cell content, cell jetton_wallet_code,
+     int max_supply, int mint_price, int mint_amount, int mint_enabled,
+     slice bridge_minter, cell minters_dict) = load_data();
+
+    ;; ------------------------------------------
+    ;; 1. Public Mint (NΞØ Protocol Implementation)
+    ;; ------------------------------------------
+    if (op == op::public_mint()) {
+        throw_unless(error::public_mint_disabled(), mint_enabled);
+        throw_unless(error::insufficient_payment(), msg_value >= mint_price);
+        throw_unless(error::max_supply_reached(), total_supply + mint_amount <= max_supply);
+        
+        ;; Check Anti-bot (1 mint per address)
+        int key = slice_hash(sender_address);
+        (slice val, int found) = minters_dict.udict_get?(256, key);
+        throw_if(error::already_minted(), found);
+        
+        ;; Mark as minted
+        minters_dict~udict_set(256, key, begin_cell().store_int(-1, 1).end_cell().begin_parse());
+        
+        ;; Update supply
+        total_supply += mint_amount;
+        
+        ;; Prepare mint message to wallet
+        cell master_msg = begin_cell()
+            .store_uint(op::internal_transfer(), 32)
+            .store_uint(query_id, 64)
+            .store_coins(mint_amount)
+            .store_slice(my_address()) ;; from
+            .store_slice(sender_address) ;; response_address
+            .store_coins(0) ;; forward_amount
+            .store_slice(begin_cell().end_cell().begin_parse()) ;; forward_payload
+            .end_cell();
+            
+        mint_tokens(sender_address, jetton_wallet_code, mint_amount, master_msg);
+        
+        save_data(total_supply, admin_address, content, jetton_wallet_code,
+                  max_supply, mint_price, mint_amount, mint_enabled,
+                  bridge_minter, minters_dict);
+        return ();
+    }
+
+    ;; ------------------------------------------
+    ;; 2. Bridge Mint (Multichain)
+    ;; ------------------------------------------
+    if (op == op::bridge_mint()) {
+        throw_unless(73, equal_slices(sender_address, bridge_minter) | equal_slices(sender_address, admin_address));
+        
+        slice to_address = in_msg_body~load_msg_addr();
+        int amount = in_msg_body~load_coins();
+        
+        throw_unless(error::max_supply_reached(), total_supply + amount <= max_supply);
+        total_supply += amount;
+        
+        cell master_msg = begin_cell()
+            .store_uint(op::internal_transfer(), 32)
+            .store_uint(query_id, 64)
+            .store_coins(amount)
+            .store_slice(my_address())
+            .store_slice(to_address) ;; response
+            .store_coins(0)
+            .store_slice(begin_cell().end_cell().begin_parse())
+            .end_cell();
+            
+        mint_tokens(to_address, jetton_wallet_code, amount, master_msg);
+        
+        save_data(total_supply, admin_address, content, jetton_wallet_code,
+                  max_supply, mint_price, mint_amount, mint_enabled,
+                  bridge_minter, minters_dict);
+        return ();
+    }
+
+    ;; ------------------------------------------
+    ;; 3. Admin: Standard Mint (Legacy/Manual)
+    ;; ------------------------------------------
+    if (op == op::mint()) {
+        throw_unless(73, equal_slices(sender_address, admin_address));
+        slice to_address = in_msg_body~load_msg_addr();
+        int amount = in_msg_body~load_coins();
+        
+        throw_unless(error::max_supply_reached(), total_supply + amount <= max_supply);
+        
+        cell master_msg = in_msg_body~load_ref();
+        mint_tokens(to_address, jetton_wallet_code, amount, master_msg);
+        
+        total_supply += amount;
+        save_data(total_supply, admin_address, content, jetton_wallet_code,
+                  max_supply, mint_price, mint_amount, mint_enabled,
+                  bridge_minter, minters_dict);
+        return ();
+    }
+
+    ;; ------------------------------------------
+    ;; 4. Admin Management Functions
+    ;; ------------------------------------------
+    
+    ;; Change Admin
+    if (op == op::change_admin()) {
+        throw_unless(73, equal_slices(sender_address, admin_address));
+        slice new_admin = in_msg_body~load_msg_addr();
+        save_data(total_supply, new_admin, content, jetton_wallet_code,
+                  max_supply, mint_price, mint_amount, mint_enabled,
+                  bridge_minter, minters_dict);
+        return ();
+    }
+
+    ;; Set Bridge Minter
+    if (op == op::set_bridge_minter()) {
+        throw_unless(73, equal_slices(sender_address, admin_address));
+        slice new_bridge = in_msg_body~load_msg_addr();
+        save_data(total_supply, admin_address, content, jetton_wallet_code,
+                  max_supply, mint_price, mint_amount, mint_enabled,
+                  new_bridge, minters_dict);
+        return ();
+    }
+    
+    ;; Set Content
+    if (op == op::change_content()) {
+        throw_unless(73, equal_slices(sender_address, admin_address));
+        cell new_content = in_msg_body~load_ref();
+        save_data(total_supply, admin_address, new_content, jetton_wallet_code,
+                  max_supply, mint_price, mint_amount, mint_enabled,
+                  bridge_minter, minters_dict);
+        return ();
+    }
+    
+    ;; Toggle Public Mint
+    if (op == op::toggle_public_mint()) {
+        throw_unless(73, equal_slices(sender_address, admin_address));
+        int new_status = in_msg_body~load_int(1);
+        save_data(total_supply, admin_address, content, jetton_wallet_code,
+                  max_supply, mint_price, mint_amount, new_status,
+                  bridge_minter, minters_dict);
+        return ();
+    }
+
+    ;; ------------------------------------------
+    ;; 5. Withdraw Protocol Fees
+    ;; ------------------------------------------
+    if (op == op::withdraw()) {
+        throw_unless(73, equal_slices(sender_address, admin_address));
+        int balance = my_balance();
+        int min_storage = 50000000; ;; 0.05 TON reserve
+        int withdraw_amount = balance - min_storage;
+        
+        if (withdraw_amount > 0) {
+            int protocol_part = muldiv(withdraw_amount, PROTOCOL_FEE_BPS, 10000); ;; 5%
+            int owner_part = withdraw_amount - protocol_part;
+            
+            ;; Envia 5% pro Treasury
+            var msg_treasury = begin_cell()
+                .store_uint(0x10, 6)
+                .store_slice(PROTOCOL_TREASURY)
+                .store_coins(protocol_part)
+                .store_uint(0, 1 + 4 + 4 + 64 + 32 + 1 + 1)
+                .end_cell();
+            send_raw_message(msg_treasury, 1); ;; Pay fees separately
+            
+            ;; Envia 95% pro Owner
+            var msg_owner = begin_cell()
+                .store_uint(0x10, 6)
+                .store_slice(admin_address)
+                .store_coins(owner_part)
+                .store_uint(0, 1 + 4 + 4 + 64 + 32 + 1 + 1)
+                .end_cell();
+            send_raw_message(msg_owner, 1);
+        }
+        return ();
+    }
+
+    if (op == op::burn_notification()) {
+        int jetton_amount = in_msg_body~load_coins();
+        slice from_address = in_msg_body~load_msg_addr();
+        throw_unless(74, equal_slices(calculate_user_jetton_wallet_address(from_address, my_address(), jetton_wallet_code), sender_address));
+        
+        total_supply -= jetton_amount;
+        
+        save_data(total_supply, admin_address, content, jetton_wallet_code,
+                  max_supply, mint_price, mint_amount, mint_enabled,
+                  bridge_minter, minters_dict);
+                  
+        slice response_address = in_msg_body~load_msg_addr();
+        if (response_address.preload_uint(2) != 0) {
+            var msg = begin_cell()
+                .store_uint(0x10, 6)
+                .store_slice(response_address)
+                .store_coins(0)
+                .store_uint(0, 1 + 4 + 4 + 64 + 32 + 1 + 1)
+                .store_uint(op::excesses(), 32)
+                .store_uint(query_id, 64)
+                .end_cell();
+            send_raw_message(msg, 64);
+        }
+        return ();
+    }
+
+    throw(0xffff);
+}
+
+;; Get Methods Atualizados
+
+(int, int, slice, cell, cell) get_jetton_data() method_id {
+    (int total_supply, slice admin_address, cell content, cell jetton_wallet_code,
+     _, _, _, _, _, _) = load_data();
+    return (total_supply, -1, admin_address, content, jetton_wallet_code);
+}
+
+slice get_wallet_address(slice owner_address) method_id {
+    (_, _, _, cell jetton_wallet_code, _, _, _, _, _, _) = load_data();
+    return calculate_user_jetton_wallet_address(owner_address, my_address(), jetton_wallet_code);
+}
+
+;; Novo método unificado (getContractInfo)
+(int, int, int, int, int, slice) get_contract_info() method_id {
+    (int total_supply, _, _, _, int max_supply, int mint_price, int mint_amount, int mint_enabled, slice bridge, _) = load_data();
+    return (total_supply, max_supply, mint_price, mint_amount, mint_enabled, bridge);
+}
