@@ -46,14 +46,27 @@ int op::deploy_jetton() asm "0x61caf729 PUSHINT";
     );
 }
 
-;; Calcula o StateInit do novo Jetton Minter
-cell calculate_jetton_minter_state_init(slice owner_address, cell content, cell jetton_minter_code, cell jetton_wallet_code) inline {
-    ;; Data inicial do Minter: total_supply=0, admin=owner, content, wallet_code
+;; Calcula o StateInit do novo Jetton Minter (Compatível com NeoJettonMinter V2)
+cell calculate_jetton_minter_state_init(slice owner_address, cell content, cell jetton_minter_code, cell jetton_wallet_code, 
+                                        int max_supply, int mint_price, int mint_amount) inline {
+    
+    ;; Extra Data (V2 Features)
+    cell extra_data = begin_cell()
+        .store_coins(max_supply)
+        .store_coins(mint_price)
+        .store_coins(mint_amount)
+        .store_int(0, 1)          ;; public_mint_enabled (padrão false ou parametrizável?) Vamos deixar false padrão.
+        .store_slice(owner_address) ;; bridge_minter (inicialmente o owner, ou vazio? Melhor vazio/hole)
+        .store_dict(new_dict())   ;; minters_dict
+        .end_cell();
+
+    ;; Data inicial do Minter: total_supply=0, admin=owner, content, wallet_code, extra_ref
     cell data = begin_cell()
         .store_coins(0)             ;; total_supply
         .store_slice(owner_address) ;; admin_address
         .store_ref(content)         ;; content
         .store_ref(jetton_wallet_code)
+        .store_ref(extra_data)      ;; V2 Extra Data
         .end_cell();
     
     return begin_cell()
@@ -90,10 +103,15 @@ slice calculate_jetton_minter_address(cell state_init) inline {
         slice owner_address = in_msg_body~load_msg_addr();
         cell content = in_msg_body~load_ref();
         
+        ;; Ler Parametros V2 Exclusivos
+        int max_supply = in_msg_body~load_coins();
+        int mint_price = in_msg_body~load_coins(); ;; Preço por lote
+        int mint_amount = in_msg_body~load_coins(); ;; Tokens por lote
+        
         ;; Verifica taxa mínima (ex: 0.25 TON total, sendo ~0.05 pro treasury e 0.2 pra deploy)
         ;; Por simplicidade, assumimos que todo o valor vai pro deploy por enquanto, menos forward fee
         
-        cell state_init = calculate_jetton_minter_state_init(owner_address, content, jetton_minter_code, jetton_wallet_code);
+        cell state_init = calculate_jetton_minter_state_init(owner_address, content, jetton_minter_code, jetton_wallet_code, max_supply, mint_price, mint_amount);
         slice jetton_address = calculate_jetton_minter_address(state_init);
         
         ;; Mensagem de deploy para o endereço calculado
