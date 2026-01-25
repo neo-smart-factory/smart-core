@@ -54,7 +54,7 @@ async function testDictFix() {
         console.log(`   Max Supply: ${parsed_max_supply} ${parsed_max_supply === max_supply ? '✅' : '❌'}`);
         console.log(`   Mint Price: ${parsed_mint_price} ${parsed_mint_price === mint_price ? '✅' : '❌'}`);
         console.log(`   Mint Amount: ${parsed_mint_amount} ${parsed_mint_amount === mint_amount ? '✅' : '❌'}`);
-        console.log(`   Public Mint: ${parsed_public_mint} ${parsed_public_mint === (public_mint_enabled ? 1 : 0) ? '✅' : '❌ (expected: ' + (public_mint_enabled ? 1 : 0) + ')'}`);
+        console.log(`   Public Mint: ${parsed_public_mint} ${parsed_public_mint === public_mint_enabled ? '✅' : '❌ (expected: ' + public_mint_enabled + ')'}`);
         console.log(`   Owner: ${parsed_owner?.toString() || 'null'} ${parsed_owner?.equals(owner_address) ? '✅' : '❌'}`);
         console.log(`   Dict: ${parsed_dict ? 'Empty Cell' : 'null'} ${parsed_dict ? '✅' : '❌'}`);
         
@@ -63,7 +63,7 @@ async function testDictFix() {
             parsed_max_supply === max_supply &&
             parsed_mint_price === mint_price &&
             parsed_mint_amount === mint_amount &&
-            parsed_public_mint === (public_mint_enabled ? true : false) &&  // loadBit returns boolean
+            parsed_public_mint === public_mint_enabled &&  // loadBit returns boolean
             parsed_owner?.equals(owner_address) &&
             parsed_dict !== null;
         
