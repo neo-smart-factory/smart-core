@@ -5,48 +5,57 @@ Implementação de contratos TON (FunC) para a NEØ Smart Factory.
 ## Contratos Disponíveis
 
 ### NeoJettonFactory.fc (V1)
+
 Factory original para criação de Jettons.
 
 **Status:** ⚠️ Versão legada, usar V2
 
 ### NeoJettonFactoryV2.fc (V2) 
+
 Factory melhorada para criação de Jettons.
 
 **Status:** 🔍 Em debug - Factory não cria Minter (bug ativo)
 
 **Recursos:**
+
 - Deploy de Jetton Minters
 - Configuração de mint price
 - Max supply
 - Owner management
 
 **OP Codes:**
+
 - `0x61caf729` - deploy_jetton
 - `0x1` - transfer
 - Outros (ver código)
 
 ### NeoJettonMinter.fc
+
 Contrato Minter de Jettons (equivalente ao ERC20 Minter).
 
 **Status:** ✅ Testado e funcional
 
 **Padrões:**
+
 - TEP-74 (Jetton Standard)
 - TEP-64 (Token Metadata)
 - TEP-89 (Discoverable Jettons)
 
 **Funcionalidades:**
+
 - Mint de tokens
 - Burn de tokens
 - Metadata on-chain
 - Descoberta automática
 
 ### NeoJettonWallet.fc
+
 Wallet de usuário para Jettons.
 
 **Status:** ✅ Testado e funcional
 
 **Recursos:**
+
 - Transfer de tokens
 - Balance tracking
 - Notificações
@@ -61,11 +70,13 @@ npm install @ton/ton @ton/core @ton/crypto
 ```
 
 ### Compilar V1
+
 ```bash
 node scripts/compile-ton.js
 ```
 
 ### Compilar V2
+
 ```bash
 node scripts/compile-ton-v2.js
 ```
@@ -73,18 +84,21 @@ node scripts/compile-ton-v2.js
 ## Deploy
 
 ### Factory V1
+
 ```bash
 export TON_NETWORK=testnet
 node scripts/deploy-ton-factory.js
 ```
 
 ### Factory V2
+
 ```bash
 export TON_NETWORK=testnet
 node scripts/deploy-ton-factory-v2.js
 ```
 
 ### Deploy de Jetton (NSF Token)
+
 ```bash
 node scripts/deploy-nsf-token.js
 ```
