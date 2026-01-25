@@ -13,12 +13,14 @@ jobs:
                   PR_TITLE="${{ github.event.pull_request.title }}"
                   PR_BODY="${{ github.event.pull_request.body }}"
 
-                  # Check if commit type is feat or refactor
+                  # Verifica se o tipo de commit é feat ou refactor
                   if [[ $PR_TITLE =~ ^feat.* ]] || [[ $PR_TITLE =~ ^refactor.* ]]; then
                     echo "Feature or Refactor detected, checking for ADR reference..."
                     
+                    # Confirmação se existe uma referência para ADR no corpo do Pull Request
                     if [[ ! $PR_BODY =~ ADR-[0-9]{3} ]]; then
                       echo "Error: High-impact changes (feat/refactor) must reference an ADR in the PR description (e.g., ADR-001)."
+                      echo "Please provide a valid ADR reference to justify these changes."
                       exit 1
                     fi
                   fi
