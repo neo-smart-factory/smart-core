@@ -1,15 +1,18 @@
-const { Address, TonClient } = require('@ton/ton');
+const { Address } = require('@ton/ton');
 const { mnemonicToPrivateKey } = require('@ton/crypto');
 const { WalletContractV4 } = require('@ton/ton');
+const { createRpcClient } = require('./smart-rpc-selector');
 require('dotenv').config();
 
 async function checkBalance() {
     try {
         console.log('🔍 Verificando saldo da wallet na Testnet...\n');
         
-        const client = new TonClient({
-            endpoint: 'https://testnet.toncenter.com/api/v2/jsonRPC'
-        });
+        // Usar Smart RPC Selector com fallback automático
+        const rpc = await createRpcClient(true); // true = testnet
+        const client = rpc.client;
+        
+        console.log(`🔌 Provider: ${rpc.name} (${rpc.latency}ms)\n`);
         
         const mnemonic = process.env.TON_DEPLOYER_MNEMONIC.split(' ');
         const keyPair = await mnemonicToPrivateKey(mnemonic);

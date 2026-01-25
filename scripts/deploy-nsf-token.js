@@ -36,13 +36,32 @@ async function main() {
     console.log("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n");
 
     try {
-        // 1. Setup Client
-        const apiKey = process.env.TON_API_URL || '';
-        const endpoint = apiKey
-            ? `https://toncenter.com/api/v2/jsonRPC?api_key=${apiKey}`
+    // 1. Setup Client
+    const isTestnet = process.env.TON_NETWORK === 'testnet';
+    
+    // Prioridade: OnFinality (Professional) > TonCenter (Public Fallback)
+    let endpoint;
+    let provider;
+    
+    // Tentar OnFinality primeiro (melhor performance)
+    const onfinalityEndpoint = isTestnet
+        ? process.env.TON_RPC_URL_ONFINALITY_TESTNET
+        : process.env.TON_RPC_URL_ONFINALITY_MAINNET;
+    
+    if (onfinalityEndpoint) {
+        endpoint = onfinalityEndpoint;
+        provider = `OnFinality ${isTestnet ? '(Testnet)' : '(Mainnet)'}`;
+    } else {
+        // Fallback para TonCenter
+        endpoint = isTestnet
+            ? 'https://testnet.toncenter.com/api/v2/jsonRPC'
             : 'https://toncenter.com/api/v2/jsonRPC';
+        provider = `TonCenter ${isTestnet ? '(Testnet)' : '(Mainnet)'} [Fallback]`;
+    }
         
-        console.log(`📡 Network: TON Mainnet ${apiKey ? '(API Key ✓)' : '(Public)'}\n`);
+        console.log(`📡 Network: ${isTestnet ? 'Testnet' : 'Mainnet'}`);
+        console.log(`🔌 Provider: ${provider}`);
+        console.log(`🌐 Endpoint: ${endpoint.substring(0, 60)}...\n`);
         
         const client = new TonClient({ endpoint, timeout: 30000 });
 
