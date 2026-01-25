@@ -190,27 +190,7 @@ slice hole_address() asm "b{00} PUSHSLICE";
     }
 
     ;; ------------------------------------------
-    ;; 3. Admin: Standard Mint (Legacy/Manual)
-    ;; ------------------------------------------
-    if (op == op::mint()) {
-        throw_unless(73, equal_slices(sender_address, admin_address));
-        slice to_address = in_msg_body~load_msg_addr();
-        int amount = in_msg_body~load_coins();
-        
-        throw_unless(error::max_supply_reached(), total_supply + amount <= max_supply);
-        
-        cell master_msg = in_msg_body~load_ref();
-        mint_tokens(to_address, jetton_wallet_code, amount, master_msg);
-        
-        total_supply += amount;
-        save_data(total_supply, admin_address, content, jetton_wallet_code,
-                  max_supply, mint_price, mint_amount, mint_enabled,
-                  bridge_minter, minters_dict);
-        return ();
-    }
-
-    ;; ------------------------------------------
-    ;; 4. Admin Management Functions
+    ;; 3. Admin Management Functions
     ;; ------------------------------------------
     
     ;; Change Admin
@@ -252,9 +232,24 @@ slice hole_address() asm "b{00} PUSHSLICE";
                   bridge_minter, minters_dict);
         return ();
     }
+    
+    ;; Reset Public Mint (Emergência - igual EVM)
+    if (op == op::reset_public_mint()) {
+        throw_unless(73, equal_slices(sender_address, admin_address));
+        slice user_address = in_msg_body~load_msg_addr();
+        
+        ;; Remove do dict de minters
+        int key = slice_hash(user_address);
+        minters_dict~udict_delete?(256, key);
+        
+        save_data(total_supply, admin_address, content, jetton_wallet_code,
+                  max_supply, mint_price, mint_amount, mint_enabled,
+                  bridge_minter, minters_dict);
+        return ();
+    }
 
     ;; ------------------------------------------
-    ;; 5. Withdraw Protocol Fees
+    ;; 4. Withdraw Protocol Fees
     ;; ------------------------------------------
     if (op == op::withdraw()) {
         throw_unless(73, equal_slices(sender_address, admin_address));
