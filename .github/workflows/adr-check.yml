@@ -9,10 +9,10 @@ jobs:
         runs-on: ubuntu-latest
         steps:
             - name: Check PR for ADR reference
+              env:
+                  PR_TITLE: ${{ github.event.pull_request.title }}
+                  PR_BODY: ${{ github.event.pull_request.body }}
               run: |
-                  PR_TITLE="${{ github.event.pull_request.title }}"
-                  PR_BODY="${{ github.event.pull_request.body }}"
-
                   # Verifica se o tipo de commit é feat ou refactor
                   if [[ $PR_TITLE =~ ^feat.* ]] || [[ $PR_TITLE =~ ^refactor.* ]]; then
                     echo "Feature or Refactor detected, checking for ADR reference..."
