@@ -1,7 +1,7 @@
 ;; █▄░█ █▀▀ █▀█   █▀ █▀▄▀█ ▄▀█ █▀█ ▀█▀
 ;; █░▀█ ██▄ █▄█   ▄█ █░▀░█ █▀█ █▀▄ ░█░
 ;;
-;; NΞØ SMART FACTORY V2 (v2.0.0 - STABLE)
+;; NΞØ SMART FACTORY V2 (v2.2.0 - MESSAGE FORMAT FIXED)
 ;; NΞØ PROTOCOL | TOKENIZE-SE
 ;;
 ;; Developed by: NEO Protocol (neo@neoprotocol.space)
@@ -23,25 +23,28 @@ int op::deploy_jetton() asm "0x61caf729 PUSHINT";
 int op::add_admin() asm "0x61caf72a PUSHINT";
 int op::remove_admin() asm "0x61caf72b PUSHINT";
 
-;; Storage structure (V2):
-;; admins_dict: Cell (HashmapE 256 1) - Dicionário de admins autorizados
+;; Versão para forçar novo code hash
+const int factory_version = 20250125;
+
+;; Storage structure (V2 - Simplified):
+;; admin_address: MsgAddress - Endereço do admin principal
 ;; jetton_minter_code: Cell - Código do contrato Master (NeoJettonMinter)
 ;; jetton_wallet_code: Cell - Código do contrato Wallet (NeoJettonWallet)
 ;; treasury_address: MsgAddress - Endereço da treasury do protocolo
 
-(cell, cell, cell, slice) load_data() inline {
+(slice, cell, cell, slice) load_data() inline {
     slice ds = get_data().begin_parse();
     return (
-        ds~load_dict(),     ;; admins_dict
+        ds~load_msg_addr(), ;; admin_address
         ds~load_ref(),      ;; jetton_minter_code
         ds~load_ref(),      ;; jetton_wallet_code
         ds~load_msg_addr()  ;; treasury_address
     );
 }
 
-() save_data(cell admins_dict, cell jetton_minter_code, cell jetton_wallet_code, slice treasury_address) impure inline {
+() save_data(slice admin_address, cell jetton_minter_code, cell jetton_wallet_code, slice treasury_address) impure inline {
     set_data(begin_cell()
-        .store_dict(admins_dict)
+        .store_slice(admin_address)
         .store_ref(jetton_minter_code)
         .store_ref(jetton_wallet_code)
         .store_slice(treasury_address)
@@ -49,49 +52,23 @@ int op::remove_admin() asm "0x61caf72b PUSHINT";
     );
 }
 
-;; Verifica se um endereço é admin
-int is_admin(cell admins_dict, slice address) inline {
-    (int wc, int addr_hash) = parse_std_addr(address);
-    
-    ;; Cria chave única: workchain (8 bits) + hash (256 bits) = 264 bits
-    ;; Mas vamos usar apenas hash para simplificar (256 bits)
-    (slice value, int found) = admins_dict.udict_get?(256, addr_hash);
-    return found;
-}
-
-;; Adiciona um admin ao dicionário
-cell add_admin_to_dict(cell admins_dict, slice new_admin) inline {
-    (int wc, int addr_hash) = parse_std_addr(new_admin);
-    
-    ;; Store flag = 1 (admin ativo)
-    slice flag_value = begin_cell().store_int(1, 8).end_cell().begin_parse();
-    admins_dict~udict_set(256, addr_hash, flag_value);
-    
-    return admins_dict;
-}
-
-;; Remove um admin do dicionário
-cell remove_admin_from_dict(cell admins_dict, slice admin_to_remove) inline {
-    (int wc, int addr_hash) = parse_std_addr(admin_to_remove);
-    
-    ;; Delete entry
-    admins_dict~udict_delete?(256, addr_hash);
-    
-    return admins_dict;
+;; Verifica se um endereço é admin (simplificado - single admin)
+int is_admin(slice admin_address, slice sender) inline {
+    return equal_slices(admin_address, sender);
 }
 
 ;; Calcula o StateInit do novo Jetton Minter (Compatível com NeoJettonMinter V2)
 cell calculate_jetton_minter_state_init(slice owner_address, cell content, cell jetton_minter_code, cell jetton_wallet_code, 
                                         int max_supply, int mint_price, int mint_amount) inline {
     
-    ;; Extra Data (V2 Features)
+    ;; Extra Data (V2 Features) 
     cell extra_data = begin_cell()
         .store_coins(max_supply)
         .store_coins(mint_price)
         .store_coins(mint_amount)
         .store_int(0, 1)          ;; public_mint_enabled (padrão false)
         .store_slice(owner_address) ;; bridge_minter (inicialmente o owner)
-        .store_dict(new_dict())   ;; minters_dict
+        .store_uint(0, 1)         ;; empty dict (bit 0 = no dict)
         .end_cell();
 
     ;; Data inicial do Minter: total_supply=0, admin=owner, content, wallet_code, extra_ref
@@ -132,15 +109,15 @@ slice calculate_jetton_minter_address(cell state_init) inline {
     int op = in_msg_body~load_uint(32);
     int query_id = in_msg_body~load_uint(64);
     
-    (cell admins_dict, cell jetton_minter_code, cell jetton_wallet_code, slice treasury_address) = load_data();
+    (slice admin_address, cell jetton_minter_code, cell jetton_wallet_code, slice treasury_address) = load_data();
 
     ;; Verifica se sender é admin
-    int sender_is_admin = is_admin(admins_dict, sender_address);
+    int sender_is_admin = is_admin(admin_address, sender_address);
 
     ;; Deploy de novo Jetton
     if (op == op::deploy_jetton()) {
-        ;; Validação: valor mínimo de deploy (0.1 TON)
-        int min_deploy_value = 100000000; ;; 0.1 TON
+        ;; Validação: valor mínimo de deploy (0.4 TON) - V2.2.0 MSG FIX
+        int min_deploy_value = 400000000; ;; 0.4 TON
         throw_unless(75, msg_value >= min_deploy_value); ;; Error: insufficient deploy funds
         
         slice owner_address = in_msg_body~load_msg_addr();
@@ -160,50 +137,28 @@ slice calculate_jetton_minter_address(cell state_init) inline {
         
         throw_unless(76, jetton_deploy_value > 0); ;; Error: negative jetton value
         
-        ;; Mensagem de deploy
+        ;; Mensagem de deploy (formato TON correto)
         var msg = begin_cell()
-            .store_uint(0x18, 6)
-            .store_slice(jetton_address)
-            .store_coins(jetton_deploy_value)
-            .store_uint(4 + 2, 1 + 4 + 4 + 64 + 32 + 1 + 1)  ;; FIX: init_present + body_present flags
-            .store_ref(state_init)
-            .store_ref(begin_cell().end_cell());  ;; Empty body
+            .store_uint(0x18, 6)                ;; flags: bounce=true, ihr_disabled=true
+            .store_slice(jetton_address)        ;; destination
+            .store_coins(jetton_deploy_value)   ;; value
+            .store_uint(0, 1 + 4 + 4 + 64 + 32) ;; extra_currencies, ihr_fee, fwd_fee, created_lt, created_at
+            .store_uint(1, 1)                   ;; init:Just (state_init present)
+            .store_uint(1, 1)                   ;; body:Just (body present)
+            .store_ref(state_init)              ;; state_init as ref
+            .store_ref(begin_cell().end_cell()); ;; empty body as ref
         
-        send_raw_message(msg.end_cell(), 1); ;; pay fees separately
+        send_raw_message(msg.end_cell(), 1);    ;; pay fees separately
         return ();
     }
     
     ;; Admin-only operations
-    ;; Adicionar novo admin
-    if (op == op::add_admin()) {
-        throw_unless(73, sender_is_admin); ;; Apenas admins podem adicionar
-        
-        slice new_admin = in_msg_body~load_msg_addr();
-        admins_dict = add_admin_to_dict(admins_dict, new_admin);
-        
-        save_data(admins_dict, jetton_minter_code, jetton_wallet_code, treasury_address);
-        return ();
-    }
-    
-    ;; Remover admin
-    if (op == op::remove_admin()) {
-        throw_unless(73, sender_is_admin); ;; Apenas admins podem remover
-        
-        slice admin_to_remove = in_msg_body~load_msg_addr();
-        admins_dict = remove_admin_from_dict(admins_dict, admin_to_remove);
-        
-        save_data(admins_dict, jetton_minter_code, jetton_wallet_code, treasury_address);
-        return ();
-    }
-
-    ;; Trocar admin (compatibilidade, mas agora adiciona ao dict)
+    ;; Trocar admin
     if (op == op::change_admin()) {
         throw_unless(73, sender_is_admin);
         
         slice new_admin = in_msg_body~load_msg_addr();
-        admins_dict = add_admin_to_dict(admins_dict, new_admin);
-        
-        save_data(admins_dict, jetton_minter_code, jetton_wallet_code, treasury_address);
+        save_data(new_admin, jetton_minter_code, jetton_wallet_code, treasury_address);
         return ();
     }
 
@@ -212,6 +167,12 @@ slice calculate_jetton_minter_address(cell state_init) inline {
 
 ;; Get method: retorna se um endereço é admin
 int get_is_admin(slice address) method_id {
-    (cell admins_dict, _, _, _) = load_data();
-    return is_admin(admins_dict, address);
+    (slice admin_address, _, _, _) = load_data();
+    return is_admin(admin_address, address);
+}
+
+;; Get method: retorna o endereço do admin
+slice get_admin() method_id {
+    (slice admin_address, _, _, _) = load_data();
+    return admin_address;
 }

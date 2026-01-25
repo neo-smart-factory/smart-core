@@ -136,58 +136,11 @@ async function main() {
         console.log("   ✓ Minter");
         console.log("   ✓ Wallet");
 
-        // 4. Build Admin Dictionary
-        console.log("\n🔐 Configuring admins...");
+        // 4. Configure Admin (Simplified - single admin)
+        console.log("\n🔐 Configuring admin...");
         
-        let adminsDict = null; // Empty dict (will be built using dictionary builder)
-        const dictBuilder = beginCell();
-
-        // For simplicity, we'll build the dict manually
-        // TON dicts are complex, so we'll use a helper approach
-        
-        // Parse all admin addresses
-        const adminAddressList = ADMIN_ADDRESSES.filter(a => a && a.length > 0).map(addr => {
-            try {
-                return Address.parse(addr);
-            } catch (e) {
-                console.warn(`⚠️  Invalid admin address: ${addr}`);
-                return null;
-            }
-        }).filter(a => a !== null);
-
-        if (adminAddressList.length === 0) {
-            throw new Error("No valid admin addresses configured!");
-        }
-
-        console.log(`   Found ${adminAddressList.length} admin(s):`);
-        adminAddressList.forEach((addr, i) => {
-            console.log(`   ${i + 1}. ${addr.toString()}`);
-        });
-
-        // Build admins dictionary
-        // We'll use a simple approach: store as dict<int, slice>
-        // Key: address hash (256 bits), Value: flag (1 = admin)
-        
-        // Helper to build dict
-        const buildAdminsDict = (addresses) => {
-            let dict = null;
-            
-            // For each address, add to dict
-            // This is a simplified version - in production, use proper dict building
-            // For now, we'll store as a single ref with all addresses
-            
-            // Alternative: Store in a simple format for prototype
-            const builder = beginCell();
-            builder.storeUint(addresses.length, 8); // Count
-            
-            addresses.forEach(addr => {
-                builder.storeAddress(addr);
-            });
-            
-            return builder.endCell();
-        };
-
-        const adminsCell = buildAdminsDict(adminAddressList);
+        const adminAddress = activeWallet.address; // Deployer is admin
+        console.log(`   Admin: ${adminAddress.toString()}`);
 
         // 5. Treasury
         const treasuryEnv = process.env.VITE_PROTOCOL_TREASURY_ADDRESS;
@@ -198,9 +151,9 @@ async function main() {
         const treasuryAddress = Address.parse(treasuryEnv);
         console.log(`🏦 Treasury: ${treasuryAddress.toString()}`);
 
-        // 6. Build Factory Data
+        // 6. Build Factory Data (Simplified)
         const dataCell = beginCell()
-            .storeRef(adminsCell)           // admins_dict (as cell for now)
+            .storeAddress(adminAddress)     // admin_address
             .storeRef(minterCode)           // jetton_minter_code
             .storeRef(walletCode)           // jetton_wallet_code
             .storeAddress(treasuryAddress)  // treasury_address
@@ -286,7 +239,7 @@ async function main() {
             console.log("\n✨ DEPLOYMENT SUCCESSFUL! ✨\n");
             console.log("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
             console.log(`Factory:  ${factoryAddress.toString()}`);
-            console.log(`Admins:   ${adminAddressList.length} configured`);
+            console.log(`Admin:    ${adminAddress.toString()}`);
             console.log(`Treasury: ${treasuryAddress.toString()}`);
             console.log("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
             console.log(`\n🔗 View: ${scanUrl}\n`);

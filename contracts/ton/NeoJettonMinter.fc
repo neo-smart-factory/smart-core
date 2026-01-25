@@ -51,17 +51,18 @@ slice hole_address() asm "b{00} PUSHSLICE";
             extra~load_coins(),     ;; mint_amount
             extra~load_int(1),      ;; public_mint_enabled
             extra~load_msg_addr(),  ;; bridge_minter
-            extra~load_dict()       ;; minters_dict
+            extra~load_dict()       ;; minters_dict (Maybe cell)
         );
     }
     
     ;; Default/Init state safe fallback
+    cell empty_dict = begin_cell().end_cell(); ;; empty cell as dict
     return (
         total_supply, admin_address, content, jetton_wallet_code,
         1000000000000000000000000000, ;; 1B default max
         0, 0, 0,                      ;; price, amount, enabled=false
         hole_address(),               ;; bridge_minter empty
-        new_dict()                    ;; empty dict
+        empty_dict                    ;; empty dict
     );
 }
 

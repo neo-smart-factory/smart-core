@@ -16,6 +16,7 @@ int op::public_mint() asm "0x4f3c7069 PUSHINT";
 int op::set_bridge_minter() asm "0x2a933f78 PUSHINT";
 int op::bridge_mint() asm "0x69680373 PUSHINT";
 int op::toggle_public_mint() asm "0x3ac9996d PUSHINT";
+int op::reset_public_mint() asm "0x5d7e2c8a PUSHINT";
 int op::withdraw() asm "0x48087794 PUSHINT";
 
 ;; Exceptions & Errors

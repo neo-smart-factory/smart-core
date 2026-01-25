@@ -25,7 +25,7 @@ const TOKEN_CONFIG = {
     mintAmount: toNano('1000')        // 1000 tokens por mint
 };
 
-const DEPLOY_AMOUNT = toNano('0.5'); // Mais gas para o deploy do Jetton
+const DEPLOY_AMOUNT = toNano('0.9'); // 0.4 TON min + 0.5 TON para o contrato
 const WORKCHAIN = 0;
 
 // Op-code para deploy_jetton
@@ -116,15 +116,24 @@ async function main() {
 
         const ownerAddress = wallet.address; // Token owner = deployer
 
+        // Build deploy message - match Factory expectations exactly
+        const queryId = Math.floor(Date.now() / 1000); // Unix timestamp (segundos)
+        
         const deployMessage = beginCell()
-            .storeUint(OP_DEPLOY_JETTON, 32)  // op::deploy_jetton
-            .storeUint(Date.now(), 64)        // query_id
-            .storeAddress(ownerAddress)       // owner_address
-            .storeRef(contentCell)            // content
-            .storeCoins(TOKEN_CONFIG.maxSupply)   // max_supply
-            .storeCoins(TOKEN_CONFIG.mintPrice)   // mint_price
-            .storeCoins(TOKEN_CONFIG.mintAmount)  // mint_amount
+            .storeUint(OP_DEPLOY_JETTON, 32)           // op::deploy_jetton
+            .storeUint(queryId, 64)                    // query_id
+            .storeAddress(ownerAddress)                // owner_address
+            .storeRef(contentCell)                     // content
+            .storeCoins(TOKEN_CONFIG.maxSupply)        // max_supply
+            .storeCoins(TOKEN_CONFIG.mintPrice)        // mint_price
+            .storeCoins(TOKEN_CONFIG.mintAmount)       // mint_amount
             .endCell();
+        
+        // Debug: verificar tamanho da mensagem
+        console.log(`📊 Message Stats:`);
+        console.log(`   Bits: ${deployMessage.bits.length}`);
+        console.log(`   Refs: ${deployMessage.refs.length}`);
+        console.log(`   Query ID: ${queryId}\n`);
 
         // 6. Send Transaction
         console.log("⏳ Sending transaction...");
