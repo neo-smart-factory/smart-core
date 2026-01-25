@@ -1,7 +1,7 @@
 ;; █▄░█ █▀▀ █▀█   █▀ █▀▄▀█ ▄▀█ █▀█ ▀█▀
 ;; █░▀█ ██▄ █▄█   ▄█ █░▀░█ █▀█ █▀▄ ░█░
 ;;
-;; NΞØ SMART FACTORY V2 (v2.2.0 - MESSAGE FORMAT FIXED)
+;; NΞØ SMART FACTORY V2 (v2.3.0 - CELL UNDERFLOW FIXED)
 ;; NΞØ PROTOCOL | TOKENIZE-SE
 ;;
 ;; Developed by: NEO Protocol (neo@neoprotocol.space)
@@ -68,7 +68,7 @@ cell calculate_jetton_minter_state_init(slice owner_address, cell content, cell 
         .store_coins(mint_amount)
         .store_int(0, 1)          ;; public_mint_enabled (padrão false)
         .store_slice(owner_address) ;; bridge_minter (inicialmente o owner)
-        .store_uint(0, 1)         ;; empty dict (bit 0 = no dict)
+        .store_dict(begin_cell().end_cell())  ;; minters_dict: empty cell ref (fix for Exit Code 9)
         .end_cell();
 
     ;; Data inicial do Minter: total_supply=0, admin=owner, content, wallet_code, extra_ref
