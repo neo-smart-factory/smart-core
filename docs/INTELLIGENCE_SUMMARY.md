@@ -341,7 +341,5 @@ Projeto bem fundamentado tecnicamente. Documentação consolidada fornece base s
 **Prioridade:** Obter TON testnet e executar deploy completo.
 
 ---
-
-**Criado:** 25 de Janeiro de 2026  
-**Autor:** NEØ Protocol Development Team  
-**Revisão:** Pendente após testes testnet
+**v0.5.3-neural-core — NEØ PROTOCOL**  
+*Expand until silence becomes structure.*

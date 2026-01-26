@@ -30,18 +30,23 @@ Tact automatically generates TypeScript wrappers and handles child contract depl
 
 ---
 
-## 🚀 How to Compile
+## 🚀 How to Compile & Test
 
-1. Install the Tact compiler:
+The project is pre-configured with the Tact compiler and Sandbox testing tools.
 
+1. Install all dependencies from the project root:
    ```bash
-   npm install @tact-lang/compiler
+   npm install
    ```
 
-2. Run the compilation:
-
+2. Compile using the global configuration:
    ```bash
-   npx tact contracts/ton/tact/JettonFactory.tact
+   npm run compile:ton
+   ```
+
+3. Run automated security tests:
+   ```bash
+   npm run test:ton
    ```
 
 **Note:** This structure is protected by NEØ context. The technical migration was designed to maintain compatibility with the rituals and patterns established by Mellø.

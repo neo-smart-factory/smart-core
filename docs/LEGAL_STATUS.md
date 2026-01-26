@@ -35,6 +35,5 @@ Yes. Under the MIT License, you can use, copy, modify, and distribute the code f
 All core documentation released on 2026-01-22 has its integrity protected by SHA-256 hashes. Any modification to the original docs will result in a mismatch with the registered hash, ensuring accountability.
 
 ---
-
-**NΞØ SMART FACTORY**  
-*Infrastructure with Institutional Responsibility.*
+**v0.5.3-neural-core — NEØ PROTOCOL**  
+*Expand until silence becomes structure.*

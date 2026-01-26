@@ -1,64 +1,78 @@
-# 🔥 NΞØ SMART FACTORY — Core V2
+# 🔥 NΞØ SMART FACTORY — Neural Core V2
 
-> **Foundation for Multichain Asset Generation**  
-> Version: v0.5.3 (Multichain Foundation)
+> **Unified Foundation for Multichain Asset Generation & Protocol Security**  
+> Version: v0.5.3-neural-core (Phase Transition)
 
 ## 🎯 Overview
 
-This is the core engine of the NΞØ SMART FACTORY. It contains the smart contracts, deploy scripts, and security logic required to tokenize next-generation assets across Base, Polygon, and TON.
+This is the core engine of the NΞØ SMART FACTORY. It contains the smart contracts, deploy scripts, and security logic required to tokenize next-generation assets across **Base, Polygon, and TON**.
 
 ## 🚀 Key Features
 
-- **NeoTokenV2.sol**: A gasless (ERC20Permit), burnable, and bridgeable token implementation.
-- **Multichain Ready**: Built-in support for secure minting through authorized bridges.
-- **Ownable2Step**: Enhanced security for contract ownership transfers.
-- **Account Abstraction Ready**: Optimized for modern smart wallets and paymasters.
+### 🛡️ Unified Security (Circuit Breaker)
 
-## 🛠 Usage
+- **Unified Pausable Logic**: Standardized emergency pause (Circuit Breaker) across EVM (Solidity) and TON (Tact).
+- **Guardian Role**: Dedicated security role to pause/unpause contracts without full ownership transfer.
+- **Dynamic Governance**: Configuration for protocol fees and treasury addresses without redeployment.
+
+### 💎 TON Architecture (Tact)
+
+- **Tact Migration**: Full migration from FunC to Tact for improved safety, readability, and performance.
+- **TEP-74 Compliant**: Complete Jetton implementation with enhanced error handling (`bounced` messages).
+- **Modular Design**: Separated constants, messages, and contract logic for professional auditability.
+
+### 🌐 EVM Core (Solidity)
+
+- **NeoTokenV2.sol**: Gasless (ERC20Permit), burnable, and bridgeable token implementation.
+- **NeoSmartFactory**: Multi-protocol factory for ERC20, ERC721, Vesting, and Rewards.
+
+## 🛠 Usage & Package Management
+
+This repository uses a private scope for internal components via GitHub Packages.
 
 ### Prerequisites
 
 - Node.js & NPM
-- Hardhat
+- GITHUB_TOKEN configured in your environment for `@neo-smart-token-factory` scope.
 
-### Installation
+### Installation & Auth
 
+The project includes an `.npmrc` configured for our GitHub Registry.
 ```bash
-npm install @neo-smart/core
+# Export your token (if installing from registry)
+export GITHUB_TOKEN=your_token_here
+npm install
 ```
 
-### Compile
+### EVM Commands (Hardhat)
 
 ```bash
 npx hardhat compile
-```
-
-### Deploy (Base Example)
-
-```bash
+npx hardhat test
 npm run deploy:base
 ```
 
-## 🤝 Community & Support
+### TON Commands (Tact)
 
-- **Docs**: [docs.neosmart.factory](https://github.com/neo-smart-token-factory/docs)
-- **Twitter**: [@neosmart_factory](https://twitter.com/neosmart_factory)
-- **Email**: team@neosmart.factory
+```bash
+# Compile Tact contracts
+npm run compile:ton
 
-## 📜 Attribution & Licensing
+# Run TON Sandbox tests
+npm run test:ton
+```
 
-This project is licensed under the **MIT License**.
+## ⚖️ Authorship & Legal Status
 
-While you are free to fork and use this code, we require **Attribution** to NΞØ Protocol for all derivative works.
+- **Architecture & Lead**: Eurycles Ramos Neto / NODE NEØ
+- **Proof of Authorship**: Technical concepts formally sealed and timestamped via ICP-Brasil and Blockchain (2026-01-22).
+- **IP Protection**: All original architecture and code are protected IP of Eurycles Ramos Neto.
 
-**Derived projects must:**
+## 📜 Licensing
 
-1. Keep the original header in the smart contracts.
-2. Reference "Powered by NΞØ SMART FACTORY" in the project description or documentation.
-
-## 📄 License
-
-Documentation is licensed under CC BY 4.0 (Creative Commons). Smart contract code referenced here is licensed under MIT.
+- **Smart Contracts**: [MIT License](./LICENSE)
+- **Documentation**: [CC BY 4.0 (Creative Commons)](./docs/LEGAL_STATUS.md)
 
 ---
-*Developed with ❤️ by NΞØ Protocol for the future of decentralized economies.*
+**v0.5.3-neural-core — NEØ PROTOCOL**  
+*Expand until silence becomes structure.*

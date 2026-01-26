@@ -307,5 +307,5 @@ Para garantir o alinhamento em todos os repositórios da organização `neo-smar
 3. **Execute o Cleanup**: Siga o checklist rigorosamente
 
 ---
-
-*NΞØ Smart Token Factory — Nomenclatura Oficial v1.1*
+**v0.5.3-neural-core — NEØ PROTOCOL**  
+*Expand until silence becomes structure.*

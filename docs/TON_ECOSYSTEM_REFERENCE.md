@@ -4,27 +4,32 @@
 
 ### 1. Chainstack - TON Tooling
 
-**Fonte:** https://docs.chainstack.com/docs/ton-tooling
+**Fonte:** <https://docs.chainstack.com/docs/ton-tooling>
 
 #### Bibliotecas Disponíveis para TON
 
 **JavaScript/TypeScript:**
+
 - **@ton/ton** (ton.js) - Biblioteca oficial (que estamos usando)
 - **tonweb** - Alternativa popular
 
 **Python:**
+
 - **tonsdk** - SDK oficial Python
 - **pytonlib** - Biblioteca low-level
 - **pytoniq** - Biblioteca moderna
 
 **Go:**
+
 - **tonutils-go** - SDK Go oficial
 - **tongo** - Biblioteca da Tonkeeper
 
 **Rust:**
+
 - **tonlib-rs** - Bindings Rust para tonlib
 
 **.NET:**
+
 - **TonSdk.NET** - SDK para C#
 
 #### Blueprint SDK (Recomendado)
@@ -36,6 +41,7 @@ npm create ton@latest
 ```
 
 **Recursos:**
+
 - Desenvolvimento em TACT (linguagem de contratos)
 - Testes automatizados
 - Deploy simplificado
@@ -61,6 +67,7 @@ export const config: Config = {
 ### 2. TON APIs Disponíveis
 
 #### API v2 (HTTP JSON-RPC)
+
 - Formato JSON-RPC tradicional
 - Métodos para blockchain queries
 - Deploy de contratos
@@ -72,17 +79,19 @@ https://ton-testnet.core.chainstack.com/{KEY}/api/v2/jsonRPC
 ```
 
 #### API v3 (Indexer)
+
 - API REST indexada
 - Consultas otimizadas
 - Histórico de transações
 - NFT e Jetton queries
 
 **Endpoint Chainstack v3:**
-```
-https://ton-testnet.core.chainstack.com/{KEY}/api/v3
-```
+
+<https://ton-testnet.core.chainstack.com/{KEY}/api/v3>
+
 
 **Métodos úteis v3:**
+
 - `/jetton/masters` - Listar jettons
 - `/jetton/wallets` - Wallets de jettons
 - `/jetton/transfers` - Histórico de transferências
