@@ -4,9 +4,11 @@
 > Version: v0.5.3 (Multichain Foundation)
 
 ## 🎯 Overview
-This is the core engine of the NΞØ SMART FACTORY. It contains the smart contracts, deploy scripts, and security logic required to forge next-generation assets across Base, Polygon, and Arbitrum.
+
+This is the core engine of the NΞØ SMART FACTORY. It contains the smart contracts, deploy scripts, and security logic required to tokenize next-generation assets across Base, Polygon, and TON.
 
 ## 🚀 Key Features
+
 - **NeoTokenV2.sol**: A gasless (ERC20Permit), burnable, and bridgeable token implementation.
 - **Multichain Ready**: Built-in support for secure minting through authorized bridges.
 - **Ownable2Step**: Enhanced security for contract ownership transfers.

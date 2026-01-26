@@ -1,6 +1,7 @@
 // █▄░█ █▀▀ █▀█   █▀ █▀▄▀█ ▄▀█ █▀█ ▀█▀
 // █░▀█ ██▄ █▄█   ▄█ █░▀░█ █▀█ █▀▄ ░█░
 // NΞØ PROTOCOL | NΞØ SMART FACTORY
+// Author: Eurycles Ramos Neto / NODE NEØ
 
 import "@stdlib/ownable";
 import "@stdlib/deploy";

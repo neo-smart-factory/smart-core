@@ -5,9 +5,10 @@ pragma solidity ^0.8.20;
  *  █▄░█ █▀▀ █▀█   █▀ █▀▄▀█ ▄▀█ █▀█ ▀█▀
  *  █░▀█ ██▄ █▄█   ▄█ █░▀░█ █▀█ █▀▄ ░█░
  *
- *  NEO SMART FACTORY v0.5.3 - PROTOCOL | TOKENIZE
+ *  NΞØ SMART FACTORY v0.5.3 - PROTOCOL | TOKENIZE
+ *  Author: Eurycles Ramos Neto / NODE NEØ
  *
- *  Licensed under MIT. Attribution to NEO Protocol is required for derivatives.
+ *  Licensed under MIT. Attribution to NΞØ Protocol is required for derivatives.
  *  Any fork or usage of this factory for financial protocols must reference:
  *  "Powered by NEO SMART FACTORY"
  */

@@ -1,6 +1,7 @@
 // █▄░█ █▀▀ █▀█   █▀ █▀▄▀█ ▄▀█ █▀█ ▀█▀
 // █░▀█ ██▄ █▄█   ▄█ █░▀░█ █▀█ █▀▄ ░█░
 // NΞØ PROTOCOL | NΞØ TOKEN MASTER
+// Author: Eurycles Ramos Neto / NODE NEØ
 
 import "@stdlib/ownable";
 import "@stdlib/deploy";

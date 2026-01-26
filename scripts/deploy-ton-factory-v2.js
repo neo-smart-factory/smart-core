@@ -134,17 +134,17 @@ async function main() {
 
         console.log("📦 Loading contracts...");
 
-        const loadCell = (filename) => {
-            const filePath = path.join(buildPath, filename);
+        const loadCell = (name, type) => {
+            const filePath = path.join(buildPath, type, name);
             if (!fs.existsSync(filePath)) {
-                throw new Error(`Contract file not found: ${filename}`);
+                throw new Error(`Contract file not found: ${name} in ${type}`);
             }
             return Cell.fromBoc(fs.readFileSync(filePath))[0];
         };
 
-        const factoryCode = loadCell('NeoJettonFactoryV2.cell');
-        const minterCode = loadCell('NeoJettonMinter.cell');
-        const walletCode = loadCell('NeoJettonWallet.cell');
+        const factoryCode = loadCell('factory_NeoJettonFactory.code.boc', 'factory');
+        const minterCode = loadCell('minter_NeoJettonMinter.code.boc', 'minter');
+        const walletCode = loadCell('wallet_NeoJettonWallet.code.boc', 'wallet');
 
         console.log("   ✓ Factory (V2)");
         console.log("   ✓ Minter");

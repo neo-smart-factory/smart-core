@@ -1,6 +1,7 @@
 // █▄░█ █▀▀ █▀█   █▀ █▀▄▀█ ▄▀█ █▀█ ▀█▀
 // █░▀█ ██▄ █▄█   ▄█ █░▀░█ █▀█ █▀▄ ░█░
 // NΞØ PROTOCOL | NΞØ TOKEN WALLET
+// Author: Eurycles Ramos Neto / NODE NEØ
 
 import "./messages";
 import "./constants";
