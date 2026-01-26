@@ -23,7 +23,7 @@ const WORKCHAIN = 0;
 
 // Configure MULTIPLE ADMINS
 // Option 1: Read from .env (recommended)
-const ADMIN_ADDRESSES_FROM_ENV = process.env.FACTORY_ADMINS 
+const ADMIN_ADDRESSES_FROM_ENV = process.env.FACTORY_ADMINS
     ? process.env.FACTORY_ADMINS.split(',').map(a => a.trim()).filter(a => a.length > 0)
     : [];
 
@@ -36,8 +36,8 @@ const ADMIN_ADDRESSES_HARDCODED = [
 ];
 
 // Use .env if configured, otherwise fallback to hardcoded
-const ADMIN_ADDRESSES = ADMIN_ADDRESSES_FROM_ENV.length > 0 
-    ? ADMIN_ADDRESSES_FROM_ENV 
+const ADMIN_ADDRESSES = ADMIN_ADDRESSES_FROM_ENV.length > 0
+    ? ADMIN_ADDRESSES_FROM_ENV
     : ADMIN_ADDRESSES_HARDCODED;
 
 async function main() {
@@ -46,23 +46,23 @@ async function main() {
     try {
         // 1. Setup Client
         const isTestnet = process.env.TON_NETWORK === 'testnet';
-        
+
         // Prioridade: OnFinality (Professional) > Chainstack > TonCenter (Public Fallback)
         let endpoint;
         let provider;
-        
+
         const endpoints = [
-            { 
-                url: process.env.TON_RPC_URL_ONFINALITY_TESTNET, 
-                name: 'OnFinality (Testnet)' 
+            {
+                url: process.env.TON_RPC_URL_ONFINALITY_TESTNET,
+                name: 'OnFinality (Testnet)'
             },
-            { 
-                url: process.env.TON_RPC_URL_CHAINSTACK_TESTNET, 
-                name: 'Chainstack (Testnet)' 
+            {
+                url: process.env.TON_RPC_URL_CHAINSTACK_TESTNET,
+                name: 'Chainstack (Testnet)'
             },
-            { 
-                url: 'https://testnet.toncenter.com/api/v2/jsonRPC', 
-                name: 'TonCenter (Testnet) [Public]' 
+            {
+                url: 'https://testnet.toncenter.com/api/v2/jsonRPC',
+                name: 'TonCenter (Testnet) [Public]'
             }
         ].filter(e => e.url);
 
@@ -86,25 +86,25 @@ async function main() {
         if (!client) {
             throw new Error("No operational RPC providers found. Check your .env and internet connection.");
         }
-        
+
         console.log(`🌐 Final Endpoint: ${endpoint.substring(0, 70)}...`);
 
         // 2. Setup Wallet
         let keyPair;
-        
+
         // Try private key first, then mnemonic
         if (process.env.TON_DEPLOYER_PRIVATE_KEY) {
             const privateKeyHex = process.env.TON_DEPLOYER_PRIVATE_KEY.replace(/^0x/, '');
             const secretKey = Buffer.from(privateKeyHex, 'hex');
-            
+
             if (secretKey.length !== 64) {
                 throw new Error("Invalid TON_DEPLOYER_PRIVATE_KEY (must be 64 bytes hex)");
             }
-            
+
             const publicKey = secretKey.slice(32);
             keyPair = { publicKey, secretKey };
             console.log("🔑 Using private key for deployment\n");
-            
+
         } else {
             const seed = process.env.TON_DEPLOYER_MNEMONIC;
             if (!seed || seed.trim().split(/\s+/).length < 12) {
@@ -115,12 +115,12 @@ async function main() {
             keyPair = await mnemonicToPrivateKey(mnemonics);
             console.log("🔑 Using mnemonic for deployment\n");
         }
-        
+
         const publicKey = keyPair.publicKey;
 
         // Use v5r1 directly (já confirmado anteriormente)
         const activeWallet = WalletContractV5R1.create({ workchain: WORKCHAIN, publicKey });
-        
+
         // Get balance once
         let maxBalance;
         try {
@@ -165,7 +165,7 @@ async function main() {
 
         // 4. Configure Admin (Simplified - single admin)
         console.log("\n🔐 Configuring admin...");
-        
+
         const adminAddress = activeWallet.address; // Deployer is admin
         console.log(`   Admin: ${adminAddress.toString()}`);
 
