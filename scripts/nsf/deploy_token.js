@@ -21,6 +21,11 @@ async function main() {
   if (!INITIAL_DISTRIBUTOR || INITIAL_DISTRIBUTOR === "") {
     throw new Error("❌ NSF_INITIAL_DISTRIBUTOR not set in .env file");
   }
+  
+  // Validate address format
+  if (!hre.ethers.isAddress(INITIAL_DISTRIBUTOR)) {
+    throw new Error("❌ NSF_INITIAL_DISTRIBUTOR is not a valid Ethereum address");
+  }
 
   console.log("Configuration:");
   console.log("- Network:", hre.network.name);

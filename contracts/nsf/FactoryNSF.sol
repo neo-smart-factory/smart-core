@@ -852,12 +852,13 @@ contract EmergencyGuardian is AccessControl {
      * @param reason Explanation for unpause
      * @dev Two paths to unpause:
      *      1. Timelock can unpause anytime (governance)
-     *      2. Anyone can unpause after 48 hours (auto-unpause)
+     *      2. ANYONE can unpause after 48 hours (truly permissionless auto-unpause)
      * 
      * AUTO-UNPAUSE RATIONALE:
      * - Forces active monitoring (can't pause and forget)
      * - Prevents indefinite pause abuse
-     * - Permissionless execution after delay (decentralized)
+     * - Permissionless execution after delay (fully decentralized)
+     * - No role required after delay period (anyone can call)
      */
     function unpause(string calldata reason) external {
         require(systemPaused, "System not paused");
@@ -869,7 +870,7 @@ contract EmergencyGuardian is AccessControl {
         if (hasRole(TIMELOCK_ROLE, msg.sender)) {
             canUnpause = true;
         }
-        // Path 2: Anyone can unpause after auto-unpause delay
+        // Path 2: ANYONE can unpause after auto-unpause delay (permissionless)
         else if (block.timestamp >= pausedAt + AUTO_UNPAUSE_DELAY) {
             canUnpause = true;
         }
