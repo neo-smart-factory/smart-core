@@ -47,34 +47,47 @@ async function main() {
         // 1. Setup Client
         const isTestnet = process.env.TON_NETWORK === 'testnet';
         
-        // Prioridade: OnFinality (Professional) > TonCenter (Public Fallback)
+        // Prioridade: OnFinality (Professional) > Chainstack > TonCenter (Public Fallback)
         let endpoint;
         let provider;
         
-        // Tentar OnFinality primeiro (melhor performance)
-        const onfinalityEndpoint = isTestnet
-            ? process.env.TON_RPC_URL_ONFINALITY_TESTNET
-            : process.env.TON_RPC_URL_ONFINALITY_MAINNET;
-        
-        if (onfinalityEndpoint) {
-            endpoint = onfinalityEndpoint;
-            provider = `OnFinality ${isTestnet ? '(Testnet)' : '(Mainnet)'}`;
-        } else {
-            // Fallback para TonCenter
-            endpoint = isTestnet
-                ? 'https://testnet.toncenter.com/api/v2/jsonRPC'
-                : 'https://toncenter.com/api/v2/jsonRPC';
-            provider = `TonCenter ${isTestnet ? '(Testnet)' : '(Mainnet)'} [Fallback]`;
+        const endpoints = [
+            { 
+                url: process.env.TON_RPC_URL_ONFINALITY_TESTNET, 
+                name: 'OnFinality (Testnet)' 
+            },
+            { 
+                url: process.env.TON_RPC_URL_CHAINSTACK_TESTNET, 
+                name: 'Chainstack (Testnet)' 
+            },
+            { 
+                url: 'https://testnet.toncenter.com/api/v2/jsonRPC', 
+                name: 'TonCenter (Testnet) [Public]' 
+            }
+        ].filter(e => e.url);
+
+        let client;
+        for (const e of endpoints) {
+            try {
+                console.log(`📡 Checking provider: ${e.name}...`);
+                const tempClient = new TonClient({ endpoint: e.url, timeout: 10000 });
+                // Test simple call
+                await tempClient.getMasterchainInfo();
+                endpoint = e.url;
+                provider = e.name;
+                client = tempClient;
+                console.log(`✅ Using ${e.name}`);
+                break;
+            } catch (err) {
+                console.warn(`⚠️ Provider ${e.name} failed: ${err.message}`);
+            }
+        }
+
+        if (!client) {
+            throw new Error("No operational RPC providers found. Check your .env and internet connection.");
         }
         
-        console.log(`📡 Network: ${isTestnet ? 'Testnet' : 'Mainnet'}`);
-        console.log(`🔌 Provider: ${provider}`);
-        console.log(`🌐 Endpoint: ${endpoint.substring(0, 70)}...`);
-        
-        const client = new TonClient({ 
-            endpoint,
-            timeout: 30000
-        });
+        console.log(`🌐 Final Endpoint: ${endpoint.substring(0, 70)}...`);
 
         // 2. Setup Wallet
         let keyPair;
@@ -126,7 +139,7 @@ async function main() {
         console.log(`💰 Balance: ${(Number(maxBalance) / 1e9).toFixed(4)} TON\n`);
 
         // 3. Load Compiled Contracts
-        const buildPath = path.join(__dirname, '../artifacts/ton');
+        const buildPath = path.join(__dirname, '../build');
 
         if (!fs.existsSync(buildPath)) {
             throw new Error(`Build directory not found: ${buildPath}\nRun compilation first!`);

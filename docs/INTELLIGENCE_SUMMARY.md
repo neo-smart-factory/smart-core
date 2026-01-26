@@ -27,6 +27,7 @@
 https://ton-testnet.core.chainstack.com/{KEY}/api/v2/jsonRPC
 
 ```
+
 - Métodos blockchain básicos
 - Deploy de contratos
 - Get methods
@@ -83,6 +84,7 @@ const router = tonClient.open(routerFactory(metadata));
 #### Features Relevantes para NEØ
 
 **1. Gifts Integration com TON Blockchain**
+
 ```javascript
 // Detectar gifts da blockchain
 if (gift.is_from_blockchain) {
@@ -92,11 +94,13 @@ if (gift.is_from_blockchain) {
 ```
 
 **2. Telegram Stars (Moeda In-App)**
+
 - Pagamentos nativos no Telegram
 - `getMyStarBalance` - saldo do bot
 - Possível aceitar Stars para criar tokens
 
 **3. Business Account Management**
+
 - Bots podem gerenciar business accounts
 - Transfer de Stars
 - Posting de stories
@@ -150,12 +154,14 @@ Cell limits:
 ```
 
 **Nossa Factory:**
+
 - ~481 bits + 3 refs (dentro do limite)
 - Otimizada para gas efficiency
 
 #### C. Wallet Contracts têm Versões
 
 TON tem múltiplas versões de wallets:
+
 - V3R1, V3R2 (legadas)
 - V4 (comum, estamos usando)
 - V5R1 (mais recente)
@@ -176,6 +182,7 @@ TON tem múltiplas versões de wallets:
 | **Transfer** | ~0.01 TON | - |
 
 **Otimização:**
+
 - Nossa Factory tem reserve de 0.05 TON (bom)
 - Deploy value de 0.25 TON (adequado)
 - Gas costs dentro da média
@@ -185,22 +192,26 @@ TON tem múltiplas versões de wallets:
 ### 7. Ecossistema TON - Players Principais
 
 #### Infrastructure
+
 - **Chainstack** - RPC nodes (estamos usando)
 - **TonCenter** - RPC público oficial
 - **Orbs** - RPC alternativo
 
 #### DEXs
+
 - **STON.fi** - Principal DEX
 - **DeDust** - DEX alternativa
 - **Megaton** - DEX e swap
 
 #### Wallets
+
 - **Tonkeeper** - Mais popular
 - **MyTonWallet** - Open source
 - **OpenMask** - Tipo MetaMask
 - **TON Wallet** - Oficial
 
 #### Analytics
+
 - **TonScan** - Explorer oficial
 - **TonStat** - Analytics avançado
 - **TON NFT** - NFT marketplace
@@ -230,6 +241,7 @@ TON tem múltiplas versões de wallets:
 #### Checklist de Segurança TON
 
 **Antes do Deploy:**
+
 - [x] Validação de células (test-dict-fix.js)
 - [x] Compilação sem erros
 - [x] Code review do FunC
@@ -238,6 +250,7 @@ TON tem múltiplas versões de wallets:
 - [ ] Auditoria externa (mainnet)
 
 **Durante Operação:**
+
 - [ ] Monitor de transações
 - [ ] Alertas de comportamento anormal
 - [ ] Rate limiting
@@ -250,6 +263,7 @@ TON tem múltiplas versões de wallets:
 ### 10. Roadmap Técnico Atualizado
 
 #### Q1 2026 - Foundation
+
 - [x] Correção Exit Code 9
 - [x] Compilação v2.3.0
 - [x] Setup de infraestrutura
@@ -258,18 +272,21 @@ TON tem múltiplas versões de wallets:
 - [ ] Deploy mainnet
 
 #### Q2 2026 - Growth
+
 - [ ] Integração STON.fi
 - [ ] Bot Telegram
 - [ ] Dashboard analytics
 - [ ] Programa de afiliados
 
 #### Q3 2026 - Expansion
+
 - [ ] Cross-chain bridge
 - [ ] Staking platform
 - [ ] Governance system
 - [ ] NFT integration
 
 #### Q4 2026 - Maturity
+
 - [ ] Mobile app
 - [ ] Advanced analytics
 - [ ] API pública
@@ -288,6 +305,7 @@ TON tem múltiplas versões de wallets:
    ```
 
 2. **Executar Deploy Sequence**
+
    ```bash
    node scripts/check-testnet-balance.js
    node scripts/deploy-ton-factory-v2.js
@@ -310,23 +328,27 @@ TON tem múltiplas versões de wallets:
 ## 💡 Insights Estratégicos
 
 ### 1. TON está em Crescimento Rápido
+
 - API atualizada regularmente (última: 31 Dez 2025)
 - Novas features constantemente
 - Integração nativa com Telegram (800M+ usuários)
 
 ### 2. Diferencial NEØ no TON
+
 - Factory pattern (facilita criação)
 - V2 features (mint público, max supply, preço)
 - Arquitetura modular
 - Licenciamento claro (CC BY-NC-ND 4.0)
 
 ### 3. Oportunidades de Monetização
+
 - Taxa de deploy via Factory
 - Taxa de listagem no DEX
 - Bot premium features
 - Consulting e suporte
 
 ### 4. Riscos Identificados
+
 - ⚠️ Chainstack node instável (mitigado com fallback)
 - ⚠️ Exit Code 9 resolvido mas requer testes
 - ⚠️ Ecossistema ainda crescendo
