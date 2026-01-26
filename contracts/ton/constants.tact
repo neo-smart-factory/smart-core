@@ -4,7 +4,7 @@
 
 const PROTOCOL_FEE_BPS: Int = 500; // 5%
 const MIN_RESERVE: Int = ton("0.05");
-const PROTOCOL_TREASURY: Address = address("UQBqdVqFqwdMY985u7Qjl97Hoai0N2XZzNhNkVOE8LBhm0i0");
+const PROTOCOL_TREASURY: Address = address("UQBSi9T1-iPqrVvs8dDFIlOxQ7qZYTYFT4ocF7wK1syBevlj");
 
 // Error Codes
 const ERROR_INSUFFICIENT_FUNDS: Int = 1000;

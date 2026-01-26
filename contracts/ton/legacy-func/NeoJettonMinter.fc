@@ -2,7 +2,6 @@
 ;; █░▀█ ██▄ █▄█   ▄█ █░▀░█ █▀█ █▀▄ ░█░
 ;;
 ;; NΞØ SMART FACTORY v0.5.3 - NΞØ PROTOCOL | TOKENIZE
-;; Author: Eurycles Ramos Neto / NODE NEØ
 ;;
 ;; LICENSED UNDER CREATIVE COMMONS (CC BY-NC-ND 4.0)
 ;; This software is intellectual property of NΞØ Protocol.
@@ -18,18 +17,18 @@
 ;; admin_address: MsgAddress
 ;; content: Cell
 ;; jetton_wallet_code: Cell
-;; max_supply: coins         (Novo)
-;; mint_price: coins         (Novo)
-;; mint_amount: coins        (Novo)
-;; public_mint_enabled: int  (Novo: -1 true, 0 false)
-;; bridge_minter: MsgAddress (Novo)
-;; minters_dict: Cell        (Novo: map address->bool for anti-bot)
+;; max_supply: coins         (New)
+;; mint_price: coins         (New)
+;; mint_amount: coins        (New)
+;; public_mint_enabled: int  (New: -1 true, 0 false)
+;; bridge_minter: MsgAddress (New)
+;; minters_dict: Cell        (New: map address->bool for anti-bot)
 
 ;; Constants
 const int PROTOCOL_FEE_BPS = 500; ;; 5%
 const slice PROTOCOL_TREASURY = "EQBHCoxkD_wsFq62voA6lIQg4q6EVmAAAA"; ;; Placeholder
 
-;; Função auxiliar para criar slice de endereço vazio
+;; Helper function to create an empty address slice
 slice hole_address() asm "b{00} PUSHSLICE";
 
 (int, slice, cell, cell, int, int, int, int, slice, cell) load_data() inline {
@@ -87,7 +86,7 @@ slice hole_address() asm "b{00} PUSHSLICE";
     );
 }
 
-;; Mint utilitário
+;; Mint utility
 () mint_tokens(slice to_address, cell jetton_wallet_code, int amount, cell master_msg) impure {
     cell state_init = calculate_jetton_wallet_state_init(to_address, my_address(), jetton_wallet_code);
     slice to_wallet_address = calculate_jetton_wallet_address(state_init);
@@ -95,14 +94,14 @@ slice hole_address() asm "b{00} PUSHSLICE";
     var msg = begin_cell()
         .store_uint(0x18, 6)
         .store_slice(to_wallet_address)
-        .store_coins(0) ;; Será preenchido com CARRY_REMAINING_GAS (mode 64) ou amount específico
+        .store_coins(0) ;; Will be filled with CARRY_REMAINING_GAS (mode 64) or specific amount
         .store_uint(4 + 2 + 1, 1 + 4 + 4 + 64 + 32 + 1 + 1 + 1)
         .store_ref(state_init)
         .store_ref(master_msg);
     
-    ;; Usamos mode 64 para carregar o gás restante da mensagem de entrada
-    ;; Mas cuidado: se for internal mint, precisamos garantir funds.
-    ;; Aqui assumimos msg enviada com mode 64 pelo caller
+    ;; Use mode 64 to carry the remaining gas from the incoming message
+    ;; But be careful: if it's an internal mint, we need to ensure funds exist.
+    ;; Here we assume msg sent with mode 64 by the caller
     send_raw_message(msg.end_cell(), 64); 
 }
 
@@ -232,12 +231,11 @@ slice hole_address() asm "b{00} PUSHSLICE";
         return ();
     }
     
-    ;; Reset Public Mint (Emergência - igual EVM)
     if (op == op::reset_public_mint()) {
         throw_unless(73, equal_slices(sender_address, admin_address));
         slice user_address = in_msg_body~load_msg_addr();
         
-        ;; Remove do dict de minters
+        ;; Remove from minters dict
         int key = slice_hash(user_address);
         minters_dict~udict_delete?(256, key);
         
@@ -260,7 +258,7 @@ slice hole_address() asm "b{00} PUSHSLICE";
             int protocol_part = muldiv(withdraw_amount, PROTOCOL_FEE_BPS, 10000); ;; 5%
             int owner_part = withdraw_amount - protocol_part;
             
-            ;; Envia 5% pro Treasury
+            ;; Send 5% to Treasury
             var msg_treasury = begin_cell()
                 .store_uint(0x10, 6)
                 .store_slice(PROTOCOL_TREASURY)
@@ -269,7 +267,7 @@ slice hole_address() asm "b{00} PUSHSLICE";
                 .end_cell();
             send_raw_message(msg_treasury, 1); ;; Pay fees separately
             
-            ;; Envia 95% pro Owner
+            ;; Send 95% to Owner
             var msg_owner = begin_cell()
                 .store_uint(0x10, 6)
                 .store_slice(admin_address)
@@ -310,7 +308,7 @@ slice hole_address() asm "b{00} PUSHSLICE";
     throw(0xffff);
 }
 
-;; Get Methods Atualizados
+;; Updated Get Methods
 
 (int, int, slice, cell, cell) get_jetton_data() method_id {
     (int total_supply, slice admin_address, cell content, cell jetton_wallet_code,
@@ -323,7 +321,7 @@ slice get_wallet_address(slice owner_address) method_id {
     return calculate_user_jetton_wallet_address(owner_address, my_address(), jetton_wallet_code);
 }
 
-;; Novo método unificado (getContractInfo)
+;; New unified method (getContractInfo)
 (int, int, int, int, int, slice) get_contract_info() method_id {
     (int total_supply, _, _, _, int max_supply, int mint_price, int mint_amount, int mint_enabled, slice bridge, _) = load_data();
     return (total_supply, max_supply, mint_price, mint_amount, mint_enabled, bridge);

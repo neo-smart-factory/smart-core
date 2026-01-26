@@ -2,18 +2,18 @@
     "projects": [
         {
             "name": "factory",
-            "path": "./contracts/ton/tact/JettonFactory.tact",
-            "output": "./build/factory"
+            "path": "./contracts/ton/JettonFactory.tact",
+            "output": "./contracts/ton/build/factory"
         },
         {
             "name": "minter",
-            "path": "./contracts/ton/tact/JettonMinter.tact",
-            "output": "./build/minter"
+            "path": "./contracts/ton/JettonMinter.tact",
+            "output": "./contracts/ton/build/minter"
         },
         {
             "name": "wallet",
-            "path": "./contracts/ton/tact/JettonWallet.tact",
-            "output": "./build/wallet"
+            "path": "./contracts/ton/JettonWallet.tact",
+            "output": "./contracts/ton/build/wallet"
         }
     ]
 }

@@ -1,0 +1,1 @@
+Tact contracts compiled successfully. FunC files moved to legacy-func folder.

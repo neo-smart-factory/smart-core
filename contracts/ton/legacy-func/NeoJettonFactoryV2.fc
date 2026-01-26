@@ -3,7 +3,6 @@
 ;;
 ;; NΞØ SMART FACTORY V2 (v2.3.0 - CELL UNDERFLOW FIXED)
 ;; NΞØ PROTOCOL | TOKENIZE
-;; Author: Eurycles Ramos Neto / NODE NEØ
 ;;
 ;; LICENSED UNDER CREATIVE COMMONS (CC BY-NC-ND 4.0)
 ;; This software is intellectual property of NΞØ Protocol.
@@ -16,19 +15,19 @@
 #include "imports/op-codes.fc";
 #include "imports/jetton-utils.fc";
 
-;; Op-codes específicos da Factory
+;; Factory-specific Op-codes
 int op::deploy_jetton() asm "0x61caf729 PUSHINT";
 int op::add_admin() asm "0x61caf72a PUSHINT";
 int op::remove_admin() asm "0x61caf72b PUSHINT";
 
-;; Versão para forçar novo code hash
+;; Version to force new code hash
 const int factory_version = 20250125;
 
 ;; Storage structure (V2 - Simplified):
-;; admin_address: MsgAddress - Endereço do admin principal
-;; jetton_minter_code: Cell - Código do contrato Master (NeoJettonMinter)
-;; jetton_wallet_code: Cell - Código do contrato Wallet (NeoJettonWallet)
-;; treasury_address: MsgAddress - Endereço da treasury do protocolo
+;; admin_address: MsgAddress - Main admin address
+;; jetton_minter_code: Cell - Master contract code (NeoJettonMinter)
+;; jetton_wallet_code: Cell - Wallet contract code (NeoJettonWallet)
+;; treasury_address: MsgAddress - Protocol treasury address
 
 (slice, cell, cell, slice) load_data() inline {
     slice ds = get_data().begin_parse();
@@ -50,12 +49,12 @@ const int factory_version = 20250125;
     );
 }
 
-;; Verifica se um endereço é admin (simplificado - single admin)
+;; Check if an address is admin (simplified - single admin)
 int is_admin(slice admin_address, slice sender) inline {
     return equal_slices(admin_address, sender);
 }
 
-;; Calcula o StateInit do novo Jetton Minter (Compatível com NeoJettonMinter V2)
+;; Calculate new Jetton Minter StateInit (Compatible with NeoJettonMinter V2)
 cell calculate_jetton_minter_state_init(slice owner_address, cell content, cell jetton_minter_code, cell jetton_wallet_code, 
                                         int max_supply, int mint_price, int mint_amount) inline {
     
@@ -64,12 +63,12 @@ cell calculate_jetton_minter_state_init(slice owner_address, cell content, cell 
         .store_coins(max_supply)
         .store_coins(mint_price)
         .store_coins(mint_amount)
-        .store_int(0, 1)          ;; public_mint_enabled (padrão false)
-        .store_slice(owner_address) ;; bridge_minter (inicialmente o owner)
+        .store_int(0, 1)          ;; public_mint_enabled (default false)
+        .store_slice(owner_address) ;; bridge_minter (initially the owner)
         .store_dict(begin_cell().end_cell())  ;; minters_dict: empty cell ref (fix for Exit Code 9)
         .end_cell();
 
-    ;; Data inicial do Minter: total_supply=0, admin=owner, content, wallet_code, extra_ref
+    ;; Initial Minter Data: total_supply=0, admin=owner, content, wallet_code, extra_ref
     cell data = begin_cell()
         .store_coins(0)             ;; total_supply
         .store_slice(owner_address) ;; admin_address
@@ -109,12 +108,12 @@ slice calculate_jetton_minter_address(cell state_init) inline {
     
     (slice admin_address, cell jetton_minter_code, cell jetton_wallet_code, slice treasury_address) = load_data();
 
-    ;; Verifica se sender é admin
+    ;; Check if sender is admin
     int sender_is_admin = is_admin(admin_address, sender_address);
 
-    ;; Deploy de novo Jetton
+    ;; Deploy new Jetton
     if (op == op::deploy_jetton()) {
-        ;; Validação: valor mínimo de deploy (0.4 TON) - V2.2.0 MSG FIX
+        ;; Validation: minimum deploy value (0.4 TON) - V2.2.0 MSG FIX
         int min_deploy_value = 400000000; ;; 0.4 TON
         throw_unless(75, msg_value >= min_deploy_value); ;; Error: insufficient deploy funds
         
@@ -129,21 +128,22 @@ slice calculate_jetton_minter_address(cell state_init) inline {
         cell state_init = calculate_jetton_minter_state_init(owner_address, content, jetton_minter_code, jetton_wallet_code, max_supply, mint_price, mint_amount);
         slice jetton_address = calculate_jetton_minter_address(state_init);
         
-        ;; Reserve mínimo para Factory (0.05 TON)
+        ;; Minimum reserve for Factory (0.05 TON)
         int factory_reserve = 50000000; ;; 0.05 TON
         int jetton_deploy_value = msg_value - factory_reserve;
         
         throw_unless(76, jetton_deploy_value > 0); ;; Error: negative jetton value
         
-        ;; Mensagem de deploy (formato TON correto)
+        ;; Deploy message (correct TON format)
         var msg = begin_cell()
             .store_uint(0x18, 6)                ;; flags: bounce=true, ihr_disabled=true
             .store_slice(jetton_address)        ;; destination
             .store_coins(jetton_deploy_value)   ;; value
             .store_uint(0, 1 + 4 + 4 + 64 + 32) ;; extra_currencies, ihr_fee, fwd_fee, created_lt, created_at
             .store_uint(1, 1)                   ;; init:Just (state_init present)
-            .store_uint(1, 1)                   ;; body:Just (body present)
+            .store_uint(1, 1)                   ;; init:Right (state_init as Ref)
             .store_ref(state_init)              ;; state_init as ref
+            .store_uint(1, 1)                   ;; body:Right (body as Ref)
             .store_ref(begin_cell().end_cell()); ;; empty body as ref
         
         send_raw_message(msg.end_cell(), 1);    ;; pay fees separately
@@ -151,7 +151,7 @@ slice calculate_jetton_minter_address(cell state_init) inline {
     }
     
     ;; Admin-only operations
-    ;; Trocar admin
+    ;; Change admin
     if (op == op::change_admin()) {
         throw_unless(73, sender_is_admin);
         
@@ -163,13 +163,13 @@ slice calculate_jetton_minter_address(cell state_init) inline {
     throw(0xffff);
 }
 
-;; Get method: retorna se um endereço é admin
+;; Get method: returns if an address is admin
 int get_is_admin(slice address) method_id {
     (slice admin_address, _, _, _) = load_data();
     return is_admin(admin_address, address);
 }
 
-;; Get method: retorna o endereço do admin
+;; Get method: returns the admin address
 slice get_admin() method_id {
     (slice admin_address, _, _, _) = load_data();
     return admin_address;
