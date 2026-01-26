@@ -88,3 +88,7 @@ pm2 save
 # Auto-start no boot
 pm2 startup
 ```
+
+## 📄 License
+
+Documentation is licensed under CC BY 4.0 (Creative Commons). Smart contract code referenced here is licensed under MIT.

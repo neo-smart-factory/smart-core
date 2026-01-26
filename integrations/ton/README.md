@@ -22,3 +22,7 @@ npm install @ton/ton @ton/core @ton/crypto
 
 1. **TEP-64 (Token Data Standard)**: A implementação `useJettonFactory` constrói metadados on-chain utilizando dicionários (`HashmapE`) prefixados com `0x00`, garantindo compatibilidade com wallets como Tonkeeper e explorers.
 2. **Factory Contract**: O endereço `JETTON_DEPLOYER_ADDRESS` no arquivo `useJettonFactory.js` deve ser atualizado com o endereço real do contrato Factory após o deploy na mainnet/testnet.
+
+## 📄 License
+
+Documentation is licensed under CC BY 4.0 (Creative Commons). Smart contract code referenced here is licensed under MIT.

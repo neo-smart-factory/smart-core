@@ -5,11 +5,8 @@ pragma solidity ^0.8.20;
  *  █▄░█ █▀▀ █▀█   █▀ █▀▄▀█ ▄▀█ █▀█ ▀█▀
  *  █░▀█ ██▄ █▄█   ▄█ █░▀░█ █▀█ █▀▄ ░█░
  *
- *  NEO SMART FACTORY v0.5.3 - PROTOCOL | TOKENIZE-SE
+ *  NEO SMART FACTORY v0.5.3 - PROTOCOL | TOKENIZE
  *
- *  Official Repository: https://github.com/neo-smart-token-factory/smart-core
- *  Maintained by: NEO Protocol (team@neosmart.factory)
- *  
  *  Licensed under MIT. Attribution to NEO Protocol is required for derivatives.
  *  Any fork or usage of this factory for financial protocols must reference:
  *  "Powered by NEO SMART FACTORY"
@@ -19,16 +16,22 @@ import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/extensions/ERC20Burnable.sol";
 import "@openzeppelin/contracts/token/ERC20/extensions/ERC20Permit.sol";
 import "@openzeppelin/contracts/access/Ownable2Step.sol";
+import "@openzeppelin/contracts/utils/Pausable.sol";
 
 /**
  * @title NeoTokenV2
  * @notice Arquitetura Multichain & AA-Ready
  * @dev Incorpora ERC20Permit para transações gasless e estrutura para pontes multichain.
  */
-contract NeoTokenV2 is ERC20, ERC20Burnable, ERC20Permit, Ownable2Step {
+contract NeoTokenV2 is ERC20, ERC20Burnable, ERC20Permit, Ownable2Step, Pausable {
     
     // Supply Management
     uint256 public constant MAX_SUPPLY = 1_000_000_000 * 10**18; // 1 bilhão de tokens
+    
+    // Governance & Security
+    address public guardian;
+    address public protocolTreasury = 0x470a8c640fFC2C16aEB6bE803a948420e2aE8456;
+    uint256 public protocolFeeBps = 500; // 5%
     
     // Bridge Role (Multichain-Ready)
     address public bridgeMinter;
@@ -46,6 +49,9 @@ contract NeoTokenV2 is ERC20, ERC20Burnable, ERC20Permit, Ownable2Step {
     event PublicMintStatusChanged(bool enabled);
     event PublicMinted(address indexed minter, uint256 amount, uint256 pricePaid);
     event BridgeMinted(address indexed to, uint256 amount);
+    event GuardianUpdated(address indexed newGuardian);
+    event TreasuryUpdated(address indexed newTreasury);
+    event ProtocolFeeUpdated(uint256 newFeeBps);
 
     constructor(
         string memory name,
@@ -61,6 +67,7 @@ contract NeoTokenV2 is ERC20, ERC20Burnable, ERC20Permit, Ownable2Step {
         MINT_PRICE = mintPrice;
         MINT_AMOUNT = mintAmount;
         publicMintEnabled = true;
+        guardian = initialOwner;
     }
 
     /**
@@ -68,7 +75,7 @@ contract NeoTokenV2 is ERC20, ERC20Burnable, ERC20Permit, Ownable2Step {
      * @dev Útil para distribuição inicial orgânica ou rituais
      * @dev Preparado para Account Abstraction via Permit
      */
-    function publicMint() external payable {
+    function publicMint() external payable whenNotPaused {
         require(publicMintEnabled, "Public mint disabled");
         require(msg.value == MINT_PRICE, "Incorrect ETH/POL value");
         require(!hasPublicMinted[msg.sender], "Already minted");
@@ -86,7 +93,7 @@ contract NeoTokenV2 is ERC20, ERC20Burnable, ERC20Permit, Ownable2Step {
      * @param _amount Quantidade a ser mintada
      * @dev Apenas o endereço da ponte autorizada pode chamar
      */
-    function bridgeMint(address _to, uint256 _amount) external {
+    function bridgeMint(address _to, uint256 _amount) external whenNotPaused {
         require(msg.sender == bridgeMinter, "Caller is not the bridge minter");
         require(_to != address(0), "Cannot mint to zero address");
         require(totalSupply() + _amount <= MAX_SUPPLY, "Max supply reached");
@@ -123,6 +130,50 @@ contract NeoTokenV2 is ERC20, ERC20Burnable, ERC20Permit, Ownable2Step {
         hasPublicMinted[_user] = false;
     }
 
+    // --- Security & Governance ---
+
+    /**
+     * @notice Pausa o contrato (Owner ou Guardian)
+     */
+    function pause() external {
+        require(msg.sender == owner() || msg.sender == guardian, "Not authorized");
+        _pause();
+    }
+
+    /**
+     * @notice Despausa o contrato (Apenas Owner)
+     */
+    function unpause() external onlyOwner {
+        _unpause();
+    }
+
+    /**
+     * @notice Atualiza o Guardian
+     */
+    function setGuardian(address _newGuardian) external onlyOwner {
+        require(_newGuardian != address(0), "Invalid guardian");
+        guardian = _newGuardian;
+        emit GuardianUpdated(_newGuardian);
+    }
+
+    /**
+     * @notice Atualiza a Treasury
+     */
+    function setTreasury(address _newTreasury) external onlyOwner {
+        require(_newTreasury != address(0), "Invalid treasury");
+        protocolTreasury = _newTreasury;
+        emit TreasuryUpdated(_newTreasury);
+    }
+
+    /**
+     * @notice Atualiza a Taxa de Protocolo
+     */
+    function setProtocolFee(uint256 _newFeeBps) external onlyOwner {
+        require(_newFeeBps <= 2000, "Fee too high (max 20%)");
+        protocolFeeBps = _newFeeBps;
+        emit ProtocolFeeUpdated(_newFeeBps);
+    }
+
     /**
      * @notice Função de utilitário para compatibilidade total com exploradores (PolygonScan/Basescan)
      */
@@ -130,23 +181,19 @@ contract NeoTokenV2 is ERC20, ERC20Burnable, ERC20Permit, Ownable2Step {
         return owner();
     }
 
-    // Protocol Fee (5%)
-    address public constant PROTOCOL_TREASURY = 0x470a8c640fFC2C16aEB6bE803a948420e2aE8456; // NEO Protocol Treasury
-    uint256 public constant PROTOCOL_FEE_BPS = 500; // 5% (Basis points)
-
     /**
      * @notice Retira fundos acumulados do mint público
-     * @dev Implementa split de 5% para o NEO Protocol Treasury e 95% para o dono do token.
+     * @dev Implementa split dinâmico para o NEO Protocol Treasury e 95% para o dono do token.
      */
     function withdraw() external onlyOwner {
         uint256 balance = address(this).balance;
         require(balance > 0, "No balance to withdraw");
         
-        uint256 protocolFee = (balance * PROTOCOL_FEE_BPS) / 10000;
+        uint256 protocolFee = (balance * protocolFeeBps) / 10000;
         uint256 ownerAmount = balance - protocolFee;
         
         // Transfer protocol fee
-        (bool success1, ) = payable(PROTOCOL_TREASURY).call{value: protocolFee}("");
+        (bool success1, ) = payable(protocolTreasury).call{value: protocolFee}("");
         require(success1, "Protocol fee transfer failed");
         
         // Transfer remaining to owner

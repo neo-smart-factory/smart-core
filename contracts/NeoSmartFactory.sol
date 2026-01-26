@@ -3,6 +3,7 @@ pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
+import "@openzeppelin/contracts/utils/Pausable.sol";
 import "./tokens/NeoERC20.sol";
 import "./tokens/NeoERC721.sol";
 import "./vesting/NeoVesting.sol";
@@ -12,7 +13,7 @@ import "./rewards/NeoRewards.sol";
  *  █▄░█ █▀▀ █▀█   █▀ █▀▄▀█ ▄▀█ █▀█ ▀█▀
  *  █░▀█ ██▄ █▄█   ▄█ █░▀░█ █▀█ █▀▄ ░█░
  *
- *  TOKENIZE-SE | NEO SMART FACTORY v0.5.3
+ *  TOKENIZE | NEO SMART FACTORY v0.5.3
  */
 
 /**
@@ -20,7 +21,7 @@ import "./rewards/NeoRewards.sol";
  * @notice Fábrica descentralizada para criação de protocolos completos
  * @dev Sistema modular que permite criar tokens, vestings, recompensas e badges
  */
-contract NeoSmartFactory is Ownable, ReentrancyGuard {
+contract NeoSmartFactory is Ownable, ReentrancyGuard, Pausable {
     // Estruturas de dados
     struct Protocol {
         address creator;
@@ -61,6 +62,9 @@ contract NeoSmartFactory is Ownable, ReentrancyGuard {
     uint256 public protocolCounter;
     uint256 public creationFee;
     
+    // Security & Governance
+    address public guardian;
+    
     // Limites de Segurança
     uint256 public constant MAX_VESTING_SCHEDULES = 20;
 
@@ -94,10 +98,14 @@ contract NeoSmartFactory is Ownable, ReentrancyGuard {
     );
 
     event ProtocolStatusChanged(uint256 indexed protocolId, bool active);
+    event GuardianUpdated(address indexed newGuardian);
+    event FactoryPaused(address account);
+    event FactoryUnpaused(address account);
 
     constructor(uint256 _creationFee) Ownable(msg.sender) {
         creationFee = _creationFee;
         authorizedCreators[msg.sender] = true;
+        guardian = msg.sender;
     }
 
     /**
@@ -110,7 +118,7 @@ contract NeoSmartFactory is Ownable, ReentrancyGuard {
         TokenConfig memory tokenConfig,
         VestingConfig[] memory vestingConfigs,
         bool rewardsEnabled
-    ) external payable nonReentrant returns (uint256 protocolId) {
+    ) external payable whenNotPaused nonReentrant returns (uint256 protocolId) {
         require(msg.value >= creationFee, "Insufficient fee");
         require(bytes(tokenConfig.name).length > 0, "Invalid token name");
         require(bytes(tokenConfig.symbol).length > 0, "Invalid token symbol");
@@ -237,6 +245,7 @@ contract NeoSmartFactory is Ownable, ReentrancyGuard {
     function createToken(TokenConfig memory tokenConfig)
         external
         payable
+        whenNotPaused
         nonReentrant
         returns (address tokenAddress)
     {
@@ -264,7 +273,7 @@ contract NeoSmartFactory is Ownable, ReentrancyGuard {
         string memory symbol,
         string memory baseURI,
         bool mintable
-    ) external payable nonReentrant returns (address nftAddress) {
+    ) external payable whenNotPaused nonReentrant returns (address nftAddress) {
         require(msg.value >= creationFee, "Insufficient fee");
         
         NeoERC721 nft = new NeoERC721(
@@ -319,6 +328,34 @@ contract NeoSmartFactory is Ownable, ReentrancyGuard {
      */
     function revokeCreator(address creator) external onlyOwner {
         authorizedCreators[creator] = false;
+    }
+
+    // --- Security & Governance ---
+
+    /**
+     * @notice Pausa a fábrica (Owner ou Guardian)
+     */
+    function pause() external {
+        require(msg.sender == owner() || msg.sender == guardian, "Not authorized");
+        _pause();
+        emit FactoryPaused(msg.sender);
+    }
+
+    /**
+     * @notice Despausa a fábrica (Apenas Owner)
+     */
+    function unpause() external onlyOwner {
+        _unpause();
+        emit FactoryUnpaused(msg.sender);
+    }
+
+    /**
+     * @notice Atualiza o Guardian
+     */
+    function setGuardian(address _newGuardian) external onlyOwner {
+        require(_newGuardian != address(0), "Invalid guardian");
+        guardian = _newGuardian;
+        emit GuardianUpdated(_newGuardian);
     }
 
     /**

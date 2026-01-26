@@ -54,5 +54,9 @@ While you are free to fork and use this code, we require **Attribution** to NΞ�
 1. Keep the original header in the smart contracts.
 2. Reference "Powered by NΞØ SMART FACTORY" in the project description or documentation.
 
+## 📄 License
+
+Documentation is licensed under CC BY 4.0 (Creative Commons). Smart contract code referenced here is licensed under MIT.
+
 ---
 *Developed with ❤️ by NΞØ Protocol for the future of decentralized economies.*

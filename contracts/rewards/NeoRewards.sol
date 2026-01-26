@@ -10,7 +10,7 @@ import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
  *  █▄░█ █▀▀ █▀█   █▀ █▀▄▀█ ▄▀█ █▀█ ▀█▀
  *  █░▀█ ██▄ █▄█   ▄█ █░▀░█ █▀█ █▀▄ ░█░
  *
- *  TOKENIZE-SE | NEO SMART FACTORY v0.5.3
+ *  TOKENIZE | NΞØ SMART FACTORY v0.5.3
  */
  
 contract NeoRewards is Ownable, ReentrancyGuard {

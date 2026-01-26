@@ -223,9 +223,9 @@ node scripts/debug/debug-all-factories.js
 - **docs:** https://github.com/neo-smart-token-factory/docs
 - **smart-core:** https://github.com/neo-smart-token-factory/smart-core
 
-## Licença
+## 📄 License
 
-Ver `LICENSE` no repositório raiz.
+Documentation is licensed under CC BY 4.0 (Creative Commons). Smart contract code referenced here is licensed under MIT.
 
 ---
 

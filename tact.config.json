@@ -1,0 +1,19 @@
+{
+    "projects": [
+        {
+            "name": "factory",
+            "path": "./contracts/ton/tact/JettonFactory.tact",
+            "output": "./build/factory"
+        },
+        {
+            "name": "minter",
+            "path": "./contracts/ton/tact/JettonMinter.tact",
+            "output": "./build/minter"
+        },
+        {
+            "name": "wallet",
+            "path": "./contracts/ton/tact/JettonWallet.tact",
+            "output": "./build/wallet"
+        }
+    ]
+}

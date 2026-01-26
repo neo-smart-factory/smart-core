@@ -2,10 +2,7 @@
  * █▄░█ █▀▀ █▀█   █▀ █▀▄▀█ ▄▀█ █▀█ ▀█▀
  * █░▀█ ██▄ █▄█   ▄█ █░▀░█ █▀█ █▀▄ ░█░
  *
- * NΞØ SMART FACTORY v0.5.3 - NΞØ PROTOCOL | TOKENIZE-SE
- *
- * Developed by: NEO Protocol (neo@neoprotocol.space)
- * Website: https://neoprotocol.space
+ * NΞØ SMART FACTORY v0.5.3 - NΞØ PROTOCOL | TOKENIZE
  *
  * LICENSED UNDER CREATIVE COMMONS (CC BY-NC-ND 4.0)
  * This software is intellectual property of NΞØ Protocol.
