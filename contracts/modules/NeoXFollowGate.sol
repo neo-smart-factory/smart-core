@@ -37,6 +37,7 @@ contract NeoXFollowGate is Ownable, EIP712 {
     // =====================================================
 
     string public constant TARGET_X_HANDLE = "@neoflowoff.eth";
+    bytes32 private constant TARGET_X_HANDLE_HASH = keccak256(bytes("@neoflowoff.eth"));
 
     // Domain: "NEO"
     // Version: "0.5.3" (align with Smart Factory)
@@ -120,7 +121,7 @@ contract NeoXFollowGate is Ownable, EIP712 {
         require(msg.sender == proof.user, "sender!=user");
         require(!granted[proof.user], "already granted");
         require(block.timestamp <= proof.deadline, "expired");
-        require(keccak256(bytes(proof.target)) == keccak256(bytes(TARGET_X_HANDLE)), "wrong target");
+        require(keccak256(bytes(proof.target)) == TARGET_X_HANDLE_HASH, "wrong target");
         require(!usedNonce[proof.nonce], "nonce replay");
 
         // verify typed signature
