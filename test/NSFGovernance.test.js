@@ -28,7 +28,7 @@ describe("NSFGovernance - Layer 3 Protocol Governance", function () {
         timelock = await TimelockController.deploy(
             TIMELOCK_DELAY,
             [owner.address], // proposers
-            [owner.address, await governance?.getAddress() || ethers.ZeroAddress], // executors
+            [owner.address], // executors  
             owner.address // admin
         );
         await timelock.waitForDeployment();

@@ -199,10 +199,7 @@ contract NSFGovernance is
             
             require(
                 votableFunction[selector],
-                string(abi.encodePacked(
-                    "Function not votable: ",
-                    functionName[selector]
-                ))
+                "Function not votable"
             );
         }
         

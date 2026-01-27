@@ -12,7 +12,7 @@ const { ethers } = require("hardhat");
 
 async function main() {
     console.log("\n🚀 Starting NSF Complete System Deployment\n");
-    console.log("=" .repeat(60));
+    console.log("=".repeat(60));
     
     const [deployer] = await ethers.getSigners();
     console.log("Deployer address:", deployer.address);
