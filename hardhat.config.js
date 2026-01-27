@@ -6,10 +6,10 @@ module.exports = {
   solidity: {
     version: "0.8.20",
     settings: {
-      viaIR: true,
+      viaIR: false,  // Disable IR to avoid issues
       optimizer: {
         enabled: true,
-        runs: 1,
+        runs: 200,
       },
     },
   },

@@ -24,6 +24,7 @@ pragma solidity ^0.8.20;
 
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/extensions/ERC20Permit.sol";
+import "@openzeppelin/contracts/token/ERC20/extensions/ERC20Votes.sol";
 
 /**
  * @title NSFToken
@@ -36,6 +37,7 @@ import "@openzeppelin/contracts/token/ERC20/extensions/ERC20Permit.sol";
  * - No mint: Supply is final and immutable
  * - No burn enforcement: Users can burn their own tokens via transfer to zero address if needed
  * - ERC20Permit: Enables gasless transactions (Account Abstraction ready)
+ * - ERC20Votes: Enables delegation and on-chain governance
  * 
  * REGULATORY COMPLIANCE:
  * - Howey Test: Does NOT qualify as security
@@ -45,7 +47,7 @@ import "@openzeppelin/contracts/token/ERC20/extensions/ERC20Permit.sol";
  * - CVM Parecer 40/2022: Qualifies as utility token
  * - EU MiCA: Category 3 utility token (exempt from full regime)
  */
-contract NSFToken is ERC20, ERC20Permit {
+contract NSFToken is ERC20, ERC20Permit, ERC20Votes {
     /// @notice Maximum supply is fixed and immutable
     uint256 public constant MAX_SUPPLY = 1_000_000_000 * 10**18;
     
@@ -74,6 +76,33 @@ contract NSFToken is ERC20, ERC20Permit {
         // NO ownership transfer
         // NO additional capabilities
         // Token is now completely autonomous
+        // Note: Users must delegate voting power to themselves or others to participate in governance
+    }
+    
+    // ========================================================================
+    // REQUIRED OVERRIDES FOR ERC20Votes
+    // ========================================================================
+    
+    /**
+     * @notice Override required by ERC20Votes
+     */
+    function _update(address from, address to, uint256 amount)
+        internal
+        override(ERC20, ERC20Votes)
+    {
+        super._update(from, to, amount);
+    }
+    
+    /**
+     * @notice Override required by ERC20Votes
+     */
+    function nonces(address owner)
+        public
+        view
+        override(ERC20Permit, Nonces)
+        returns (uint256)
+    {
+        return super.nonces(owner);
     }
     
     /**
