@@ -51,23 +51,21 @@ async function main() {
         let endpoint;
         let provider;
 
-        const endpoints = [
-            {
-                url: process.env.TON_RPC_URL_ONFINALITY_TESTNET,
-                name: 'OnFinality (Testnet)'
-            },
-            {
-                url: process.env.TON_RPC_URL_CHAINSTACK_TESTNET,
-                name: 'Chainstack (Testnet)'
-            },
-            {
-                url: 'https://testnet.toncenter.com/api/v2/jsonRPC',
-                name: 'TonCenter (Testnet) [Public]'
-            }
-        ].filter(e => e.url);
+        const endpoints = isTestnet
+            ? [
+                { url: process.env.TON_RPC_URL_ONFINALITY_TESTNET, name: 'OnFinality (Testnet)' },
+                { url: process.env.TON_RPC_URL_CHAINSTACK_TESTNET, name: 'Chainstack (Testnet)' },
+                { url: 'https://testnet.toncenter.com/api/v2/jsonRPC', name: 'TonCenter (Testnet) [Public]' }
+            ]
+            : [
+                { url: process.env.TON_RPC_URL_ONFINALITY_MAINNET, name: 'OnFinality (Mainnet)' },
+                { url: process.env.TON_RPC_URL_CHAINSTACK_MAINNET, name: 'Chainstack (Mainnet)' },
+                { url: 'https://toncenter.com/api/v2/jsonRPC', name: 'TonCenter (Mainnet) [Public]' }
+            ];
+        const endpointsFiltered = endpoints.filter(e => e.url);
 
         let client;
-        for (const e of endpoints) {
+        for (const e of endpointsFiltered) {
             try {
                 console.log(`📡 Checking provider: ${e.name}...`);
                 const tempClient = new TonClient({ endpoint: e.url, timeout: 10000 });
@@ -138,8 +136,8 @@ async function main() {
         console.log(`✅ Deployer: ${activeWallet.address.toString()}`);
         console.log(`💰 Balance: ${(Number(maxBalance) / 1e9).toFixed(4)} TON\n`);
 
-        // 3. Load Compiled Contracts
-        const buildPath = path.join(__dirname, '../build');
+        // 3. Load Compiled Contracts (Tact output: contracts/ton/build/{factory,minter,wallet})
+        const buildPath = path.join(__dirname, '../contracts/ton/build');
 
         if (!fs.existsSync(buildPath)) {
             throw new Error(`Build directory not found: ${buildPath}\nRun compilation first!`);
