@@ -161,16 +161,18 @@ slice calculate_jetton_minter_address(cell state_init) inline {
         throw_unless(76, jetton_deploy_value > 0); ;; Error: negative jetton value
         
         ;; Mensagem de deploy
+        ;; Mensagem de deploy segura (Standard TON Pattern)
+        ;; flags: 0x18 (bounce), init_ref=1, body_ref=1
+        
         var msg = begin_cell()
             .store_uint(0x18, 6)
             .store_slice(jetton_address)
             .store_coins(jetton_deploy_value)
-            .store_uint(4 + 2, 1 + 4 + 4 + 64 + 32 + 1 + 1)  ;; FIX: init_present + body_present flags
+            .store_uint(4 + 2, 1 + 4 + 4 + 64 + 32 + 1 + 1)
             .store_ref(state_init)
-            .store_ref(begin_cell().end_cell());  ;; Empty body
-        
-        send_raw_message(msg.end_cell(), 1); ;; pay fees separately
-        return ();
+            .store_ref(begin_cell().end_cell());
+
+        send_raw_message(msg.end_cell(), 1); ;; 1 = pay transfer fees separately
     }
     
     ;; Admin-only operations
