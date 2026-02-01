@@ -10,6 +10,7 @@
 <!-- Descreva como as alterações foram validadas. No caso de documentação, mencione se links foram verificados ou se a visualização está correta. -->
 
 ## 🧱 Vínculos
+
 - **Issue(s):** # (adicione o número da issue, ex: #123)
 - **ADR(s):** [ADR-00X](https://github.com/neo-smart-token-factory/docs/blob/main/architecture/adr/decision-log.md) (se aplicável)
 

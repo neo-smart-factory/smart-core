@@ -1,0 +1,626 @@
+// automatically generated from `@stdlib/std/stdlib.fc` `/Users/nettomello/CODIGOS/neo-smart-token/smart-core/contracts/ton/build/factory/factory_NeoJettonFactory.fc` 
+PROGRAM{
+  DECLPROC __tact_context_get
+  DECLPROC __tact_context_get_sender
+  DECLPROC $Deploy$_store
+  DECLPROC $Deploy$_store_cell
+  DECLPROC $DeployOk$_store
+  DECLPROC $DeployOk$_store_cell
+  DECLPROC $NeoJettonFactory$_store
+  DECLPROC $NeoJettonFactory$_load
+  DECLPROC $Context$_get_value
+  DECLPROC $NeoJettonMinter$init$_store
+  DECLPROC $NeoJettonFactory$init$_load
+  DECLPROC $NeoJettonFactory$_contract_init
+  DECLPROC $NeoJettonFactory$_contract_load
+  DECLPROC $NeoJettonFactory$_contract_store
+  DECLPROC $Cell$_fun_asSlice
+  DECLPROC $global_newAddress
+  DECLPROC $global_contractAddressExt
+  DECLPROC $global_contractAddress
+  DECLPROC $NeoJettonMinter$_init_child
+  DECLPROC $SendParameters$_constructor_to_value_mode_body_code_data
+  DECLPROC $MessageParameters$_constructor_bounce_to_value_mode_body
+  DECLPROC $NeoJettonFactory$_fun_is_paused
+  DECLPROC $NeoJettonFactory$_fun_treasury
+  DECLPROC $NeoJettonFactory$_fun_fee
+  DECLPROC $NeoJettonFactory$_fun_notify
+  DECLPROC $NeoJettonFactory$_fun_requireOwner
+  DECLPROC $NeoJettonFactory$_fun_owner
+  DECLPROC $Deploy$_constructor_queryId
+  DECLPROC $DeployOk$_constructor_queryId
+  DECLPROC $SendParameters$_constructor_to_value_mode
+  95098 DECLMETHOD %is_paused
+  106403 DECLMETHOD %treasury
+  123159 DECLMETHOD %fee
+  83229 DECLMETHOD %owner
+  DECLPROC recv_internal
+  DECLGLOBVAR __tact_context
+  DECLGLOBVAR __tact_context_sender
+  DECLGLOBVAR __tact_child_contract_codes
+  DECLGLOBVAR __tact_randomized
+  __tact_context_get PROCINLINE:<{
+    __tact_context GETGLOB
+    4 UNTUPLE
+  }>
+  __tact_context_get_sender PROCINLINE:<{
+    __tact_context_sender GETGLOB
+  }>
+  $Deploy$_store PROCINLINE:<{
+    2490013878 PUSHINT
+    ROT
+    32 STU
+    64 STU
+  }>
+  $Deploy$_store_cell PROCINLINE:<{
+    SWAP
+    $Deploy$_store INLINECALLDICT
+    ENDC
+  }>
+  $DeployOk$_store PROCINLINE:<{
+    2952335191 PUSHINT
+    ROT
+    32 STU
+    64 STU
+  }>
+  $DeployOk$_store_cell PROCINLINE:<{
+    SWAP
+    $DeployOk$_store INLINECALLDICT
+    ENDC
+  }>
+  $NeoJettonFactory$_store PROCINLINE:<{
+    s4 s5 XCHG2
+    STSLICE
+    s1 s2 XCHG
+    STSLICE
+    STSLICE
+    1 STI
+    SWAP
+    NEWC
+    257 PUSHINT
+    STIX
+    STBREFR
+  }>
+  $NeoJettonFactory$_load PROCINLINE:<{
+    LDMSGADDR
+    LDMSGADDR
+    LDMSGADDR
+    1 LDI
+    LDREF
+    SWAP
+    CTOS
+    257 PUSHINT
+    LDIX
+    DROP
+    s1 s5 XCHG
+    s1 s4 XCHG
+    s3 s3 s0 XCHG3
+  }>
+  $Context$_get_value PROCINLINE:<{
+    s1 s3 XCHG
+    3 BLKDROP
+  }>
+  $NeoJettonMinter$init$_store PROCINLINE:<{
+    s5 s6 XCHG2
+    STSLICE
+    s1 s3 XCHG
+    STREF
+    257 PUSHINT
+    STIX
+    257 PUSHINT
+    STIX
+    SWAP
+    NEWC
+    257 PUSHINT
+    STIX
+    s1 s2 XCHG
+    STSLICE
+    STBREFR
+  }>
+  $NeoJettonFactory$init$_load PROCINLINE:<{
+    LDMSGADDR
+    LDMSGADDR
+    -ROT
+  }>
+  $NeoJettonFactory$_contract_init PROCINLINE:<{
+    OVER
+    FALSE
+    500 PUSHINT
+  }>
+  $NeoJettonFactory$_contract_load PROCINLINE:<{
+    c4 PUSH
+    CTOS
+    1 LDI
+    SWAP
+    IF:<{
+      $NeoJettonFactory$_load INLINECALLDICT
+      1 5 BLKDROP2
+    }>ELSE<{
+      $NeoJettonFactory$init$_load INLINECALLDICT
+      s0 s2 XCHG
+      ENDS
+      SWAP
+      $NeoJettonFactory$_contract_init INLINECALLDICT
+    }>
+  }>
+  $NeoJettonFactory$_contract_store PROCINLINE:<{
+    NEWC
+    TRUE
+    SWAP
+    1 STI
+    5 -ROLL
+    $NeoJettonFactory$_store INLINECALLDICT
+    ENDC
+    c4 POP
+  }>
+  $Cell$_fun_asSlice PROCINLINE:<{
+        CTOS
+  }>
+  $global_newAddress PROCINLINE:<{
+        NEWC
+    4 PUSHINT
+    SWAP
+    3 STU
+    s1 s2 XCHG
+    8 STI
+    256 STU
+        ENDC
+    $Cell$_fun_asSlice INLINECALLDICT
+  }>
+  $global_contractAddressExt PROCINLINE:<{
+        s0 PUSH HASHCU // `data` hash
+        s2 PUSH HASHCU // `code` hash
+        SWAP2
+        CDEPTH         // `data` depth
+        SWAP
+        CDEPTH         // `code` depth
+        131380 INT     // (2 << 16) | (1 << 8) | 0x34
+        // Group 2: Composition of the Builder
+        NEWC
+        24 STU  // store refs_descriptor | bits_descriptor | data
+        16 STU  // store depth_descriptor for `code`
+        16 STU  // store depth_descriptor for `data`
+        256 STU // store `code` hash
+        256 STU // store `data` hash
+        // Group 3: SHA256 hash of the resulting Builder
+        ONE HASHEXT_SHA256
+    $global_newAddress INLINECALLDICT
+  }>
+  $global_contractAddress PROCINLINE:<{
+    0 PUSHINT
+    -ROT
+    $global_contractAddressExt INLINECALLDICT
+  }>
+  $NeoJettonMinter$_init_child PROCREF:<{
+        B{b5ee9c7201024101000eb7000114ff00f4a413f4bcf2c80b01020162020303dcd0eda2edfb01d072d721d200d200fa4021103450666f04f86102f862ed44d0d200018e38fa40d4810101d700810101d700d401d0810101d700fa4030102610251024102306d15504707f6d7029104a0908070605103441308101f46de30d0e925f0ee02cd749c21fe3000cf90120220405020120191a04e80cd31f2182107bdd97deba8fde31d33ffa00fa40d72c01916d93fa4001e231f82812db3c82008cf8f8425a705920f90022f9005ad76501d76582020134c8cb17cb0fcb0fcbffcbff71f90400c87401cb0212ca07cbffc9d0c705f2f450dda12c6eb3923c30e30d10ac5519e021821010000001ba24061107029e82f0753a71dc74e6b4478f82746d73660ad7945b48893674e08e6e377388bc41c98fbae30282f0158e394e7cc73a9aeb362957fe037665588aef16f3bd68580c13ab84097cf22abae3025f0df2c0821213009870804003c8018210d53276db58cb1fcb3fc9103e41e05a6d6d40037fc8cf8580ca00cf8440ce01fa028069cf40025c6e016eb0935bcf819d58cf8680cf8480f400f400cf81e2f400c901fb0002fe8e6b5b328200a5c3f8422ac705917f95f84222c705e2f2f4109b108a1079106810571046103510247f5034c87f01ca0055c050dcfa021ace18cc5006fa025004fa0258fa02ca00c858206e9430cf84809201cee212ca0012ce12ce03c8810101cf0012f40012cdcdc9ed54db31e021821010000002bae30221821010000003080900be5b32f84229c705f2e5f1109b108a107910681057104610351024705034c87f01ca0055c050dcfa021ace18cc5006fa025004fa0258fa02ca00c858206e9430cf84809201cee212ca0012ce12ce03c8810101cf0012f40012cdcdc9ed54db3103feba8ef031fa403010bc10ab109a108910781067105610451034413ddb3c3310bc10ab109a10891078106710561045103458c87f01ca0055c050dcfa021ace18cc5006fa025004fa0258fa02ca00c858206e9430cf84809201cee212ca0012ce12ce03c8810101cf0012f40012cdcdc9ed54db31e021821010000004bae30221170a0b01e231fa403010bc10ab109a108910781067105610451034413ddb3c3210bc10ab109a1089107810671056104510344300c87f01ca0055c050dcfa021ace18cc5006fa025004fa0258fa02ca00c858206e9430cf84809201cee212ca0012ce12ce03c8810101cf0012f40012cdcdc9ed54db311703fe821012345678ba8eeb31d2003010bc10ab109a108910781067105610451034413ddb3c3610bc10ab109a1089107810675504c87f01ca0055c050dcfa021ace18cc5006fa025004fa0258fa02ca00c858206e9430cf84809201cee212ca0012ce12ce03c8810101cf0012f40012cdcdc9ed54db31e021821022222222bae302170c0d04fe31fa40d2003050dedb3cf8281edb3c705920f90022f9005ad76501d76582020134c8cb17cb0fcb0fcbffcbff71f90400c87401cb0212ca07cbffc9d08208989680711110c80182101111111158cb1fca00c94130011110015a6d6d40037fc8cf8580ca00cf8440ce01fa028069cf40025c6e016eb0935bcf818ae2f400c9011724320e02fe21821087654321ba8eed31fa403010bc10ab109a108910781067105610451034413ddb3c3510bc10ab109a10891078106710565503c87f01ca0055c050dcfa021ace18cc5006fa025004fa0258fa02ca00c858206e9430cf84809201cee212ca0012ce12ce03c8810101cf0012f40012cdcdc9ed54db31e021821075111111170f008cfb00551ac87f01ca0055c050dcfa021ace18cc5006fa025004fa0258fa02ca00c858206e9430cf84809201cee212ca0012ce12ce03c8810101cf0012f40012cdcdc9ed54db3103c6ba8f5431fa40fa0030f8416f2410235f03814d5026b3f2f4820092235317206e925b7092c705e292317f94511dc705e2f2f48200ba6253d1a02bbbf2f451cca00e10bd10ac109b108a107910681057104610354014db3ce0018210946a98b6bae3020c1411100190d33f30c8018210aff90f5758cb1fcb3fc910bd10ac109b108a107910681057104610354430f84270705003804201503304c8cf8580ca00cf8440ce01fa02806acf40f400c901fb00110084c87f01ca0055c050dcfa021ace18cc5006fa025004fa0258fa02ca00c858206e9430cf84809201cee212ca0012ce12ce03c8810101cf0012f40012cdcdc9ed54db3102fc30f8416f243032814d5025b3f2f481585727f2f48200cfa429820afaf080a013be12f2f48200ba6253c7a02abbf2f48200c9e72e81010b23714133f40a6fa19401d70030925b6de26ef2f40d81010b2e7f71216e955b59f4593098c801cf004133f441e251b6a00d2610bd10ac109b108a0910681057104610354413db3c141502ae10ac5519db3cf8276f10820afaf080a120c2009130e30dc87f01ca0055c050dcfa021ace18cc5006fa025004fa0258fa02ca00c858206e9430cf84809201cee212ca0012ce12ce03c8810101cf0012f40012cdcdc9ed54171802f6f8285220db3c5c705920f90022f9005ad76501d76582020134c8cb17cb0fcb0fcbffcbff71f90400c87401cb0212ca07cbffc9d08209c9c3807170f828218b08103510491023102ac85550821005138d915007cb1f15cb3f5003fa02ce01206e9430cf84809201cee201fa02cec950521413103555127fc8cf858024160080c87f01ca0055c050dcfa021ace18cc5006fa025004fa0258fa02ca00c858206e9430cf84809201cee212ca0012ce12ce03c8810101cf0012f40012cdcdc9ed540058ca00cf8440ce01fa028069cf40025c6e016eb0935bcf819d58cf8680cf8480f400f400cf81e2f400c901fb000010f8422cc705f2e08400fa5302a8812710a9045340716d5a6d6d40037fc8cf8580ca00cf8440ce01fa028069cf40025c6e016eb0935bcf819d58cf8680cf8480f400f400cf81e2f400c901fb00a152c0716d5a6d6d40037fc8cf8580ca00cf8440ce01fa028069cf40025c6e016eb0935bcf819d58cf8680cf8480f400f400cf81e2f400c901fb000201581b1c0202711f200291b4a3bda89a1a400031c71f481a9020203ae01020203ae01a803a1020203ae01f48060204c204a204820460da2aa08e0fedae052209412100e0c0a206882610203e8dbc61bb678d9a30221d0291b66f5da89a1a400031c71f481a9020203ae01020203ae01a803a1020203ae01f48060204c204a204820460da2aa08e0fedae052209412100e0c0a206882610203e8dbc61bb678d9a30221e00022b0002240295adbcf6a268690000c71c7d206a408080eb80408080eb806a00e8408080eb807d201808130812881208118368aa82383fb6b81488250484038302881a20984080fa36f186aa866d9e3668c022230291af16f6a268690000c71c7d206a408080eb80408080eb806a00e8408080eb807d201808130812881208118368aa82383fb6b81488250484038302881a20984080fa36f186ed9e366ac02221011a7ff82852d0db3c302e59546ee0240078fa00fa40d4fa00fa00fa00d200d401d0d72c01916d93fa4001e201d200fa40fa40d430d0810101d700f40430106d106c106b106a1069106810676c1d0162f828db3c705920f90022f9005ad76501d76582020134c8cb17cb0fcb0fcbffcbff71f90400c87401cb0212ca07cbffc9d024011688c87001ca005a02cecec9250114ff00f4a413f4bcf2c80b26020162272801f2d001d072d721d200d200fa4021103450666f04f86102f862ed44d0d200019cfa00fa40fa40d20055306c149bfa40fa405902d101705970e2058e35038020d7218020d721d31f01821005138d91ba99d33f31fa003012a0019130e24003c87f01ca0055305043fa02ce12ceca00c9ed54e003d70d1ff2e0822129020120343504e4821005138d91ba8ecc31d33ffa00fa40d72c01916d93fa4001e230fa00f8416f245b81114d3229c705917f95f84229c705e2f2f45163a021c20093365f04e30d4003c87f01ca0055305043fa02ce12ceca00c9ed54e021821075097f5dbae30221821011111111bae302018210595f07bcba2a2b2c2d00a844347107c8553082107362d09c5005cb1f13cb3f01fa02cecec9230350555a6d6d40037fc8cf8580ca00cf8440ce01fa028069cf40025c6e016eb0935bcf819d58cf8680cf8480f400f400cf81e2f400c901fb0002f431d33ffa00fa40d72c01916d93fa4001e201f40431fa00f8416f2410235f038200f8b72bb3f2f48111b25118c705f2f48200d5575385bef2f45174a15138db3c5c705920f90022f9005ad76501d76582020134c8cb17cb0fcb0fcbffcbff71f90400c87401cb0212ca07cbffc9d050767080407f2b4813507dc82e2f004a313403d2003081771bf84224c705f2f44330c87f01ca0055305043fa02ce12ceca00c9ed54010ee3025f05f2c082300018f82ac87001ca005a02cecec900ee5550821005138d915007cb1f15cb3f5003fa02ce01206e9430cf84809201cee201fa02cec910561058103440130810465522c8cf8580ca00cf8440ce01fa028069cf40025c6e016eb0935bcf819d58cf8680cf8480f400f400cf81e2f400c901fb004003c87f01ca0055305043fa02ce12ceca00c9ed5403fed33ffa00d72c01916d93fa4001e231f8416f2410235f038200f8b728b3f2f48111b25115c705f2f48200d5575352bef2f45141a170541324804007c8553082107bdd97de5005cb1f13cb3f01fa02ce01206e9430cf84809201cee2c9250350555a6d6d40037fc8cf8580ca00cf8440ce01fa028069cf40025c6e016eb08a8a31323300065bcf81001a58cf8680cf8480f400f400cf810038e2f400c901fb004003c87f01ca0055305043fa02ce12ceca00c9ed5402012036370201203d3e014db996eed44d0d200019cfa00fa40fa40d20055306c149bfa40fa405902d101705970e2db3c6c44838020120393a000854732123014db4a3bda89a1a4000339f401f481f481a400aa60d82937f481f480b205a202e0b2e1c5b678d88303b014db66f5da89a1a4000339f401f481f481a400aa60d82937f481f480b205a202e0b2e1c5b678d88303c000222000220014db96c0ed44d0d200019cfa00fa40fa40d20055306c149bfa40fa405902d101705970e2db3c6c4183f014db95bded44d0d200019cfa00fa40fa40d20055306c149bfa40fa405902d101705970e2db3c6c41840000223000221} B>boc PUSHREF
+    NEWC
+    FALSE
+    SWAP
+    1 STI
+    6 2 BLKSWAP
+    $NeoJettonMinter$init$_store INLINECALLDICT
+    ENDC
+  }>
+  $SendParameters$_constructor_to_value_mode_body_code_data PROCINLINE:<{
+    s3 s5 XCHG
+    2 3 BLKSWAP
+    TRUE
+  }>
+  $MessageParameters$_constructor_bounce_to_value_mode_body PROCINLINE:<{
+    s3 s3 XCHG2
+    s0 s4 XCHG
+  }>
+  $NeoJettonFactory$_fun_is_paused PROCREF:<{
+    OVER
+  }>
+  $NeoJettonFactory$_fun_treasury PROCREF:<{
+    s3 PUSH
+  }>
+  $NeoJettonFactory$_fun_fee PROCREF:<{
+    DUP
+  }>
+  $NeoJettonFactory$_fun_notify PROCINLINE:<{
+    __tact_context_get_sender INLINECALLDICT
+    FALSE
+    0 PUSHINT
+    s0 s3 XCHG2
+    66 PUSHINT
+    SWAP
+    $MessageParameters$_constructor_bounce_to_value_mode_body INLINECALLDICT
+        NEWC
+        b{01} STSLICECONST  // store tag = $0 and ihr_disabled = true
+        1 STI               // store `bounce`
+        b{000} STSLICECONST // store bounced = false and src = addr_none
+        STSLICE             // store `to`
+        SWAP
+        STGRAMS             // store `value`
+        106 PUSHINT         // 1 + 4 + 4 + 64 + 32 + 1
+        STZEROES
+        // → Stack state
+        // s0: Builder
+        // s1: `body`
+        // s2: `mode`
+        STDICT
+        ENDC
+        SWAP
+        SENDRAWMSG
+  }>
+  $NeoJettonFactory$_fun_requireOwner PROCREF:<{
+    __tact_context_get_sender INLINECALLDICT
+    s5 PUSH
+    SDEQ
+    132 THROWIFNOT
+  }>
+  $NeoJettonFactory$_fun_owner PROCREF:<{
+    s4 PUSH
+  }>
+  $Deploy$_constructor_queryId PROCINLINE:<{
+  }>
+  $DeployOk$_constructor_queryId PROCINLINE:<{
+  }>
+  $SendParameters$_constructor_to_value_mode PROCINLINE:<{
+    PUSHNULL
+    2SWAP
+    PUSHNULL
+    PUSHNULL
+    s0 s0 s3 XCHG3
+    TRUE
+  }>
+  %is_paused PROC:<{
+    $NeoJettonFactory$_contract_load INLINECALLDICT
+    $NeoJettonFactory$_fun_is_paused INLINECALLDICT
+    5 1 BLKDROP2
+  }>
+  %treasury PROC:<{
+    $NeoJettonFactory$_contract_load INLINECALLDICT
+    $NeoJettonFactory$_fun_treasury INLINECALLDICT
+    5 1 BLKDROP2
+  }>
+  %fee PROC:<{
+    $NeoJettonFactory$_contract_load INLINECALLDICT
+    $NeoJettonFactory$_fun_fee INLINECALLDICT
+    5 1 BLKDROP2
+  }>
+  %owner PROC:<{
+    $NeoJettonFactory$_contract_load INLINECALLDICT
+    $NeoJettonFactory$_fun_owner INLINECALLDICT
+    5 1 BLKDROP2
+  }>
+  recv_internal PROC:<{
+    c2 SAVE
+    SAMEALTSAVE
+    SWAP
+    CTOS
+    2 PUSHINT
+    SDSKIPFIRST
+    1 LDI
+    1 LDI
+    LDMSGADDR
+    OVER
+    s3 s4 XCHG
+    s6 s6 XCHG2
+    4 TUPLE
+    __tact_context SETGLOB
+    s0 s2 XCHG
+    __tact_context_sender SETGLOB
+    $NeoJettonFactory$_contract_load INLINECALLDICT
+    s0 s6 XCHG
+    IFJMP:<{
+      6 BLKDROP
+    }>
+    s4 PUSH
+    SBITS
+    31 GTINT
+    IF:<{
+      s0 s4 XCHG
+      32 LDU
+      OVER
+      1640691497 PUSHINT
+      EQUAL
+      IFJMP:<{
+        NIP
+        LDMSGADDR
+        LDREF
+        LDVARUINT16
+        LDVARUINT16
+        LDVARUINT16
+        DROP
+        __tact_context_get INLINECALLDICT
+        s1 s3 XCHG
+        3 BLKDROP
+        61788 PUSHINT
+        s10 PUSH
+        NOT
+        THROWANYIFNOT
+        5239 PUSHINT
+        OVER
+        400000000 PUSHINT
+        GEQ
+        THROWANYIFNOT
+        49334 PUSHINT
+        s4 PUSH
+        0 GTINT
+        THROWANYIFNOT
+        60484 PUSHINT
+        s4 PUSH
+        1000000000000000000000000000 PUSHINTX
+        LEQ
+        THROWANYIFNOT
+        5 -ROLL
+        s7 PUSH
+        $NeoJettonMinter$_init_child INLINECALLDICT
+        2DUP
+        $global_contractAddress INLINECALLDICT
+        s0 s3 XCHG
+        50000000 PUSHINT
+        SUB
+        1 PUSHINT
+        0 PUSHINT
+        $Deploy$_constructor_queryId INLINECALLDICT
+        NEWC
+        $Deploy$_store_cell INLINECALLDICT
+        2 3 BLKSWAP
+        $SendParameters$_constructor_to_value_mode_body_code_data INLINECALLDICT
+            NEWC
+            b{01} STSLICECONST  // store tag = $0 and ihr_disabled = true
+            1 STI               // store `bounce`
+            b{000} STSLICECONST // store bounced = false and src = addr_none
+            STSLICE             // store `to`
+            SWAP
+            STGRAMS             // store `value`
+            105 PUSHINT         // 1 + 4 + 4 + 64 + 32
+            STZEROES            // store currency_collection, ihr_fee, fwd_fee, created_lt and created_at
+            // → Stack state
+            // s0: Builder
+            // s1: `data`
+            // s2: `code`
+            // s3: `body`
+            // s4: `mode`
+            // Group 2: Placing the Builder after code and data, then checking those for nullability
+            s2 XCHG0
+            DUP2
+            ISNULL
+            SWAP
+            ISNULL
+            AND
+            // → Stack state
+            // s0: -1 (true) if `data` and `code` are both null, 0 (false) otherwise
+            // s1: `code`
+            // s2: `data`
+            // s3: Builder
+            // s4: `body`
+            // s5: `mode`
+            // Group 3: Left branch of the IFELSE, executed if s0 is -1 (true)
+            <{
+                DROP2 // drop `data` and `code`, since either of those is null
+                b{0} STSLICECONST
+            }> PUSHCONT
+            // Group 3: Right branch of the IFELSE, executed if s0 is 0 (false)
+            <{
+                // _ split_depth:(Maybe (## 5))
+                //   special:(Maybe TickTock)
+                //   code:(Maybe ^Cell)
+                //   data:(Maybe ^Cell)
+                //   library:(Maybe ^Cell)
+                // = StateInit;
+                ROT                // place message Builder on top
+                b{10} STSLICECONST // store Maybe = true, Either = false
+                // Start composing inlined StateInit
+                b{00} STSLICECONST // store split_depth and special first
+                STDICT             // store code
+                STDICT             // store data
+                b{0} STSLICECONST  // store library
+            }> PUSHCONT
+            // Group 3: IFELSE that does the branching shown above
+            IFELSE
+            // → Stack state
+            // s0: Builder
+            // s1: null or StateInit
+            // s2: `body`
+            // s3: `mode`
+            // Group 4: Finalizing the message
+            STDICT // store `body` as ref with an extra Maybe bit, since `body` might be null
+            ENDC
+            // → Stack state
+            // s0: Cell
+            // s1: `mode`
+            // Group 5: Sending the message, with `mode` on top
+            SWAP
+            SENDRAWMSG // https://github.com/tact-lang/tact/issues/1558
+        s0 s3 s4 XCHG3
+        $NeoJettonFactory$_contract_store INLINECALLDICT
+        RETALT
+      }>
+      OVER
+      268435457 PUSHINT
+      EQUAL
+      IFJMP:<{
+        2DROP
+        s3 POP
+        42435 PUSHINT
+        __tact_context_get_sender INLINECALLDICT
+        s3 PUSH
+        SDEQ
+        IF:<{
+          TRUE
+        }>ELSE<{
+          __tact_context_get_sender INLINECALLDICT
+          s4 PUSH
+          SDEQ
+        }>
+        THROWANYIFNOT
+        s0 s0 s3 XCHG3
+        TRUE
+        SWAP
+        $NeoJettonFactory$_contract_store INLINECALLDICT
+        RETALT
+      }>
+      OVER
+      268435458 PUSHINT
+      EQUAL
+      IFJMP:<{
+        2DROP
+        s3 POP
+        __tact_context_get_sender INLINECALLDICT
+        s2 PUSH
+        SDEQ
+        1521 THROWIFNOT
+        s0 s0 s3 XCHG3
+        FALSE
+        SWAP
+        $NeoJettonFactory$_contract_store INLINECALLDICT
+        RETALT
+      }>
+      OVER
+      268435459 PUSHINT
+      EQUAL
+      IFJMP:<{
+        NIP
+        LDMSGADDR
+        DROP
+        s3 s4 XCHG
+        s1 s3 s5 XCHG3
+        $NeoJettonFactory$_fun_requireOwner INLINECALLDICT
+        s2 POP
+        s3 s4 XCHG
+        s3 s0 s0 XCHG3
+        $NeoJettonFactory$_contract_store INLINECALLDICT
+        RETALT
+      }>
+      OVER
+      268435460 PUSHINT
+      EQUAL
+      IFJMP:<{
+        NIP
+        LDMSGADDR
+        DROP
+        s3 s4 XCHG
+        s1 s3 s5 XCHG3
+        $NeoJettonFactory$_fun_requireOwner INLINECALLDICT
+        s3 POP
+        s3 s4 XCHG
+        ROT
+        $NeoJettonFactory$_contract_store INLINECALLDICT
+        RETALT
+      }>
+      OVER
+      268435461 PUSHINT
+      EQUAL
+      IFJMP:<{
+        NIP
+        257 PUSHINT
+        LDIX
+        DROP
+        s3 s4 XCHG
+        s1 s3 s5 XCHG3
+        $NeoJettonFactory$_fun_requireOwner INLINECALLDICT
+        DROP
+        46136 PUSHINT
+        s5 PUSH
+        2000 PUSHINT
+        LEQ
+        THROWANYIFNOT
+        4 ROLL
+        $NeoJettonFactory$_contract_store INLINECALLDICT
+        RETALT
+      }>
+      SWAP
+      2490013878 PUSHINT
+      EQUAL
+      IFJMP:<{
+        64 LDU
+        DROP
+        $DeployOk$_constructor_queryId INLINECALLDICT
+        NEWC
+        $DeployOk$_store_cell INLINECALLDICT
+        s3 s5 XCHG
+        s4 s3 s0 XCHG3
+        $NeoJettonFactory$_fun_notify INLINECALLDICT
+        $NeoJettonFactory$_contract_store INLINECALLDICT
+        RETALT
+      }>
+      s0 s4 XCHG
+    }>
+    s0 s4 XCHG
+    HASHSU
+    9749857619005414024001849670962768389469058037002612199702020989200281432618 PUSHINT
+    EQUAL
+    IFJMP:<{
+      s0 s3 s4 XCHG3
+      $NeoJettonFactory$_fun_requireOwner INLINECALLDICT
+      s4 PUSH
+      0 PUSHINT
+      7 PUSHPOW2
+      $SendParameters$_constructor_to_value_mode INLINECALLDICT
+          NEWC
+          b{01} STSLICECONST  // store tag = $0 and ihr_disabled = true
+          1 STI               // store `bounce`
+          b{000} STSLICECONST // store bounced = false and src = addr_none
+          STSLICE             // store `to`
+          SWAP
+          STGRAMS             // store `value`
+          105 PUSHINT         // 1 + 4 + 4 + 64 + 32
+          STZEROES            // store currency_collection, ihr_fee, fwd_fee, created_lt and created_at
+          // → Stack state
+          // s0: Builder
+          // s1: `data`
+          // s2: `code`
+          // s3: `body`
+          // s4: `mode`
+          // Group 2: Placing the Builder after code and data, then checking those for nullability
+          s2 XCHG0
+          DUP2
+          ISNULL
+          SWAP
+          ISNULL
+          AND
+          // → Stack state
+          // s0: -1 (true) if `data` and `code` are both null, 0 (false) otherwise
+          // s1: `code`
+          // s2: `data`
+          // s3: Builder
+          // s4: `body`
+          // s5: `mode`
+          // Group 3: Left branch of the IFELSE, executed if s0 is -1 (true)
+          <{
+              DROP2 // drop `data` and `code`, since either of those is null
+              b{0} STSLICECONST
+          }> PUSHCONT
+          // Group 3: Right branch of the IFELSE, executed if s0 is 0 (false)
+          <{
+              // _ split_depth:(Maybe (## 5))
+              //   special:(Maybe TickTock)
+              //   code:(Maybe ^Cell)
+              //   data:(Maybe ^Cell)
+              //   library:(Maybe ^Cell)
+              // = StateInit;
+              ROT                // place message Builder on top
+              b{10} STSLICECONST // store Maybe = true, Either = false
+              // Start composing inlined StateInit
+              b{00} STSLICECONST // store split_depth and special first
+              STDICT             // store code
+              STDICT             // store data
+              b{0} STSLICECONST  // store library
+          }> PUSHCONT
+          // Group 3: IFELSE that does the branching shown above
+          IFELSE
+          // → Stack state
+          // s0: Builder
+          // s1: null or StateInit
+          // s2: `body`
+          // s3: `mode`
+          // Group 4: Finalizing the message
+          STDICT // store `body` as ref with an extra Maybe bit, since `body` might be null
+          ENDC
+          // → Stack state
+          // s0: Cell
+          // s1: `mode`
+          // Group 5: Sending the message, with `mode` on top
+          SWAP
+          SENDRAWMSG // https://github.com/tact-lang/tact/issues/1558
+      $NeoJettonFactory$_contract_store INLINECALLDICT
+    }>
+    5 BLKDROP
+    130 THROW
+  }>
+}END>c

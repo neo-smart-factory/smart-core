@@ -1,0 +1,635 @@
+#pragma version =0.4.6;
+#pragma allow-post-modification;
+#pragma compute-asm-ltr;
+
+;; factory_NeoJettonWallet.headers.fc
+;;
+;; Header files for NeoJettonWallet
+;; NOTE: declarations are sorted for optimal order
+;;
+
+;; __tact_store_address_opt
+builder __tact_store_address_opt(builder b, slice address) inline;
+
+;; __tact_context_get
+(int, slice, int, slice) __tact_context_get() inline;
+
+;; __tact_context_get_sender
+slice __tact_context_get_sender() inline;
+
+;; $InternalTransfer$_store
+builder $InternalTransfer$_store(builder build_0, (int, int, slice, slice, int, slice) v) inline;
+
+;; $InternalTransfer$_store_cell
+cell $InternalTransfer$_store_cell((int, int, slice, slice, int, slice) v, builder b) inline;
+
+;; $TransferNotification$_store
+builder $TransferNotification$_store(builder build_0, (int, int, slice, slice) v) inline;
+
+;; $TransferNotification$_store_cell
+cell $TransferNotification$_store_cell((int, int, slice, slice) v, builder b) inline;
+
+;; $BurnNotification$_store
+builder $BurnNotification$_store(builder build_0, (int, int, slice, slice) v) inline;
+
+;; $BurnNotification$_store_cell
+cell $BurnNotification$_store_cell((int, int, slice, slice) v, builder b) inline;
+
+;; $NeoJettonWallet$_store
+builder $NeoJettonWallet$_store(builder build_0, (int, slice, slice, int) v) inline;
+
+;; $NeoJettonWallet$_load
+(slice, ((int, slice, slice, int))) $NeoJettonWallet$_load(slice sc_0) inline;
+
+;; $WalletData$_to_external
+(int, slice, slice, int) $WalletData$_to_external(((int, slice, slice, int)) v) inline;
+
+;; $NeoJettonWallet$init$_store
+builder $NeoJettonWallet$init$_store(builder build_0, (slice, slice) v) inline;
+
+;; $NeoJettonWallet$init$_load
+(slice, ((slice, slice))) $NeoJettonWallet$init$_load(slice sc_0) inline;
+
+;; $NeoJettonWallet$_contract_init
+(int, slice, slice, int) $NeoJettonWallet$_contract_init(slice $owner, slice $master) impure inline;
+
+;; $NeoJettonWallet$_contract_load
+(int, slice, slice, int) $NeoJettonWallet$_contract_load() impure inline;
+
+;; $NeoJettonWallet$_contract_store
+() $NeoJettonWallet$_contract_store((int, slice, slice, int) v) impure inline;
+
+;; $Cell$_fun_asSlice
+slice $Cell$_fun_asSlice(cell $self) impure inline;
+
+;; $global_newAddress
+slice $global_newAddress(int $chain, int $hash) impure inline;
+
+;; $global_contractAddressExt
+slice $global_contractAddressExt(int $chain, cell $code, cell $data) impure inline;
+
+;; $global_contractAddress
+slice $global_contractAddress((cell, cell) $s) impure inline;
+
+;; $InternalTransfer$_constructor_query_id_amount_from_response_address_forward_ton_amount_forward_payload
+((int, int, slice, slice, int, slice)) $InternalTransfer$_constructor_query_id_amount_from_response_address_forward_ton_amount_forward_payload(int $query_id, int $amount, slice $from, slice $response_address, int $forward_ton_amount, slice $forward_payload) inline;
+
+;; $NeoJettonWallet$_init_child
+(cell, cell) $NeoJettonWallet$_init_child(slice $owner, slice $master) inline_ref;
+
+;; $NeoJettonWallet$_fun_balance
+((int, slice, slice, int), int) $NeoJettonWallet$_fun_balance((int, slice, slice, int) $self) impure inline_ref;
+
+;; $NeoJettonWallet$_fun_owner
+((int, slice, slice, int), slice) $NeoJettonWallet$_fun_owner((int, slice, slice, int) $self) impure inline_ref;
+
+;; $NeoJettonWallet$_fun_master
+((int, slice, slice, int), slice) $NeoJettonWallet$_fun_master((int, slice, slice, int) $self) impure inline_ref;
+
+;; $NeoJettonWallet$_fun_is_paused
+((int, slice, slice, int), int) $NeoJettonWallet$_fun_is_paused((int, slice, slice, int) $self) impure inline_ref;
+
+;; $WalletData$_constructor_balance_owner_master_paused
+((int, slice, slice, int)) $WalletData$_constructor_balance_owner_master_paused(int $balance, slice $owner, slice $master, int $paused) inline;
+
+;; $NeoJettonWallet$_fun_wallet_data
+((int, slice, slice, int), (int, slice, slice, int)) $NeoJettonWallet$_fun_wallet_data((int, slice, slice, int) $self) impure inline_ref;
+
+;; $SendParameters$_constructor_to_value_mode_body
+((int, cell, cell, cell, int, slice, int)) $SendParameters$_constructor_to_value_mode_body(slice $to, int $value, int $mode, cell $body) inline;
+
+;; $TransferNotification$_constructor_query_id_amount_sender_forward_payload
+((int, int, slice, slice)) $TransferNotification$_constructor_query_id_amount_sender_forward_payload(int $query_id, int $amount, slice $sender, slice $forward_payload) inline;
+
+;; $SendParameters$_constructor_to_value_mode_bounce_body_code_data
+((int, cell, cell, cell, int, slice, int)) $SendParameters$_constructor_to_value_mode_bounce_body_code_data(slice $to, int $value, int $mode, int $bounce, cell $body, cell $code, cell $data) inline;
+
+;; $BurnNotification$_constructor_query_id_amount_sender_response_destination
+((int, int, slice, slice)) $BurnNotification$_constructor_query_id_amount_sender_response_destination(int $query_id, int $amount, slice $sender, slice $response_destination) inline;
+
+
+;; factory_NeoJettonWallet.stdlib.fc
+global (int, slice, int, slice) __tact_context;
+global slice __tact_context_sender;
+global cell __tact_child_contract_codes;
+global int __tact_randomized;
+
+(slice, slice) __tact_load_address_opt(slice cs) asm """
+
+            b{00} SDBEGINSQ
+            IF:<{
+              PUSHNULL
+            }>ELSE<{
+              LDMSGADDR
+              SWAP
+            }>
+
+""";
+
+builder __tact_store_addr_none(builder b) asm "b{00} STSLICECONST";
+
+builder __tact_store_address_opt(builder b, slice address) inline {
+    if (null?(address)) {
+        return __tact_store_addr_none(b);
+    } else {
+        return b.store_slice(address);
+    }
+}
+
+(int, slice, int, slice) __tact_context_get() inline {
+    return __tact_context;
+}
+
+slice __tact_context_get_sender() inline {
+    return __tact_context_sender;
+}
+
+builder $global_beginCell() impure asm """
+    NEWC
+""";
+
+int $global_contractHash(cell $code, cell $data) impure asm """
+    s0 PUSH HASHCU // `data` hash
+    s2 PUSH HASHCU // `code` hash
+    SWAP2
+    CDEPTH         // `data` depth
+    SWAP
+    CDEPTH         // `code` depth
+    131380 INT     // (2 << 16) | (1 << 8) | 0x34
+
+    // Group 2: Composition of the Builder
+    NEWC
+    24 STU  // store refs_descriptor | bits_descriptor | data
+    16 STU  // store depth_descriptor for `code`
+    16 STU  // store depth_descriptor for `data`
+    256 STU // store `code` hash
+    256 STU // store `data` hash
+
+    // Group 3: SHA256 hash of the resulting Builder
+    ONE HASHEXT_SHA256
+""";
+
+slice $Slice$_fun_asAddressUnsafe(slice $self) impure asm "NOP";
+
+slice $Cell$_fun_beginParse(cell $self) impure asm """
+    CTOS
+""";
+
+slice $Cell$_fun_asSlice(cell $self) impure inline {
+    var ($self) = $self;
+    return $Cell$_fun_beginParse($self);
+}
+
+cell $Builder$_fun_endCell(builder $self) impure asm """
+    ENDC
+""";
+
+slice $global_newAddress(int $chain, int $hash) impure inline {
+    return $Slice$_fun_asAddressUnsafe($Cell$_fun_asSlice($Builder$_fun_endCell(store_uint(store_int(store_uint($global_beginCell(), 4, 3), $chain, 8), $hash, 256))));
+}
+
+slice $global_contractAddressExt(int $chain, cell $code, cell $data) impure inline {
+    int $hash = $global_contractHash($code, $data);
+    return $global_newAddress($chain, $hash);
+}
+
+slice $global_contractAddress((cell, cell) $s) impure inline {
+    var (($s'code, $s'data)) = $s;
+    return $global_contractAddressExt(0, $s'code, $s'data);
+}
+
+() $global_send((int, cell, cell, cell, int, slice, int) $params) impure asm """
+    NEWC
+    b{01} STSLICECONST  // store tag = $0 and ihr_disabled = true
+    1 STI               // store `bounce`
+    b{000} STSLICECONST // store bounced = false and src = addr_none
+    STSLICE             // store `to`
+    SWAP
+    STGRAMS             // store `value`
+    105 PUSHINT         // 1 + 4 + 4 + 64 + 32
+    STZEROES            // store currency_collection, ihr_fee, fwd_fee, created_lt and created_at
+    // → Stack state
+    // s0: Builder
+    // s1: `data`
+    // s2: `code`
+    // s3: `body`
+    // s4: `mode`
+
+    // Group 2: Placing the Builder after code and data, then checking those for nullability
+    s2 XCHG0
+    DUP2
+    ISNULL
+    SWAP
+    ISNULL
+    AND
+    // → Stack state
+    // s0: -1 (true) if `data` and `code` are both null, 0 (false) otherwise
+    // s1: `code`
+    // s2: `data`
+    // s3: Builder
+    // s4: `body`
+    // s5: `mode`
+
+    // Group 3: Left branch of the IFELSE, executed if s0 is -1 (true)
+    <{
+        DROP2 // drop `data` and `code`, since either of those is null
+        b{0} STSLICECONST
+    }> PUSHCONT
+
+    // Group 3: Right branch of the IFELSE, executed if s0 is 0 (false)
+    <{
+        // _ split_depth:(Maybe (## 5))
+        //   special:(Maybe TickTock)
+        //   code:(Maybe ^Cell)
+        //   data:(Maybe ^Cell)
+        //   library:(Maybe ^Cell)
+        // = StateInit;
+        ROT                // place message Builder on top
+        b{10} STSLICECONST // store Maybe = true, Either = false
+        // Start composing inlined StateInit
+        b{00} STSLICECONST // store split_depth and special first
+        STDICT             // store code
+        STDICT             // store data
+        b{0} STSLICECONST  // store library
+    }> PUSHCONT
+
+    // Group 3: IFELSE that does the branching shown above
+    IFELSE
+    // → Stack state
+    // s0: Builder
+    // s1: null or StateInit
+    // s2: `body`
+    // s3: `mode`
+
+    // Group 4: Finalizing the message
+    STDICT // store `body` as ref with an extra Maybe bit, since `body` might be null
+    ENDC
+    // → Stack state
+    // s0: Cell
+    // s1: `mode`
+
+    // Group 5: Sending the message, with `mode` on top
+    SWAP
+    SENDRAWMSG // https://github.com/tact-lang/tact/issues/1558
+""";
+
+(slice, int) $Slice$_fun_loadCoins(slice $self) impure asm( -> 1 0) """
+    LDVARUINT16
+""";
+
+(slice, ()) $Slice$_fun_skipBits(slice $self, int $l) impure asm """
+    SDSKIPFIRST
+""";
+
+;; factory_NeoJettonWallet.storage.fc
+;;
+;; Type: SendParameters
+;; TLB: _ mode:int257 body:Maybe ^cell code:Maybe ^cell data:Maybe ^cell value:int257 to:address bounce:bool = SendParameters
+;;
+
+((int, cell, cell, cell, int, slice, int)) $SendParameters$_constructor_to_value_mode_body(slice $to, int $value, int $mode, cell $body) inline {
+    return ($mode, $body, null(), null(), $value, $to, true);
+}
+
+((int, cell, cell, cell, int, slice, int)) $SendParameters$_constructor_to_value_mode_bounce_body_code_data(slice $to, int $value, int $mode, int $bounce, cell $body, cell $code, cell $data) inline {
+    return ($mode, $body, $code, $data, $value, $to, $bounce);
+}
+
+;;
+;; Type: InternalTransfer
+;; Header: 0x05138d91
+;; TLB: internal_transfer#05138d91 query_id:uint64 amount:coins from:address response_address:address forward_ton_amount:coins forward_payload:remainder<slice> = InternalTransfer
+;;
+
+builder $InternalTransfer$_store(builder build_0, (int, int, slice, slice, int, slice) v) inline {
+    var (v'query_id, v'amount, v'from, v'response_address, v'forward_ton_amount, v'forward_payload) = v;
+    build_0 = store_uint(build_0, 85167505, 32);
+    build_0 = build_0.store_uint(v'query_id, 64);
+    build_0 = build_0.store_varuint16(v'amount);
+    build_0 = build_0.store_slice(v'from);
+    build_0 = __tact_store_address_opt(build_0, v'response_address);
+    build_0 = build_0.store_varuint16(v'forward_ton_amount);
+    build_0 = build_0.store_slice(v'forward_payload);
+    return build_0;
+}
+
+cell $InternalTransfer$_store_cell((int, int, slice, slice, int, slice) v, builder b) inline {
+    return $InternalTransfer$_store(b, v).end_cell();
+}
+
+((int, int, slice, slice, int, slice)) $InternalTransfer$_constructor_query_id_amount_from_response_address_forward_ton_amount_forward_payload(int $query_id, int $amount, slice $from, slice $response_address, int $forward_ton_amount, slice $forward_payload) inline {
+    return ($query_id, $amount, $from, $response_address, $forward_ton_amount, $forward_payload);
+}
+
+;;
+;; Type: TransferNotification
+;; Header: 0x7362d09c
+;; TLB: transfer_notification#7362d09c query_id:uint64 amount:coins sender:address forward_payload:remainder<slice> = TransferNotification
+;;
+
+builder $TransferNotification$_store(builder build_0, (int, int, slice, slice) v) inline {
+    var (v'query_id, v'amount, v'sender, v'forward_payload) = v;
+    build_0 = store_uint(build_0, 1935855772, 32);
+    build_0 = build_0.store_uint(v'query_id, 64);
+    build_0 = build_0.store_varuint16(v'amount);
+    build_0 = build_0.store_slice(v'sender);
+    build_0 = build_0.store_slice(v'forward_payload);
+    return build_0;
+}
+
+cell $TransferNotification$_store_cell((int, int, slice, slice) v, builder b) inline {
+    return $TransferNotification$_store(b, v).end_cell();
+}
+
+((int, int, slice, slice)) $TransferNotification$_constructor_query_id_amount_sender_forward_payload(int $query_id, int $amount, slice $sender, slice $forward_payload) inline {
+    return ($query_id, $amount, $sender, $forward_payload);
+}
+
+;;
+;; Type: BurnNotification
+;; Header: 0x7bdd97de
+;; TLB: burn_notification#7bdd97de query_id:uint64 amount:coins sender:address response_destination:address = BurnNotification
+;;
+
+builder $BurnNotification$_store(builder build_0, (int, int, slice, slice) v) inline {
+    var (v'query_id, v'amount, v'sender, v'response_destination) = v;
+    build_0 = store_uint(build_0, 2078119902, 32);
+    build_0 = build_0.store_uint(v'query_id, 64);
+    build_0 = build_0.store_varuint16(v'amount);
+    build_0 = build_0.store_slice(v'sender);
+    build_0 = __tact_store_address_opt(build_0, v'response_destination);
+    return build_0;
+}
+
+cell $BurnNotification$_store_cell((int, int, slice, slice) v, builder b) inline {
+    return $BurnNotification$_store(b, v).end_cell();
+}
+
+((int, int, slice, slice)) $BurnNotification$_constructor_query_id_amount_sender_response_destination(int $query_id, int $amount, slice $sender, slice $response_destination) inline {
+    return ($query_id, $amount, $sender, $response_destination);
+}
+
+;;
+;; Type: WalletData
+;; TLB: _ balance:int257 owner:address master:address paused:bool = WalletData
+;;
+
+(int, slice, slice, int) $WalletData$_to_external(((int, slice, slice, int)) v) inline {
+    var (v'balance, v'owner, v'master, v'paused) = v; 
+    return (v'balance, v'owner, v'master, v'paused);
+}
+
+((int, slice, slice, int)) $WalletData$_constructor_balance_owner_master_paused(int $balance, slice $owner, slice $master, int $paused) inline {
+    return ($balance, $owner, $master, $paused);
+}
+
+;;
+;; Type: NeoJettonWallet
+;; TLB: _ balance:coins owner:address master:address paused:bool = NeoJettonWallet
+;;
+
+builder $NeoJettonWallet$_store(builder build_0, (int, slice, slice, int) v) inline {
+    var (v'balance, v'owner, v'master, v'paused) = v;
+    build_0 = build_0.store_varuint16(v'balance);
+    build_0 = build_0.store_slice(v'owner);
+    build_0 = build_0.store_slice(v'master);
+    build_0 = build_0.store_int(v'paused, 1);
+    return build_0;
+}
+
+(slice, ((int, slice, slice, int))) $NeoJettonWallet$_load(slice sc_0) inline {
+    var v'balance = sc_0~load_varuint16();
+    var v'owner = sc_0~load_msg_addr();
+    var v'master = sc_0~load_msg_addr();
+    var v'paused = sc_0~load_int(1);
+    return (sc_0, (v'balance, v'owner, v'master, v'paused));
+}
+
+builder $NeoJettonWallet$init$_store(builder build_0, (slice, slice) v) inline {
+    var (v'owner, v'master) = v;
+    build_0 = build_0.store_slice(v'owner);
+    build_0 = build_0.store_slice(v'master);
+    return build_0;
+}
+
+(slice, ((slice, slice))) $NeoJettonWallet$init$_load(slice sc_0) inline {
+    var v'owner = sc_0~load_msg_addr();
+    var v'master = sc_0~load_msg_addr();
+    return (sc_0, (v'owner, v'master));
+}
+
+(int, slice, slice, int) $NeoJettonWallet$_contract_load() impure inline {
+    slice $sc = get_data().begin_parse();
+    int $loaded = $sc~load_int(1);
+    if ($loaded) {
+        return $sc~$NeoJettonWallet$_load();
+    }
+    else {
+        (slice $owner, slice $master) = $sc~$NeoJettonWallet$init$_load();
+        $sc.end_parse();
+        return $NeoJettonWallet$_contract_init($owner, $master);
+    }
+}
+
+() $NeoJettonWallet$_contract_store((int, slice, slice, int) v) impure inline {
+    builder b = begin_cell();
+    b = b.store_int(true, 1);
+    b = $NeoJettonWallet$_store(b, v);
+    set_data(b.end_cell());
+}
+
+(cell, cell) $NeoJettonWallet$_init_child(slice $owner, slice $master) inline_ref {
+    ;; Build init code cell
+
+    ;; Contract Code: NeoJettonWallet
+    cell init_code = my_code();
+
+    ;; Build init data cell
+
+    builder b = begin_cell();
+    b = b.store_int(false, 1);
+    b = $NeoJettonWallet$init$_store(b, ($owner, $master));
+    return (init_code, b.end_cell());
+}
+
+;;
+;; Contract NeoJettonWallet functions
+;;
+
+(int, slice, slice, int) $NeoJettonWallet$_contract_init(slice $owner, slice $master) impure inline {
+    var (($self'balance, $self'owner, $self'master, $self'paused)) = (0, null(), null(), false);
+    $self'owner = $owner;
+    $self'master = $master;
+    return ($self'balance, $self'owner, $self'master, $self'paused);
+}
+
+((int, slice, slice, int), int) $NeoJettonWallet$_fun_balance((int, slice, slice, int) $self) impure inline_ref {
+    var (($self'balance, $self'owner, $self'master, $self'paused)) = $self;
+    var $fresh$ret_4 = $self'balance;
+    return (($self'balance, $self'owner, $self'master, $self'paused), $fresh$ret_4);
+}
+
+((int, slice, slice, int), slice) $NeoJettonWallet$_fun_owner((int, slice, slice, int) $self) impure inline_ref {
+    var (($self'balance, $self'owner, $self'master, $self'paused)) = $self;
+    var $fresh$ret_5 = $self'owner;
+    return (($self'balance, $self'owner, $self'master, $self'paused), $fresh$ret_5);
+}
+
+((int, slice, slice, int), slice) $NeoJettonWallet$_fun_master((int, slice, slice, int) $self) impure inline_ref {
+    var (($self'balance, $self'owner, $self'master, $self'paused)) = $self;
+    var $fresh$ret_6 = $self'master;
+    return (($self'balance, $self'owner, $self'master, $self'paused), $fresh$ret_6);
+}
+
+((int, slice, slice, int), int) $NeoJettonWallet$_fun_is_paused((int, slice, slice, int) $self) impure inline_ref {
+    var (($self'balance, $self'owner, $self'master, $self'paused)) = $self;
+    var $fresh$ret_7 = $self'paused;
+    return (($self'balance, $self'owner, $self'master, $self'paused), $fresh$ret_7);
+}
+
+((int, slice, slice, int), (int, slice, slice, int)) $NeoJettonWallet$_fun_wallet_data((int, slice, slice, int) $self) impure inline_ref {
+    var (($self'balance, $self'owner, $self'master, $self'paused)) = $self;
+    var $fresh$ret_8 = $WalletData$_constructor_balance_owner_master_paused($self'balance, $self'owner, $self'master, $self'paused);
+    return (($self'balance, $self'owner, $self'master, $self'paused), $fresh$ret_8);
+}
+
+;;
+;; Get methods of a Contract NeoJettonWallet
+;;
+
+_ %balance() method_id(104128) {
+    var self = $NeoJettonWallet$_contract_load();
+    var res = self~$NeoJettonWallet$_fun_balance();
+    return res;
+}
+
+_ %owner() method_id(83229) {
+    var self = $NeoJettonWallet$_contract_load();
+    var res = self~$NeoJettonWallet$_fun_owner();
+    return res;
+}
+
+_ %master() method_id(120253) {
+    var self = $NeoJettonWallet$_contract_load();
+    var res = self~$NeoJettonWallet$_fun_master();
+    return res;
+}
+
+_ %is_paused() method_id(95098) {
+    var self = $NeoJettonWallet$_contract_load();
+    var res = self~$NeoJettonWallet$_fun_is_paused();
+    return res;
+}
+
+_ %wallet_data() method_id(72046) {
+    var self = $NeoJettonWallet$_contract_load();
+    var res = self~$NeoJettonWallet$_fun_wallet_data();
+    return $WalletData$_to_external(res);
+}
+
+;;
+;; Routing of a Contract NeoJettonWallet
+;;
+
+;; message opcode reader utility: only binary receivers
+;; Returns 32 bit message opcode, otherwise throws the "Invalid incoming message" exit code
+(slice, int) ~load_opcode_internal(slice s) asm( -> 1 0) "32 LDUQ 130 THROWIFNOT";
+
+() recv_internal(int msg_value, cell in_msg_cell, slice in_msg) impure {
+    
+    ;; Context
+    var cs = in_msg_cell.begin_parse();
+    cs~skip_bits(2);
+    var msg_bounceable = cs~load_int(1);
+    var msg_bounced = cs~load_int(1);
+    slice msg_sender_addr = cs~load_msg_addr();
+    __tact_context = (msg_bounceable, msg_sender_addr, msg_value, cs);
+    __tact_context_sender = msg_sender_addr;
+    
+    ;; Load contract data
+    var ($self'balance, $self'owner, $self'master, $self'paused) = $NeoJettonWallet$_contract_load();
+    
+    ;; Handle bounced messages
+    if (msg_bounced) {
+        ;; Fallback bounce receiver
+        ;; Skip 0xFFFFFFFF prefix of the bounced message
+        in_msg~skip_bits(32);
+        slice $msg = in_msg;
+        $msg~$Slice$_fun_skipBits(32);
+        int $op = $msg~load_uint(32);
+        if (($op == 85167505)) {
+            int $query_id = $msg~load_uint(64);
+            int $amount = $msg~$Slice$_fun_loadCoins();
+            $self'balance = ($self'balance + $amount);
+        }
+        $NeoJettonWallet$_contract_store(($self'balance, $self'owner, $self'master, $self'paused));
+        return ();
+    }
+    var op = in_msg~load_opcode_internal();
+    ;; Receive InternalTransfer message
+    if (op == 0x5138d91) {
+        var $msg'query_id = in_msg~load_uint(64);
+        var $msg'amount = in_msg~load_varuint16();
+        var $msg'from = in_msg~load_msg_addr();
+        var $msg'response_address = in_msg~__tact_load_address_opt();
+        var $msg'forward_ton_amount = in_msg~load_varuint16();
+        var $msg'forward_payload = in_msg;
+        var ($ctx'bounceable, $ctx'sender, $ctx'value, $ctx'raw) = __tact_context_get();
+        throw_unless(4429, ( (( equal_slices_bits($ctx'sender, $self'master) )) ? (true) : (( equal_slices_bits(__tact_context_get_sender(), $self'master) )) ));
+        $self'balance = ($self'balance + $msg'amount);
+        if (($msg'forward_ton_amount > 0)) {
+            $global_send($SendParameters$_constructor_to_value_mode_body($self'owner, $msg'forward_ton_amount, 1, $TransferNotification$_store_cell($TransferNotification$_constructor_query_id_amount_sender_forward_payload($msg'query_id, $msg'amount, $msg'from, $msg'forward_payload), begin_cell())));
+        }
+        $NeoJettonWallet$_contract_store(($self'balance, $self'owner, $self'master, $self'paused));
+        return ();
+    }
+    
+    ;; Receive Transfer message
+    if (op == 0x75097f5d) {
+        var $msg'query_id = in_msg~load_uint(64);
+        var $msg'amount = in_msg~load_varuint16();
+        var $msg'destination = in_msg~load_msg_addr();
+        var $msg'response_destination = in_msg~__tact_load_address_opt();
+        var $msg'custom_payload = in_msg~load_maybe_ref();
+        var $msg'forward_ton_amount = in_msg~load_varuint16();
+        var $msg'forward_payload = in_msg;
+        var ($ctx'bounceable, $ctx'sender, $ctx'value, $ctx'raw) = __tact_context_get();
+        throw_unless(63671, (~ $self'paused));
+        throw_unless(4530, ( equal_slices_bits($ctx'sender, $self'owner) ));
+        throw_unless(54615, ($self'balance >= $msg'amount));
+        $self'balance = ($self'balance - $msg'amount);
+        var ($init'code, $init'data) = $NeoJettonWallet$_init_child($msg'destination, $self'master);
+        slice $walletAddress = $global_contractAddress(($init'code, $init'data));
+        $global_send($SendParameters$_constructor_to_value_mode_bounce_body_code_data($walletAddress, 0, 64, true, $InternalTransfer$_store_cell($InternalTransfer$_constructor_query_id_amount_from_response_address_forward_ton_amount_forward_payload($msg'query_id, $msg'amount, $self'owner, $msg'response_destination, $msg'forward_ton_amount, $msg'forward_payload), begin_cell()), $init'code, $init'data));
+        $NeoJettonWallet$_contract_store(($self'balance, $self'owner, $self'master, $self'paused));
+        return ();
+    }
+    
+    ;; Receive SetWalletPause message
+    if (op == 0x11111111) {
+        var $msg'paused = in_msg~load_int(1);
+        throw_unless(30491, ( equal_slices_bits(__tact_context_get_sender(), $self'master) ));
+        $self'paused = $msg'paused;
+        $NeoJettonWallet$_contract_store(($self'balance, $self'owner, $self'master, $self'paused));
+        return ();
+    }
+    
+    ;; Receive Burn message
+    if (op == 0x595f07bc) {
+        var $msg'query_id = in_msg~load_uint(64);
+        var $msg'amount = in_msg~load_varuint16();
+        var $msg'response_destination = in_msg~__tact_load_address_opt();
+        var $msg'custom_payload = in_msg~load_maybe_ref();
+        var ($ctx'bounceable, $ctx'sender, $ctx'value, $ctx'raw) = __tact_context_get();
+        throw_unless(63671, (~ $self'paused));
+        throw_unless(4530, ( equal_slices_bits($ctx'sender, $self'owner) ));
+        throw_unless(54615, ($self'balance >= $msg'amount));
+        $self'balance = ($self'balance - $msg'amount);
+        $global_send($SendParameters$_constructor_to_value_mode_body($self'master, 0, 64, $BurnNotification$_store_cell($BurnNotification$_constructor_query_id_amount_sender_response_destination($msg'query_id, $msg'amount, $self'owner, $msg'response_destination), begin_cell())));
+        $NeoJettonWallet$_contract_store(($self'balance, $self'owner, $self'master, $self'paused));
+        return ();
+    }
+    
+    ;; Throw if not handled
+    throw(130);
+}
