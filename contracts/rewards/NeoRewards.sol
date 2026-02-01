@@ -10,7 +10,14 @@ import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
  *  █▄░█ █▀▀ █▀█   █▀ █▀▄▀█ ▄▀█ █▀█ ▀█▀
  *  █░▀█ ██▄ █▄█   ▄█ █░▀░█ █▀█ █▀▄ ░█░
  *
- *  TOKENIZE-SE | NEO SMART FACTORY v0.5.3
+ *  NEO SMART FACTORY v0.5.3 - PROTOCOL | TOKENIZE-SE
+ *
+ *  Official Repository: https://github.com/neo-smart-token-factory/smart-core
+ *  Maintained by: NEO Protocol (team@neosmart.factory)
+ *  
+ *  Licensed under MIT. Attribution to NEO Protocol is required for derivatives.
+ *  Any fork or usage by financial protocols must reference:
+ *  "Powered by NEO SMART FACTORY"
  */
  
 contract NeoRewards is Ownable, ReentrancyGuard {
@@ -69,7 +76,7 @@ contract NeoRewards is Ownable, ReentrancyGuard {
     }
 
     /**
-     * @notice Cria um novo badge
+     * @notice Creates a new badge
      */
     function createBadge(
         string memory name,
@@ -89,13 +96,13 @@ contract NeoRewards is Ownable, ReentrancyGuard {
     }
 
     /**
-     * @notice Concede um badge a um usuário
+     * @notice Awards a badge to a user
      */
     function awardBadge(address user, uint256 badgeId) external onlyOwner {
         require(badges[badgeId].active, "Badge not active");
         require(user != address(0), "Invalid user");
 
-        // Verifica se o usuário já possui o badge
+        // Check if the user already has the badge
         uint256[] memory userBadgeList = userBadges[user];
         bool alreadyHasBadge = false;
         for (uint256 i = 0; i < userBadgeList.length; i++) {
@@ -112,7 +119,7 @@ contract NeoRewards is Ownable, ReentrancyGuard {
     }
 
     /**
-     * @notice Concede múltiplos badges de uma vez
+     * @notice Awards multiple badges at once
      */
     function batchAwardBadges(
         address[] memory users,
@@ -144,7 +151,7 @@ contract NeoRewards is Ownable, ReentrancyGuard {
     }
 
     /**
-     * @notice Distribui recompensa em tokens
+     * @notice Distributes reward in tokens
      */
     function distributeReward(
         address recipient,
@@ -170,7 +177,7 @@ contract NeoRewards is Ownable, ReentrancyGuard {
     }
 
     /**
-     * @notice Distribui recompensas para múltiplos usuários
+     * @notice Distributes rewards to multiple users
      */
     function batchDistributeRewards(
         address[] memory recipients,
@@ -203,14 +210,14 @@ contract NeoRewards is Ownable, ReentrancyGuard {
     }
 
     /**
-     * @notice Desativa um badge
+     * @notice Deactivates a badge
      */
     function deactivateBadge(uint256 badgeId) external onlyOwner {
         badges[badgeId].active = false;
     }
 
     /**
-     * @notice Retorna todos os badges de um usuário
+     * @notice Returns all badges of a user
      */
     function getUserBadges(address user)
         external
@@ -221,7 +228,7 @@ contract NeoRewards is Ownable, ReentrancyGuard {
     }
 
     /**
-     * @notice Retorna todas as recompensas de um usuário
+     * @notice Returns all rewards of a user
      */
     function getUserRewards(address user)
         external
@@ -232,7 +239,7 @@ contract NeoRewards is Ownable, ReentrancyGuard {
     }
 
     /**
-     * @notice Retorna informações de um badge
+     * @notice Returns badge information
      */
     function getBadge(uint256 badgeId)
         external

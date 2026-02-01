@@ -19,6 +19,43 @@ The protocol operates through 8 interconnected circuits of existence:
 7. **IMPACT:** Propagation via resonance and contagion, focusing on deep coupling over reach metrics.
 8. **TRANSCENDENCE:** The collapse of traditional marketing; the NΞØ frequency becomes the operational state.
 
+### Governance Architecture: NΞØ SMART FACTORY (Institutional Blueprint)
+
+As established in **Issue #7 (Institutional Blueprint)**, the protocol operates under a 4-layer topological governance structure, focused on security, compliance, and institutional coordination.
+
+### 1. Core Layers
+
+*   **Layer 1: NSFToken (Immutability)**
+    *   Immutable ERC-20 contract.
+    *   `MAX_SUPPLY` fixed at 1,000,000,000 (one billion).
+    *   No additional `mint` functions post-deployment.
+    *   Ownership transferred to the `SmartFactoryTimelock`.
+
+*   **Layer 2: FactoryQualification (Utility & Access)**
+    *   UUPS Proxy Module (Upgradable).
+    *   Manages access to the Factory based on balance and compliance.
+    *   Integration with `ACCESS.sol` for Terms of Service and sanctions verification.
+
+*   **Layer 3: Neural Core Governance (Parameters)**
+    *   On-chain voting for operational parameters.
+    *   Limited technical scope (non-financial).
+    *   Proof of Intention (PoI) mechanism.
+
+*   **Layer 4: EmergencyGuardian (Security)**
+    *   3/5 Multisig with pause power over critical modules.
+    *   Activation in case of anomalies detected by the Neural Monitor.
+
+### 2. $NSF - Institutional Coordination Instrument
+
+The $NSF token is technically classified as a **Utility Token (MiCA Category 3)**.
+
+*   **Purpose:** Resource coordination, infrastructure prioritization, and network governance.
+*   **Semantic Restriction:** It is strictly forbidden to use financial terms (Yield, Dividends, ROI) in any official interface or documentation. Replace with "Operational Cost Recovery" or "Participation Reimbursement".
+*   **Access:** Use of the Factory requires explicit on-chain acceptance of the terms of use, linking the identity/wallet to the protocol's legal framework.
+
+---
+*This document is the final technical expression of Issue #7 and should guide all Smart Contract development.*
+
 ### 3. GOVERNANCE ARCHITECTURE (NEURAL CORE V2)
 The protocol's governance is structured into concentric spheres of influence, ensuring that decision-making power is tied to commitment and proven execution capacity.
 

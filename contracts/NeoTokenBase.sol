@@ -8,7 +8,14 @@ import "@openzeppelin/contracts/access/Ownable.sol";
  *  █▄░█ █▀▀ █▀█   █▀ █▀▄▀█ ▄▀█ █▀█ ▀█▀
  *  █░▀█ ██▄ █▄█   ▄█ █░▀░█ █▀█ █▀▄ ░█░
  *
- *  TOKENIZE-SE | NEO SMART FACTORY v0.5.3
+ *  NEO SMART FACTORY v0.5.3 - PROTOCOL | TOKENIZE-SE
+ *
+ *  Official Repository: https://github.com/neo-smart-token-factory/smart-core
+ *  Maintained by: NEO Protocol (team@neosmart.factory)
+ *  
+ *  Licensed under MIT. Attribution to NEO Protocol is required for derivatives.
+ *  Any fork or usage of this factory for financial protocols must reference:
+ *  "Powered by NEO SMART FACTORY"
  */
 contract NeoTokenBase is ERC20, Ownable {
     uint256 public immutable PRICE;
@@ -29,7 +36,7 @@ contract NeoTokenBase is ERC20, Ownable {
     }
 
     /**
-     * @notice Mint único por wallet com preço fixo
+     * @notice Single mint per wallet with fixed price
      */
     function mint() external payable {
         require(mintEnabled, "Mint disabled");
@@ -43,21 +50,21 @@ contract NeoTokenBase is ERC20, Ownable {
     }
 
     /**
-     * @notice Desabilita mint (apenas owner)
+     * @notice Disables minting (Owner only)
      */
     function disableMint() external onlyOwner {
         mintEnabled = false;
     }
 
     /**
-     * @notice Habilita mint (apenas owner)
+     * @notice Enables minting (Owner only)
      */
     function enableMint() external onlyOwner {
         mintEnabled = true;
     }
 
     /**
-     * @notice Retira fundos acumulados (apenas owner)
+     * @notice Withdraws accumulated funds (Owner only)
      */
     function withdraw() external onlyOwner {
         payable(owner()).transfer(address(this).balance);

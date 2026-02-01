@@ -12,16 +12,23 @@ import "./rewards/NeoRewards.sol";
  *  █▄░█ █▀▀ █▀█   █▀ █▀▄▀█ ▄▀█ █▀█ ▀█▀
  *  █░▀█ ██▄ █▄█   ▄█ █░▀░█ █▀█ █▀▄ ░█░
  *
- *  TOKENIZE-SE | NEO SMART FACTORY v0.5.3
+ *  NEO SMART FACTORY v0.5.3 - PROTOCOL | TOKENIZE-SE
+ *
+ *  Official Repository: https://github.com/neo-smart-token-factory/smart-core
+ *  Maintained by: NEO Protocol (team@neosmart.factory)
+ *  
+ *  Licensed under MIT. Attribution to NEO Protocol is required for derivatives.
+ *  Any fork or usage of this factory for financial protocols must reference:
+ *  "Powered by NEO SMART FACTORY"
  */
 
 /**
  * @title NeoSmartFactory
- * @notice Fábrica descentralizada para criação de protocolos completos
- * @dev Sistema modular que permite criar tokens, vestings, recompensas e badges
+ * @notice Decentralized factory for creating complete protocols
+ * @dev Modular system that allows creating tokens, vestings, rewards, and badges
  */
 contract NeoSmartFactory is Ownable, ReentrancyGuard {
-    // Estruturas de dados
+    // Data structures
     struct Protocol {
         address creator;
         string name;
@@ -52,19 +59,19 @@ contract NeoSmartFactory is Ownable, ReentrancyGuard {
         bool revocable;
     }
 
-    // Mapeamentos
+    // Mappings
     mapping(uint256 => Protocol) public protocols;
     mapping(address => uint256[]) public creatorProtocols;
     mapping(address => bool) public authorizedCreators;
     
-    // Contadores e Taxas
+    // Counters and Fees
     uint256 public protocolCounter;
     uint256 public creationFee;
     
-    // Limites de Segurança
+    // Security Limits
     uint256 public constant MAX_VESTING_SCHEDULES = 20;
 
-    // Eventos
+    // Events
     event ProtocolCreated(
         uint256 indexed protocolId,
         address indexed creator,
@@ -101,10 +108,10 @@ contract NeoSmartFactory is Ownable, ReentrancyGuard {
     }
 
     /**
-     * @notice Cria um protocolo completo com token, vesting e sistema de recompensas
-     * @param tokenConfig Configuração do token ERC20
-     * @param vestingConfigs Array de configurações de vesting
-     * @param rewardsEnabled Se deve criar sistema de recompensas
+     * @notice Creates a complete protocol with token, vesting, and reward system
+     * @param tokenConfig ERC20 token configuration
+     * @param vestingConfigs Array of vesting configurations
+     * @param rewardsEnabled Whether to create a reward system
      */
     function createProtocol(
         TokenConfig memory tokenConfig,
@@ -118,7 +125,7 @@ contract NeoSmartFactory is Ownable, ReentrancyGuard {
 
         protocolId = protocolCounter++;
         
-        // Criar token ERC20 - Minta para o Factory primeiro para distribuir
+        // Create ERC20 token - Mint to Factory first for distribution
         NeoERC20 token = new NeoERC20(
             tokenConfig.name,
             tokenConfig.symbol,
@@ -127,13 +134,13 @@ contract NeoSmartFactory is Ownable, ReentrancyGuard {
             tokenConfig.mintable,
             tokenConfig.burnable,
             tokenConfig.pausable,
-            address(this) // Factory recebe o supply inicial
+            address(this) // Factory receives initial supply
         );
 
         address vestingAddress = address(0);
         address rewardsAddress = address(0);
 
-        // Criar vesting se houver configurações
+        // Create vesting if configurations exist
         if (vestingConfigs.length > 0) {
             NeoVesting vesting = new NeoVesting(
                 address(token),
@@ -141,12 +148,12 @@ contract NeoSmartFactory is Ownable, ReentrancyGuard {
             );
             vestingAddress = address(vesting);
 
-            // Configurar vestings
+            // Configure vestings
             uint256 totalVestingRequested = 0;
             for (uint256 i = 0; i < vestingConfigs.length; i++) {
                 VestingConfig memory v = vestingConfigs[i];
                 
-                // Validações robustas
+                // Robust validations
                 require(v.beneficiary != address(0), "Invalid beneficiary");
                 require(v.totalAmount > 0, "Amount must be > 0");
                 require(v.duration > 0, "Duration must be > 0");
@@ -171,7 +178,7 @@ contract NeoSmartFactory is Ownable, ReentrancyGuard {
             }
         }
 
-        // Criar sistema de recompensas se habilitado
+        // Create reward system if enabled
         if (rewardsEnabled) {
             NeoRewards rewards = new NeoRewards(
                 address(token),
@@ -180,16 +187,16 @@ contract NeoSmartFactory is Ownable, ReentrancyGuard {
             rewardsAddress = address(rewards);
         }
 
-        // Transferir tokens restantes para o criador
+        // Transfer remaining tokens to the creator
         uint256 remainingTokens = token.balanceOf(address(this));
         if (remainingTokens > 0) {
             token.transfer(msg.sender, remainingTokens);
         }
 
-        // Transferir ownership do token para o criador (se o token for Ownable)
+        // Transfer token ownership to the creator (if the token is Ownable)
         token.transferOwnership(msg.sender);
 
-        // Registrar protocolo
+        // Register protocol
         protocols[protocolId] = Protocol({
             creator: msg.sender,
             name: tokenConfig.name,
@@ -222,7 +229,7 @@ contract NeoSmartFactory is Ownable, ReentrancyGuard {
     }
 
     /**
-     * @notice Alterna o status ativo do protocolo (apenas Owner ou Criador)
+     * @notice Toggles active status of the protocol (Owner or Creator only)
      */
     function toggleProtocolActive(uint256 protocolId) external {
         Protocol storage p = protocols[protocolId];
@@ -232,7 +239,7 @@ contract NeoSmartFactory is Ownable, ReentrancyGuard {
     }
 
     /**
-     * @notice Cria apenas um token ERC20
+     * @notice Creates only an ERC20 token
      */
     function createToken(TokenConfig memory tokenConfig)
         external
@@ -257,7 +264,7 @@ contract NeoSmartFactory is Ownable, ReentrancyGuard {
     }
 
     /**
-     * @notice Cria apenas um NFT (ERC721)
+     * @notice Creates only an NFT (ERC721)
      */
     function createNFT(
         string memory name,
@@ -279,7 +286,7 @@ contract NeoSmartFactory is Ownable, ReentrancyGuard {
     }
 
     /**
-     * @notice Retorna todos os protocolos criados por um endereço
+     * @notice Returns all protocols created by an address
      */
     function getCreatorProtocols(address creator)
         external
@@ -290,7 +297,7 @@ contract NeoSmartFactory is Ownable, ReentrancyGuard {
     }
 
     /**
-     * @notice Retorna informações de um protocolo
+     * @notice Returns protocol information
      */
     function getProtocol(uint256 protocolId)
         external
@@ -301,28 +308,28 @@ contract NeoSmartFactory is Ownable, ReentrancyGuard {
     }
 
     /**
-     * @notice Atualiza taxa de criação (apenas owner)
+     * @notice Updates creation fee (Owner only)
      */
     function setCreationFee(uint256 _creationFee) external onlyOwner {
         creationFee = _creationFee;
     }
 
     /**
-     * @notice Autoriza um criador (apenas owner)
+     * @notice Authorizes a creator (Owner only)
      */
     function authorizeCreator(address creator) external onlyOwner {
         authorizedCreators[creator] = true;
     }
 
     /**
-     * @notice Revoga autorização de um criador (apenas owner)
+     * @notice Revokes a creator's authorization (Owner only)
      */
     function revokeCreator(address creator) external onlyOwner {
         authorizedCreators[creator] = false;
     }
 
     /**
-     * @notice Retira fundos acumulados (apenas owner)
+     * @notice Withdraws accumulated funds (Owner only)
      */
     function withdraw() external onlyOwner {
         payable(owner()).transfer(address(this).balance);

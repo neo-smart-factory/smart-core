@@ -1,76 +1,76 @@
 # TON Contracts - NEØ Smart Factory
 
-Implementação de contratos TON (FunC) para a NEØ Smart Factory.
+Implementation of TON (FunC) contracts for the NEØ Smart Factory.
 
-## Contratos Disponíveis
+## Available Contracts
 
 ### NeoJettonFactory.fc (V1)
-Factory original para criação de Jettons.
+Original factory for Jetton creation.
 
-**Status:** ⚠️ Versão legada, usar V2
+**Status:** ⚠️ Legacy version, use V2
 
 ### NeoJettonFactoryV2.fc (V2) 
-Factory melhorada para criação de Jettons.
+Improved factory for Jetton creation.
 
-**Status:** 🔍 Em debug - Factory não cria Minter (bug ativo)
+**Status:** 🔍 In debug - Factory not creating Minter (active bug)
 
-**Recursos:**
-- Deploy de Jetton Minters
-- Configuração de mint price
+**Features:**
+- Jetton Minter deployment
+- Mint price configuration
 - Max supply
 - Owner management
 
 **OP Codes:**
 - `0x61caf729` - deploy_jetton
 - `0x1` - transfer
-- Outros (ver código)
+- Others (see code)
 
 ### NeoJettonMinter.fc
-Contrato Minter de Jettons (equivalente ao ERC20 Minter).
+Jetton Minter contract (ERC20 Minter equivalent).
 
-**Status:** ✅ Testado e funcional
+**Status:** ✅ Tested and functional
 
-**Padrões:**
+**Standards:**
 - TEP-74 (Jetton Standard)
 - TEP-64 (Token Metadata)
 - TEP-89 (Discoverable Jettons)
 
-**Funcionalidades:**
-- Mint de tokens
-- Burn de tokens
-- Metadata on-chain
-- Descoberta automática
+**Functionalities:**
+- Token minting
+- Token burning
+- On-chain metadata
+- Automatic discovery
 
 ### NeoJettonWallet.fc
-Wallet de usuário para Jettons.
+User wallet for Jettons.
 
-**Status:** ✅ Testado e funcional
+**Status:** ✅ Tested and functional
 
-**Recursos:**
-- Transfer de tokens
+**Features:**
+- Token transfer
 - Balance tracking
-- Notificações
-- Compatível com carteiras TON
+- Notifications
+- Compatible with TON wallets
 
-## Compilação
+## Compilation
 
-### Pré-requisitos
+### Prerequisites
 ```bash
 npm install @ton-community/func-js
 npm install @ton/ton @ton/core @ton/crypto
 ```
 
-### Compilar V1
+### Compile V1
 ```bash
 node scripts/compile-ton.js
 ```
 
-### Compilar V2
+### Compile V2
 ```bash
 node scripts/compile-ton-v2.js
 ```
 
-## Deploy
+## Deployment
 
 ### Factory V1
 ```bash
@@ -84,27 +84,27 @@ export TON_NETWORK=testnet
 node scripts/deploy-ton-factory-v2.js
 ```
 
-### Deploy de Jetton (NSF Token)
+### Jetton Deployment (NSF Token)
 ```bash
 node scripts/deploy-nsf-token.js
 ```
 
 ## Debug
 
-Scripts de debug disponíveis em `scripts/debug/`:
+Debug scripts available in `scripts/debug/`:
 
 ```bash
-# Ver status de todas as factories
+# View status of all factories
 node scripts/debug/debug-all-factories.js
 
-# Debug de cálculo de endereço
+# Address calculation debug
 node scripts/debug/debug-jetton-address.js
 
-# Dry-run (sem gastar TON)
+# Dry-run (without spending TON)
 node scripts/debug/dry-run-ton.js
 ```
 
-## Arquitetura
+## Architecture
 
 ```
 User
@@ -116,7 +116,7 @@ Minter (NeoJettonMinter.fc)
 Wallet (NeoJettonWallet.fc)
 ```
 
-## Paridade EVM ↔ TON
+## EVM ↔ TON Parity
 
 | EVM | TON | Status |
 |-----|-----|--------|
@@ -126,95 +126,95 @@ Wallet (NeoJettonWallet.fc)
 | burn() | burn() | ✅ |
 | Metadata | TEP-64 | ✅ |
 
-Ver: `docs/auditoria/EVM_TON_MAPPING.md` para detalhes completos.
+See: `docs/audit/EVM_TON_MAPPING.md` for full details.
 
-## Bug Conhecido (2026-01-25)
+## Known Bug (2026-01-25)
 
-⚠️ **Factory V2 não cria Jetton Minter**
+⚠️ **Factory V2 does not create Jetton Minter**
 
-**Sintomas:**
-- Transaction confirmada
-- Excess devolvido (~0.498 TON)
-- StateInit não é enviado
-- Minter não aparece na blockchain
+**Symptoms:**
+- Confirmed transaction
+- Excess returned (~0.498 TON)
+- StateInit is not sent
+- Minter does not appear on the blockchain
 
-**Investigação:**
-Ver documentação completa em `neo-smart-token-factory/docs`:
-- `CHECKPOINT_TON_FACTORY_2026-01-25.md` - Checkpoint técnico
-- `SESSAO_APRENDIZADO_TON_FACTORY.md` - Análise profunda
-- `PLANO_REORGANIZACAO.md` - Próximos passos
+**Investigation:**
+See full documentation in `neo-smart-token-factory/docs`:
+- `CHECKPOINT_TON_FACTORY_2026-01-25.md` - Technical checkpoint
+- `TON_FACTORY_LEARNING_SESSION.md` - Deep analysis
+- `REORGANIZATION_PLAN.md` - Next steps
 
-**Soluções em Teste:**
-- Opção A: Usar TON Minter oficial como base
-- Opção B: Factory minimalista para isolar bug
-- Opção C: Debug profundo com get methods
+**Solutions under Testing:**
+- Option A: Use official TON Minter as base
+- Option B: Minimalist Factory to isolate bug
+- Option C: Deep debug with get methods
 
-## Padrões TON
+## TON Standards
 
 ### TEP-74: Jetton Standard
-- ✅ Estrutura de mensagens
+- ✅ Message structure
 - ✅ OP codes
-- ✅ Notificações
+- ✅ Notifications
 
 ### TEP-64: Token Metadata
 - ✅ On-chain metadata
 - ✅ Off-chain metadata URI
-- ✅ Formato JSON
+- ✅ JSON format
 
 ### TEP-89: Discoverable Jettons
 - ✅ Get methods
 - ✅ Metadata discovery
 - ✅ Wallet discovery
 
-## Segurança
+## Security
 
-### Auditorias
-- [ ] Auditoria formal pendente
-- [x] Code review interno
-- [x] Testes em testnet
+### Audits
+- [ ] Formal audit pending
+- [x] Internal code review
+- [x] Testnet testing
 
-### Boas Práticas
-- ✅ Uso de imports padronizados
-- ✅ Validação de inputs
+### Best Practices
+- ✅ Use of standardized imports
+- ✅ Input validation
 - ✅ Bounds checking
 - ✅ Integer overflow protection
 
-## Testes
+## Tests
 
 ```bash
-# Testar compilação
+# Test compilation
 node scripts/compile-ton-v2.js
 
-# Testar deploy em testnet
+# Testnet deployment test
 export TON_NETWORK=testnet
 node scripts/deploy-ton-factory-v2.js
 
-# Verificar factory
+# Verify factory
 node scripts/debug/debug-all-factories.js
 ```
 
-## Recursos
+## Resources
 
-### Documentação Oficial
+### Official Documentation
 - **TON Docs:** https://docs.ton.org
 - **TEP-74:** https://github.com/ton-blockchain/TEPs/blob/master/text/0074-jettons-standard.md
 - **TON Minter:** https://github.com/ton-blockchain/minter-contract
 
-### Ferramentas
+### Tools
 - **TonScan:** https://testnet.tonscan.org
 - **TON Center:** https://testnet.toncenter.com
 - **TON Minter App:** https://minter.ton.org
 
-### Repositórios NEØ
+### NEØ Repositories
 - **docs:** https://github.com/neo-smart-token-factory/docs
 - **smart-core:** https://github.com/neo-smart-token-factory/smart-core
 
-## Licença
+## License
 
-Ver `LICENSE` no repositório raiz.
+See `LICENSE` in the root repository.
 
 ---
 
-**Status Geral:** 🟡 Em desenvolvimento ativo  
-**Última Atualização:** 2026-01-25  
-**Contato:** GitHub Issues
+**General Status:** 🟡 Active development  
+**Last Updated:** 2026-01-25  
+**Contact:** GitHub Issues

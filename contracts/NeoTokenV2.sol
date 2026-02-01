@@ -22,13 +22,13 @@ import "@openzeppelin/contracts/access/Ownable2Step.sol";
 
 /**
  * @title NeoTokenV2
- * @notice Arquitetura Multichain & AA-Ready
- * @dev Incorpora ERC20Permit para transações gasless e estrutura para pontes multichain.
+ * @notice Multichain & AA-Ready Architecture
+ * @dev Incorporates ERC20Permit for gasless transactions and structure for multichain bridges.
  */
 contract NeoTokenV2 is ERC20, ERC20Burnable, ERC20Permit, Ownable2Step {
     
     // Supply Management
-    uint256 public constant MAX_SUPPLY = 1_000_000_000 * 10**18; // 1 bilhão de tokens
+    uint256 public constant MAX_SUPPLY = 1_000_000_000 * 10**18; // 1 billion tokens
     
     // Bridge Role (Multichain-Ready)
     address public bridgeMinter;
@@ -38,7 +38,7 @@ contract NeoTokenV2 is ERC20, ERC20Burnable, ERC20Permit, Ownable2Step {
     uint256 public immutable MINT_AMOUNT;
     bool public publicMintEnabled;
     
-    // Anti-bot: apenas 1 mint público por endereço
+    // Anti-bot: only 1 public mint per address
     mapping(address => bool) public hasPublicMinted;
 
     // Events
@@ -64,9 +64,9 @@ contract NeoTokenV2 is ERC20, ERC20Burnable, ERC20Permit, Ownable2Step {
     }
 
     /**
-     * @notice Mint público (1 por wallet)
-     * @dev Útil para distribuição inicial orgânica ou rituais
-     * @dev Preparado para Account Abstraction via Permit
+     * @notice Public mint (1 per wallet)
+     * @dev Useful for initial organic distribution or rituals
+     * @dev Prepared for Account Abstraction via Permit
      */
     function publicMint() external payable {
         require(publicMintEnabled, "Public mint disabled");
@@ -82,9 +82,9 @@ contract NeoTokenV2 is ERC20, ERC20Burnable, ERC20Permit, Ownable2Step {
 
     /**
      * @notice Mint via Bridge (Multichain-Ready)
-     * @param _to Endereço de destino
-     * @param _amount Quantidade a ser mintada
-     * @dev Apenas o endereço da ponte autorizada pode chamar
+     * @param _to Destination address
+     * @param _amount Amount to be minted
+     * @dev Only the authorized bridge address can call this
      */
     function bridgeMint(address _to, uint256 _amount) external {
         require(msg.sender == bridgeMinter, "Caller is not the bridge minter");
@@ -96,8 +96,8 @@ contract NeoTokenV2 is ERC20, ERC20Burnable, ERC20Permit, Ownable2Step {
     }
 
     /**
-     * @notice Configura o endereço da ponte (Apenas Owner)
-     * @param _newMinter Novo endereço autorizado para bridge mint
+     * @notice Configures the bridge address (Owner only)
+     * @param _newMinter New authorized address for bridge mint
      */
     function setBridgeMinter(address _newMinter) external onlyOwner {
         require(_newMinter != address(0), "Invalid bridge minter");
@@ -106,8 +106,8 @@ contract NeoTokenV2 is ERC20, ERC20Burnable, ERC20Permit, Ownable2Step {
     }
 
     /**
-     * @notice Alterna status do mint público
-     * @param _enabled true = habilita, false = desabilita
+     * @notice Toggles public mint status
+     * @param _enabled true = enable, false = disable
      */
     function setPublicMintStatus(bool _enabled) external onlyOwner {
         publicMintEnabled = _enabled;
@@ -115,16 +115,16 @@ contract NeoTokenV2 is ERC20, ERC20Burnable, ERC20Permit, Ownable2Step {
     }
 
     /**
-     * @notice Reset do mint público para um endereço (emergência)
-     * @param _user Endereço a ser resetado
-     * @dev Útil para casos de teste ou edge cases identificados
+     * @notice Resets public mint for an address (emergency)
+     * @param _user Address to be reset
+     * @dev Useful for test cases or identified edge cases
      */
     function resetPublicMint(address _user) external onlyOwner {
         hasPublicMinted[_user] = false;
     }
 
     /**
-     * @notice Função de utilitário para compatibilidade total com exploradores (PolygonScan/Basescan)
+     * @notice Utility function for full compatibility with explorers (PolygonScan/Basescan)
      */
     function getOwner() public view returns (address) {
         return owner();
@@ -135,8 +135,8 @@ contract NeoTokenV2 is ERC20, ERC20Burnable, ERC20Permit, Ownable2Step {
     uint256 public constant PROTOCOL_FEE_BPS = 500; // 5% (Basis points)
 
     /**
-     * @notice Retira fundos acumulados do mint público
-     * @dev Implementa split de 5% para o NEO Protocol Treasury e 95% para o dono do token.
+     * @notice Withdraws accumulated funds from the public mint
+     * @dev Implements a 5% split to the NEO Protocol Treasury and 95% to the token owner.
      */
     function withdraw() external onlyOwner {
         uint256 balance = address(this).balance;
@@ -155,7 +155,7 @@ contract NeoTokenV2 is ERC20, ERC20Burnable, ERC20Permit, Ownable2Step {
     }
 
     /**
-     * @notice Retorna informações resumidas do contrato
+     * @notice Returns summary information about the contract
      */
     function getContractInfo() external view returns (
         uint256 currentSupply,
@@ -175,7 +175,7 @@ contract NeoTokenV2 is ERC20, ERC20Burnable, ERC20Permit, Ownable2Step {
         );
     }
 
-    // Overrides necessários para ERC20Permit e heranças
+    // Necessary overrides for ERC20Permit and inheritance
     function _update(address from, address to, uint256 value)
         internal
         override(ERC20)

@@ -5,24 +5,31 @@ pragma solidity ^0.8.20;
  *  █▄░█ █▀▀ █▀█   █▀ █▀▄▀█ ▄▀█ █▀█ ▀█▀
  *  █░▀█ ██▄ █▄█   ▄█ █░▀░█ █▀█ █▀▄ ░█░
  *
- *  TOKENIZE-SE | NEO SMART FACTORY v0.5.3
+ *  NEO SMART FACTORY v0.5.3 - PROTOCOL | TOKENIZE-SE
+ *
+ *  Official Repository: https://github.com/neo-smart-token-factory/smart-core
+ *  Maintained by: NEO Protocol (team@neosmart.factory)
+ *  
+ *  Licensed under MIT. Attribution to NEO Protocol is required for derivatives.
+ *  Any fork or usage of this factory for financial protocols must reference:
+ *  "Powered by NEO SMART FACTORY"
  */
  
 /**
  * @title BridgeValidator
- * @notice Biblioteca de validação para o sistema de bridge
- * @dev Funções auxiliares para validação de dados e segurança
+ * @notice Validation library for the bridge system
+ * @dev Helper functions for data validation and security
  */
 library BridgeValidator {
     
     /**
-     * @notice Valida parâmetros de uma bridge request
-     * @param token Endereço do token
-     * @param from Endereço de origem
-     * @param to Endereço de destino
-     * @param amount Quantidade
-     * @param sourceChainId Chain ID de origem
-     * @param targetChainId Chain ID de destino
+     * @notice Validates parameters of a bridge request
+     * @param token Token address
+     * @param from Origin address
+     * @param to Destination address
+     * @param amount Quantity
+     * @param sourceChainId Source Chain ID
+     * @param targetChainId Target Chain ID
      */
     function validateBridgeRequest(
         address token,
@@ -43,9 +50,9 @@ library BridgeValidator {
     }
 
     /**
-     * @notice Valida timestamp de uma bridge request
-     * @param timestamp Timestamp da request
-     * @param maxAge Idade máxima permitida em segundos
+     * @notice Validates timestamp of a bridge request
+     * @param timestamp Request timestamp
+     * @param maxAge Maximum allowed age in seconds
      */
     function validateTimestamp(uint256 timestamp, uint256 maxAge) internal view {
         require(timestamp > 0, "BridgeValidator: Invalid timestamp");
@@ -57,10 +64,10 @@ library BridgeValidator {
     }
 
     /**
-     * @notice Valida quantidade mínima e máxima
-     * @param amount Quantidade a validar
-     * @param minAmount Quantidade mínima
-     * @param maxAmount Quantidade máxima
+     * @notice Validates minimum and maximum amounts
+     * @param amount Amount to validate
+     * @param minAmount Minimum amount
+     * @param maxAmount Maximum amount
      */
     function validateAmount(
         uint256 amount,
@@ -72,16 +79,16 @@ library BridgeValidator {
     }
 
     /**
-     * @notice Gera ID único de uma bridge
-     * @param token Endereço do token
-     * @param from Endereço de origem
-     * @param to Endereço de destino
-     * @param amount Quantidade
-     * @param sourceChainId Chain ID de origem
-     * @param targetChainId Chain ID de destino
-     * @param sourceTxHash Hash da tx de origem
+     * @notice Generates a unique bridge ID
+     * @param token Token address
+     * @param from Origin address
+     * @param to Destination address
+     * @param amount Quantity
+     * @param sourceChainId Source Chain ID
+     * @param targetChainId Target Chain ID
+     * @param sourceTxHash Source TX hash
      * @param nonce Nonce
-     * @return bytes32 ID único da bridge
+     * @return bytes32 Unique bridge ID
      */
     function generateBridgeId(
         address token,
@@ -108,8 +115,8 @@ library BridgeValidator {
     }
 
     /**
-     * @notice Valida que um array de endereços não tem duplicatas
-     * @param addresses Array de endereços
+     * @notice Validates that an address array has no duplicates
+     * @param addresses Address array
      */
     function validateNoDuplicates(address[] memory addresses) internal pure {
         for (uint256 i = 0; i < addresses.length; i++) {
@@ -123,9 +130,9 @@ library BridgeValidator {
     }
 
     /**
-     * @notice Valida chain ID suportada
-     * @param chainId Chain ID a validar
-     * @param supportedChains Array de chains suportadas
+     * @notice Validates if a chain ID is supported
+     * @param chainId Chain ID to validate
+     * @param supportedChains Array of supported chain IDs
      */
     function validateChainId(
         uint256 chainId,

@@ -5,7 +5,14 @@ pragma solidity ^0.8.20;
  *  █▄░█ █▀▀ █▀█   █▀ █▀▄▀█ ▄▀█ █▀█ ▀█▀
  *  █░▀█ ██▄ █▄█   ▄█ █░▀░█ █▀█ █▀▄ ░█░
  *
- *  TOKENIZE-SE | NEO SMART FACTORY v0.5.3
+ *  NEO SMART FACTORY v0.5.3 - PROTOCOL | TOKENIZE-SE
+ *
+ *  Official Repository: https://github.com/neo-smart-token-factory/smart-core
+ *  Maintained by: NEO Protocol (team@neosmart.factory)
+ *  
+ *  Licensed under MIT. Attribution to NEO Protocol is required for derivatives.
+ *  Any fork or usage of this factory for financial protocols must reference:
+ *  "Powered by NEO SMART FACTORY"
  */
 
 import "@openzeppelin/contracts/access/Ownable.sol";
@@ -21,20 +28,20 @@ interface INeoTokenV2 {
 
 /**
  * @title ManualBridge
- * @notice Sistema de bridge manual com multi-sig para tokens NeoTokenV2
- * @dev Permite bridge cross-chain com validação multi-assinatura
+ * @notice Manual multi-sig bridge system for NeoTokenV2 tokens
+ * @dev Allows cross-chain bridge with multi-signature validation
  * 
- * Fluxo:
- * 1. Usuário bloqueia tokens na Chain A (lock)
- * 2. Backend monitora evento e gera provas assinadas
- * 3. Relayer submete provas na Chain B
- * 4. Bridge valida assinaturas e minta tokens
+ * Flow:
+ * 1. User locks tokens on Chain A (lock)
+ * 2. Backend monitors event and generates signed proofs
+ * 3. Relayer submits proofs on Chain B
+ * 4. Bridge validates signatures and mints tokens
  */
 contract ManualBridge is Ownable, ReentrancyGuard {
     using ECDSA for bytes32;
     using MessageHashUtils for bytes32;
 
-    // Estrutura de Bridge Request
+    // Bridge Request structure
     struct BridgeRequest {
         address token;           // Endereço do token
         address from;            // Origem (quem bloqueou)
@@ -44,20 +51,20 @@ contract ManualBridge is Ownable, ReentrancyGuard {
         uint256 targetChainId;   // Chain de destino
         bytes32 sourceTxHash;    // Hash da tx de origem
         uint256 nonce;           // Nonce único
-        uint256 timestamp;       // Timestamp do lock
+        uint256 timestamp;       // Lock timestamp
     }
 
-    // Estado
-    mapping(bytes32 => bool) public processedBridges;      // Bridges já processadas
-    mapping(address => bool) public authorizedSigners;     // Signers autorizados
-    mapping(address => bool) public supportedTokens;       // Tokens suportados
-    mapping(address => uint256) public nonces;             // Nonces por usuário
+    // State
+    mapping(bytes32 => bool) public processedBridges;      // Bridges already processed
+    mapping(address => bool) public authorizedSigners;     // Authorized signers
+    mapping(address => bool) public supportedTokens;       // Supported tokens
+    mapping(address => uint256) public nonces;             // Nonces per user
     
-    uint256 public requiredSignatures;                     // Número de assinaturas necessárias
-    uint256 public signerCount;                            // Total de signers
-    uint256 public bridgeFee;                              // Fee por bridge (em wei)
+    uint256 public requiredSignatures;                     // Required number of signatures
+    uint256 public signerCount;                            // Total signers
+    uint256 public bridgeFee;                              // Bridge fee (in wei)
     
-    // Eventos
+    // Events
     event TokenLocked(
         address indexed token,
         address indexed from,
@@ -104,11 +111,11 @@ contract ManualBridge is Ownable, ReentrancyGuard {
     }
 
     /**
-     * @notice Bloqueia tokens para bridge (Chain A)
-     * @param token Endereço do token
-     * @param to Endereço de destino na outra chain
-     * @param amount Quantidade a ser bloqueada
-     * @param targetChainId Chain ID de destino
+     * @notice Locks tokens for bridge (Chain A)
+     * @param token Token address
+     * @param to Destination address on the other chain
+     * @param amount Amount to be locked
+     * @param targetChainId Target Chain ID
      */
     function lockTokens(
         address token,
@@ -122,11 +129,10 @@ contract ManualBridge is Ownable, ReentrancyGuard {
         require(msg.value >= bridgeFee, "Insufficient bridge fee");
         require(targetChainId != block.chainid, "Cannot bridge to same chain");
         
-        // Transfere tokens para o bridge (burn ou lock)
+        // Transfers tokens to the bridge (burn or lock)
         INeoTokenV2(token).transferFrom(msg.sender, address(this), amount);
         
-        // Incrementa nonce do usuário
-        uint256 nonce = nonces[msg.sender]++;
+        // Increments user nonce        uint256 nonce = nonces[msg.sender]++;
         
         emit TokenLocked(
             token,
@@ -140,9 +146,9 @@ contract ManualBridge is Ownable, ReentrancyGuard {
     }
 
     /**
-     * @notice Processa bridge com provas multi-sig (Chain B)
-     * @param request Dados da bridge request
-     * @param signatures Array de assinaturas dos signers
+     * @notice Processes bridge with multi-sig proofs (Chain B)
+     * @param request Bridge request data
+     * @param signatures Array of signer signatures
      */
     function bridgeWithProof(
         BridgeRequest calldata request,
@@ -154,7 +160,7 @@ contract ManualBridge is Ownable, ReentrancyGuard {
         require(signatures.length >= requiredSignatures, "Not enough signatures");
         require(request.targetChainId == block.chainid, "Wrong target chain");
         
-        // Gera ID único da bridge
+        // Generates unique bridge ID
         bytes32 bridgeId = keccak256(
             abi.encodePacked(
                 request.token,
@@ -168,16 +174,16 @@ contract ManualBridge is Ownable, ReentrancyGuard {
             )
         );
         
-        // Previne replay attacks
+        // Prevents replay attacks
         require(!processedBridges[bridgeId], "Bridge already processed");
         
-        // Valida assinaturas
+        // Validates signatures
         _validateSignatures(bridgeId, signatures);
         
-        // Marca como processada
+        // Marks as processed
         processedBridges[bridgeId] = true;
         
-        // Minta tokens na chain de destino
+        // Mints tokens on target chain
         INeoTokenV2(request.token).bridgeMint(request.to, request.amount);
         
         emit TokenBridged(
@@ -191,9 +197,9 @@ contract ManualBridge is Ownable, ReentrancyGuard {
     }
 
     /**
-     * @notice Valida assinaturas multi-sig
-     * @param bridgeId ID da bridge
-     * @param signatures Array de assinaturas
+     * @notice Validates multi-sig signatures
+     * @param bridgeId Bridge ID
+     * @param signatures Signatures array
      */
     function _validateSignatures(
         bytes32 bridgeId,
@@ -208,7 +214,7 @@ contract ManualBridge is Ownable, ReentrancyGuard {
             
             require(authorizedSigners[signer], "Invalid signer");
             
-            // Previne assinaturas duplicadas
+            // Prevents duplicate signatures
             for (uint256 j = 0; j < i; j++) {
                 require(signers[j] != signer, "Duplicate signature");
             }
@@ -218,8 +224,8 @@ contract ManualBridge is Ownable, ReentrancyGuard {
     }
 
     /**
-     * @notice Adiciona um signer autorizado
-     * @param signer Endereço do signer
+     * @notice Adds an authorized signer
+     * @param signer Signer address
      */
     function addSigner(address signer) external onlyOwner {
         require(signer != address(0), "Invalid signer");
@@ -232,8 +238,8 @@ contract ManualBridge is Ownable, ReentrancyGuard {
     }
 
     /**
-     * @notice Remove um signer autorizado
-     * @param signer Endereço do signer
+     * @notice Removes an authorized signer
+     * @param signer Signer address
      */
     function removeSigner(address signer) external onlyOwner {
         require(authorizedSigners[signer], "Signer not authorized");
@@ -246,8 +252,8 @@ contract ManualBridge is Ownable, ReentrancyGuard {
     }
 
     /**
-     * @notice Adiciona token suportado
-     * @param token Endereço do token
+     * @notice Adds supported token
+     * @param token Token address
      */
     function addSupportedToken(address token) external onlyOwner {
         require(token != address(0), "Invalid token");
@@ -258,8 +264,8 @@ contract ManualBridge is Ownable, ReentrancyGuard {
     }
 
     /**
-     * @notice Remove token suportado
-     * @param token Endereço do token
+     * @notice Removes supported token
+     * @param token Token address
      */
     function removeSupportedToken(address token) external onlyOwner {
         require(supportedTokens[token], "Token not supported");
@@ -269,8 +275,8 @@ contract ManualBridge is Ownable, ReentrancyGuard {
     }
 
     /**
-     * @notice Atualiza número de assinaturas necessárias
-     * @param _requiredSignatures Novo número de assinaturas
+     * @notice Updates required signatures count
+     * @param _requiredSignatures New signatures count
      */
     function setRequiredSignatures(uint256 _requiredSignatures) external onlyOwner {
         require(_requiredSignatures >= 2, "Min 2 signatures required");
@@ -281,8 +287,8 @@ contract ManualBridge is Ownable, ReentrancyGuard {
     }
 
     /**
-     * @notice Atualiza fee de bridge
-     * @param _bridgeFee Novo fee em wei
+     * @notice Updates bridge fee
+     * @param _bridgeFee New fee in wei
      */
     function setBridgeFee(uint256 _bridgeFee) external onlyOwner {
         bridgeFee = _bridgeFee;
@@ -290,7 +296,7 @@ contract ManualBridge is Ownable, ReentrancyGuard {
     }
 
     /**
-     * @notice Retira fees acumulados
+     * @notice Withdraws accumulated fees
      */
     function withdrawFees() external onlyOwner {
         uint256 balance = address(this).balance;
@@ -301,9 +307,9 @@ contract ManualBridge is Ownable, ReentrancyGuard {
     }
 
     /**
-     * @notice Verifica se uma bridge já foi processada
-     * @param request Dados da bridge request
-     * @return bool True se já foi processada
+     * @notice Checks if a bridge request has already been processed
+     * @param request Bridge request data
+     * @return bool True if already processed
      */
     function isBridgeProcessed(BridgeRequest calldata request) external view returns (bool) {
         bytes32 bridgeId = keccak256(
@@ -323,7 +329,7 @@ contract ManualBridge is Ownable, ReentrancyGuard {
     }
 
     /**
-     * @notice Retorna informações do bridge
+     * @notice Returns bridge information
      */
     function getBridgeInfo() external view returns (
         uint256 _requiredSignatures,
