@@ -12,6 +12,10 @@ This is the core engine of the NΞØ SMART FACTORY. It contains the smart contra
 - **Ownable2Step**: Enhanced security for contract ownership transfers.
 - **Account Abstraction Ready**: Optimized for modern smart wallets and paymasters.
 
+## 🏛 Governance & Philosophy
+The technical execution of this core is governed by the **NΞØ Manifesto**. Every node and asset deployed through this factory must align with the topological principles of the DAO.
+See [docs/GOVERNANCE.md](docs/GOVERNANCE.md) for the full protocol governance rules.
+
 ## 🛠 Usage
 
 ### Prerequisites
