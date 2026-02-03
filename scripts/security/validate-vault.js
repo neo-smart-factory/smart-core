@@ -32,11 +32,25 @@ async function validateVault() {
             console.log(`🔍 Checking ${manifesto.artifact} [${network}]...`);
 
             // Re-calculate hash
-            // Assuming artifact is in artifacts/ton relative to root
-            const artifactPath = path.join(process.cwd(), 'artifacts', 'ton', manifesto.artifact);
+            // Try different possible artifact locations
+            let artifactPath = path.join(process.cwd(), 'artifacts', 'ton', manifesto.artifact);
 
             if (!fs.existsSync(artifactPath)) {
-                console.error(`❌ Artifact missing: ${artifactPath}`);
+                // Try EVM hardhat location (IgnitionToken.sol/IgnitionToken.json)
+                const evmPath = path.join(process.cwd(), 'artifacts/contracts/IgnitionToken.sol', manifesto.artifact.replace('.sol', '.json'));
+                if (fs.existsSync(evmPath)) {
+                    artifactPath = evmPath;
+                } else {
+                    // Try direct artifact name in contracts
+                    const directEvmPath = path.join(process.cwd(), 'artifacts/contracts', manifesto.artifact);
+                    if (fs.existsSync(directEvmPath)) {
+                        artifactPath = directEvmPath;
+                    }
+                }
+            }
+
+            if (!fs.existsSync(artifactPath)) {
+                console.error(`❌ Artifact missing: ${manifesto.artifact}`);
                 allValid = false;
                 continue;
             }
