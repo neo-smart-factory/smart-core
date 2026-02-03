@@ -1,0 +1,36 @@
+{
+    "name": "neo-token-factory",
+    "version": "1.0.0",
+    "description": "MCP Tool for creating Smart Tokens on NΞØ Protocol",
+    "tools": [
+        {
+            "name": "deploy_jetton",
+            "description": "Deploys a new Jetton (TON Token) using the NSF Factory",
+            "inputSchema": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string"
+                    },
+                    "symbol": {
+                        "type": "string"
+                    },
+                    "description": {
+                        "type": "string"
+                    },
+                    "maxSupply": {
+                        "type": "string"
+                    },
+                    "mintPrice": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "name",
+                    "symbol",
+                    "maxSupply"
+                ]
+            }
+        }
+    ]
+}

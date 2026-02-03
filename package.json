@@ -16,7 +16,9 @@
     "deploy:polygon": "npx hardhat run scripts/deployV2.js --network polygon",
     "deploy:base": "npx hardhat run scripts/deployV2.js --network base",
     "verify:base": "npx hardhat verify --network base",
-    "verify:polygon": "npx hardhat verify --network polygon"
+    "verify:polygon": "npx hardhat verify --network polygon",
+    "security:check": "node scripts/security/validate-vault.js",
+    "security:manifesto": "node scripts/security/generate-token-manifesto.js"
   },
   "keywords": [
     "blockchain",

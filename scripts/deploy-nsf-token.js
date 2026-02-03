@@ -10,6 +10,11 @@ const {
     toNano
 } = require('@ton/ton');
 const { mnemonicToPrivateKey } = require('@ton/crypto');
+const fs = require('fs');
+const path = require('path');
+const mioVault = require('./security/mio-vault');
+
+
 
 // $NSF Token Configuration
 const TOKEN_CONFIG = {
@@ -18,7 +23,7 @@ const TOKEN_CONFIG = {
     description: "Official governance and utility token of NEO Protocol - Multichain token factory",
     decimals: 9,
     image: "https://raw.githubusercontent.com/neo-protocol/assets/main/nsf-logo.png", // Placeholder - Update with correct URL
-    
+
     // V2 Features
     maxSupply: toNano('1000000000'), // 1 bilhão de tokens
     mintPrice: toNano('0.1'),         // 0.1 TON por mint público
@@ -36,50 +41,50 @@ async function main() {
     console.log("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n");
 
     try {
-    // 1. Setup Client
-    const isTestnet = process.env.TON_NETWORK === 'testnet';
-    
-    // Prioridade: OnFinality (Professional) > TonCenter (Public Fallback)
-    let endpoint;
-    let provider;
-    
-    // Tentar OnFinality primeiro (melhor performance)
-    const onfinalityEndpoint = isTestnet
-        ? process.env.TON_RPC_URL_ONFINALITY_TESTNET
-        : process.env.TON_RPC_URL_ONFINALITY_MAINNET;
-    
-    if (onfinalityEndpoint) {
-        endpoint = onfinalityEndpoint;
-        provider = `OnFinality ${isTestnet ? '(Testnet)' : '(Mainnet)'}`;
-    } else {
-        // Fallback para TonCenter
-        endpoint = isTestnet
-            ? 'https://testnet.toncenter.com/api/v2/jsonRPC'
-            : 'https://toncenter.com/api/v2/jsonRPC';
-        provider = `TonCenter ${isTestnet ? '(Testnet)' : '(Mainnet)'} [Fallback]`;
-    }
-        
+        // 1. Setup Client
+        const isTestnet = process.env.TON_NETWORK === 'testnet';
+
+        // Prioridade: OnFinality (Professional) > TonCenter (Public Fallback)
+        let endpoint;
+        let provider;
+
+        // Tentar OnFinality primeiro (melhor performance)
+        const onfinalityEndpoint = isTestnet
+            ? process.env.TON_RPC_URL_ONFINALITY_TESTNET
+            : process.env.TON_RPC_URL_ONFINALITY_MAINNET;
+
+        if (onfinalityEndpoint) {
+            endpoint = onfinalityEndpoint;
+            provider = `OnFinality ${isTestnet ? '(Testnet)' : '(Mainnet)'}`;
+        } else {
+            // Fallback para TonCenter
+            endpoint = isTestnet
+                ? 'https://testnet.toncenter.com/api/v2/jsonRPC'
+                : 'https://toncenter.com/api/v2/jsonRPC';
+            provider = `TonCenter ${isTestnet ? '(Testnet)' : '(Mainnet)'} [Fallback]`;
+        }
+
         console.log(`📡 Network: ${isTestnet ? 'Testnet' : 'Mainnet'}`);
         console.log(`🔌 Provider: ${provider}`);
         console.log(`🌐 Endpoint: ${endpoint.substring(0, 60)}...\n`);
-        
+
         const client = new TonClient({ endpoint, timeout: 30000 });
 
         // 2. Setup Wallet
         let keyPair;
-        
+
         // Try private key first, then mnemonic
         if (process.env.TON_DEPLOYER_PRIVATE_KEY) {
             const privateKeyHex = process.env.TON_DEPLOYER_PRIVATE_KEY.replace(/^0x/, '');
             const secretKey = Buffer.from(privateKeyHex, 'hex');
-            
+
             if (secretKey.length !== 64) {
                 throw new Error("Invalid TON_DEPLOYER_PRIVATE_KEY (must be 64 bytes hex)");
             }
-            
+
             const publicKey = secretKey.slice(32);
             keyPair = { publicKey, secretKey };
-            
+
         } else {
             const seed = process.env.TON_DEPLOYER_MNEMONIC;
             if (!seed || seed.trim().split(/\s+/).length < 12) {
@@ -94,7 +99,7 @@ async function main() {
         // Use v5r1 (já confirmado)
         const wallet = WalletContractV5R1.create({ workchain: WORKCHAIN, publicKey });
         const walletContract = client.open(wallet);
-        
+
         const balance = await client.getBalance(wallet.address);
         console.log(`💼 Deployer: ${wallet.address.toString()}`);
         console.log(`💰 Balance: ${(Number(balance) / 1e9).toFixed(4)} TON\n`);
@@ -124,7 +129,7 @@ async function main() {
 
         // Build content cell (off-chain metadata)
         const contentUri = `https://neoprotocol.space/api/jetton/nsf/metadata.json`;
-        
+
         const contentCell = beginCell()
             .storeUint(0x01, 8) // Off-chain content flag
             .storeStringTail(contentUri)
@@ -137,7 +142,7 @@ async function main() {
 
         // Build deploy message - match Factory expectations exactly
         const queryId = Math.floor(Date.now() / 1000); // Unix timestamp (segundos)
-        
+
         const deployMessage = beginCell()
             .storeUint(OP_DEPLOY_JETTON, 32)           // op::deploy_jetton
             .storeUint(queryId, 64)                    // query_id
@@ -147,7 +152,7 @@ async function main() {
             .storeCoins(TOKEN_CONFIG.mintPrice)        // mint_price
             .storeCoins(TOKEN_CONFIG.mintAmount)       // mint_amount
             .endCell();
-        
+
         // Debug: verificar tamanho da mensagem
         console.log(`📊 Message Stats:`);
         console.log(`   Bits: ${deployMessage.bits.length}`);
@@ -158,7 +163,7 @@ async function main() {
         console.log("⏳ Sending transaction...");
 
         const seqno = await walletContract.getSeqno();
-        
+
         await walletContract.sendTransfer({
             seqno,
             secretKey: keyPair.secretKey,
@@ -176,11 +181,11 @@ async function main() {
 
         // 7. Wait for confirmation
         console.log("⏱  Waiting for confirmation...");
-        
+
         let currentSeqno = seqno;
         let attempts = 0;
         const maxAttempts = 30;
-        
+
         while (currentSeqno === seqno && attempts < maxAttempts) {
             await new Promise(resolve => setTimeout(resolve, 2000));
             try {
@@ -202,12 +207,12 @@ async function main() {
         console.log("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
         console.log("🎉 $NSF TOKEN DEPLOYED!");
         console.log("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n");
-        
+
         console.log("⚠️  Note: O endereço exato do Jetton Minter será");
         console.log("   calculado deterministicamente pela Factory.");
         console.log("   Aguarde ~30s e consulte:");
         console.log(`   🔗 https://tonscan.org/address/${factoryAddress.toString()}\n`);
-        
+
         console.log("📋 Token Info:");
         console.log(`   Name:        ${TOKEN_CONFIG.name}`);
         console.log(`   Symbol:      ${TOKEN_CONFIG.symbol}`);
@@ -221,6 +226,23 @@ async function main() {
         console.log("   2. Verifique transações da Factory no TonScan");
         console.log("   3. Localize o endereço do Jetton Minter");
         console.log("   4. Teste public_mint() se habilitado\n");
+
+        // 9. MIO Security Proof (Logic Vault)
+        console.log("🔒 Generating MIO Security Proof...");
+        const minterArtifact = path.join(process.cwd(), 'artifacts', 'ton', 'NeoJettonMinter.cell');
+
+        if (fs.existsSync(minterArtifact)) {
+            const manifesto = await mioVault.createManifesto(
+                minterArtifact,
+                isTestnet ? 'testnet' : 'mainnet',
+                wallet.address.toString(),
+                keyPair.secretKey
+            );
+            mioVault.saveManifesto(manifesto, 'nsf-token');
+        } else {
+            console.warn("⚠️  Minter artifact not found, skipping MIO signature.");
+        }
+
 
     } catch (error) {
         console.error("\n❌ Deployment failed:");
