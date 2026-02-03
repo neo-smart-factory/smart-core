@@ -11,10 +11,11 @@ Este documento serve como prova criptográfica da integridade do contrato mestre
 
 | Atributo | Valor |
 | :--- | :--- |
-| **Endereço Mainnet** | [`EQA5mLN4-9DqZet7s3JQiyzK3XTEOSzF4SYOdHALofVJ4y9M`](https://tonscan.org/address/EQA5mLN4-9DqZet7s3JQiyzK3XTEOSzF4SYOdHALofVJ4y9M) |
+| **Endereço Mainnet** | [`EQA5mLN4-9DqZet7s3JQiyzK3XTEOSzF4SYOdHALofVJ4y9M`](https://tonviewer.com/EQA5mLN4-9DqZet7s3JQiyzK3XTEOSzF4SYOdHALofVJ4y9M) |
 | **Arquitetura** | Tact Modular Architecture (Type-Safe) |
 | **Rede** | THE OPEN NETWORK (TON) - Mainnet |
-| **Admin Principal** | [`UQBSi9T1-iPqrVvs8dDFIlOxQ7qZYTYFT4ocF7wK1syBevlj`](https://tonscan.org/address/UQBSi9T1-iPqrVvs8dDFIlOxQ7qZYTYFT4ocF7wK1syBevlj) |
+| **Admin Principal** | [`UQBSi9T1-iPqrVvs8dDFIlOxQ7qZYTYFT4ocF7wK1syBevlj`](https://tonviewer.com/UQBSi9T1-iPqrVvs8dDFIlOxQ7qZYTYFT4ocF7wK1syBevlj) |
+
 
 ---
 
@@ -32,10 +33,11 @@ A Factory não é apenas uma promessa, ela é uma ferramenta em execução ativa
 ### 🧩 Primeira "Surpresa" (Deploy de Terceiros/Teste)
 O sistema detectou a criação bem-sucedida do primeiro artefato filho (Jetton Minter) emanado desta Factory:
 
-*   **Endereço do Minter:** [`EQAPngkZmIa1jbtQZJ9NSPZ-3sh3PnWh02q85G-m8E6_zstI`](https://tonscan.org/address/EQAPngkZmIa1jbtQZJ9NSPZ-3sh3PnWh02q85G-m8E6_zstI)
+*   **Endereço do Minter:** [`EQAPngkZmIa1jbtQZJ9NSPZ-3sh3PnD8bp5cvxNeAEeEBTfl`](https://tonviewer.com/EQAPngkZmIa1jbtQZJ9NSPZ-3sh3PnD8bp5cvxNeAEeEBTfl)
 *   **Data do Pulso:** 31/01/2026 às 09:33:13
-*   **Hash da Transação:** [`ded61a0463f9a30...`](https://tonscan.org/tx/ded61a0463f9a30f1406f52e2be6757b320d368bc04f6ce7e01168923a1f73b6)
+*   **Hash da Transação:** [`ded61a0463f9a30...`](https://tonviewer.com/transaction/ded61a0463f9a30f1406f52e2be6757b320d368bc04f6ce7e01168923a1f73b6)
 *   **Resultado:** 🚀 **SUCCESS (StateInit Verified)**
+
 
 
 ---
