@@ -14,7 +14,8 @@
     "deploy:polygon": "npx hardhat run scripts/deployV2.js --network polygon",
     "deploy:base": "npx hardhat run scripts/deployV2.js --network base",
     "verify:base": "npx hardhat verify --network base",
-    "verify:polygon": "npx hardhat verify --network polygon"
+    "verify:polygon": "npx hardhat verify --network polygon",
+    "nexus:start": "node integrations/nexus/server.js"
   },
   "keywords": [
     "blockchain",
@@ -31,7 +32,8 @@
   "dependencies": {
     "@openzeppelin/contracts": "^5.0.0",
     "dotenv": "^16.4.0",
-    "ethers": "^6.10.0"
+    "ethers": "^6.10.0",
+    "express": "^4.18.2"
   },
   "devDependencies": {
     "@nomicfoundation/hardhat-toolbox": "^4.0.0",
