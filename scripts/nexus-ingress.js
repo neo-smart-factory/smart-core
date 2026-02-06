@@ -17,7 +17,7 @@ const { TonClient, WalletContractV5R1, internal, beginCell, Address, toNano } = 
 const { mnemonicToPrivateKey } = require('@ton/crypto');
 
 // Configurações
-const PORT = process.env.NEXUS_INGRESS_PORT || 5050;
+const PORT = process.env.PORT || process.env.NEXUS_INGRESS_PORT || 5050;
 const NEXUS_SECRET = process.env.NEXUS_SECRET || "neo_nexus_vault_secret_2026";
 const NEXUS_CALLBACK_URL = process.env.NEXUS_WEBHOOK_URL || "https://nsfactory.xyz/api/webhooks/factory";
 
