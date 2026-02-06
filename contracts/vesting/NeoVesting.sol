@@ -7,15 +7,17 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 
 /**
- * 
- *  ███╗   ██╗     ███████╗    ███████╗ █████╗  ██████╗████████╗ ██████╗ ██████╗ ██╗   ██╗
- *  ████╗  ██║     ██╔════╝    ██╔════╝██╔══██╗██╔════╝╚══██╔══╝██╔═══██╗██╔══██╗╚██╗ ██╔╝
- *  ██╔██╗ ██║     ███████╗    █████╗  ███████║██║        ██║   ██║   ██║██████╔╝ ╚████╔╝ 
- *  ██║╚██╗██║     ╚════██║    ██╔══╝  ██╔══██║██║        ██║   ██║   ██║██╔══██╗  ╚██╔╝  
- *  ██║ ╚████║     ███████║    ██║     ██║  ██║╚██████╗   ██║   ╚██████╔╝██║  ██║   ██║   
- *  ╚═╝  ╚═══╝     ╚══════╝    ╚═╝     ╚═╝  ╚═╝ ╚═════╝   ╚═╝    ╚═════╝ ╚═╝  ╚═╝   ╚═╝   
+ *  █▄░█ █▀▀ █▀█   █▀ █▀▄▀█ ▄▀█ █▀█ ▀█▀
+ *  █░▀█ ██▄ █▄█   ▄█ █░▀░█ █▀█ █▀▄ ░█░
  *
- *  NΞØ SMART FACTORY v0.5.2 — FOUNDATION
+ *  NEO SMART FACTORY v0.5.3 - PROTOCOL | TOKENIZE-SE
+ *
+ *  Official Repository: https://github.com/neo-smart-token-factory/smart-core
+ *  Maintained by: NEO Protocol (team@neosmart.factory)
+ *  
+ *  Licensed under MIT. Attribution to NEO Protocol is required for derivatives.
+ *  Any fork or usage of this factory for financial protocols must reference:
+ *  "Powered by NEO SMART FACTORY"
  */
 contract NeoVesting is Ownable, ReentrancyGuard {
     using SafeERC20 for IERC20;
@@ -64,7 +66,7 @@ contract NeoVesting is Ownable, ReentrancyGuard {
     }
 
     /**
-     * @notice Cria um novo schedule de vesting
+     * @notice Creates a new vesting schedule
      */
     function createVestingSchedule(
         address beneficiary,
@@ -120,7 +122,7 @@ contract NeoVesting is Ownable, ReentrancyGuard {
     }
 
     /**
-     * @notice Libera tokens de um schedule específico
+     * @notice Releases tokens from a specific schedule
      */
     function release(bytes32 scheduleId) external nonReentrant {
         VestingSchedule storage schedule = vestingSchedules[scheduleId];
@@ -139,7 +141,7 @@ contract NeoVesting is Ownable, ReentrancyGuard {
     }
 
     /**
-     * @notice Libera tokens de todos os schedules do chamador
+     * @notice Releases tokens from all schedules of the caller
      */
     function releaseAll() external nonReentrant {
         bytes32[] memory schedules = beneficiarySchedules[msg.sender];
@@ -167,7 +169,7 @@ contract NeoVesting is Ownable, ReentrancyGuard {
     }
 
     /**
-     * @notice Revoga um schedule de vesting (apenas se revocable)
+     * @notice Revokes a vesting schedule (only if revocable)
      */
     function revoke(bytes32 scheduleId) external onlyOwner {
         VestingSchedule storage schedule = vestingSchedules[scheduleId];
@@ -190,7 +192,7 @@ contract NeoVesting is Ownable, ReentrancyGuard {
     }
 
     /**
-     * @notice Calcula a quantidade de tokens que podem ser liberados
+     * @notice Calculates the quantity of tokens that can be released
      */
     function getReleasableAmount(bytes32 scheduleId)
         external
@@ -205,7 +207,7 @@ contract NeoVesting is Ownable, ReentrancyGuard {
     }
 
     /**
-     * @notice Retorna todos os schedules de um beneficiário
+     * @notice Returns all schedules of a beneficiary
      */
     function getBeneficiarySchedules(address beneficiary)
         external
@@ -216,7 +218,7 @@ contract NeoVesting is Ownable, ReentrancyGuard {
     }
 
     /**
-     * @notice Calcula a quantidade liberável baseada no tempo decorrido
+     * @notice Calculates the releasable quantity based on elapsed time
      */
     function _calculateReleasableAmount(VestingSchedule storage schedule)
         internal
