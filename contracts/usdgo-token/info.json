@@ -1,0 +1,10 @@
+{
+    "name": "USD GO",
+    "symbol": "USDGO",
+    "website": "https://usdgo.xyz",
+    "description": "BEP‑20 USD‑pegged token.",
+    "explorer": "https://bscscan.com/token/0xF408D8b596a0B3b68AdD59fbd3827718fd1f03F1",
+    "type": "BEP20",
+    "decimals": 18
+  }
+  

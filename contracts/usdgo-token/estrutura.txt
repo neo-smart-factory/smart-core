@@ -1,0 +1,25 @@
+.
+├── .DS_Store
+├── .env
+├── .env.example
+├── config
+├── contracts
+│   └── USDGO.sol
+├── estrutura.txt
+├── hardhat.config.js
+├── ignition
+│   └── modules
+│       └── Lock.js
+├── Makefile
+├── mintWithSig.js
+├── package-lock.json
+├── package.json
+├── README.md
+├── scripts
+│   ├── deploy.js
+│   └── test-env.js
+├── signMint.js
+└── test
+    └── Lock.js
+
+7 directories, 16 files
