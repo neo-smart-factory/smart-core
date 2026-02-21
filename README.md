@@ -129,16 +129,16 @@ smart-core/
 └─ SECURITY.md                Security policy
 └─ CONTRIBUTING.md            Contributor guide
 └─ scripts/README.md          Scripts map
+└─ docs/README.md             Docs index
 
 ▓▓▓ PROTOCOL DOCS (docs/)
 ────────────────────────────────────────
 └─ NEXT_STEPS_2026_Q1.md      Roadmap
-└─ PROTOCOL_EVOLUTION_2026.md Architecture
-└─ NSF_IMPLEMENTATION_SUMMARY NSF Token spec
-└─ NEXUS_INTEGRATION_GUIDE    Nexus ↔ Factory
-└─ MAINNET_LAUNCH_PLAN.md     TON launch plan
-└─ NSF_REGULATORY_COMPLIANCE  CVM/SEC/MiCA
-└─ TON_ECOSYSTEM_REFERENCE    TON reference
+└─ DIRECTIVE_SMART_CORE.md    Core directive
+└─ architecture/              Architecture (7 docs)
+└─ nexus/                     Nexus integration (3)
+└─ nsf/                       NSF Token (6 docs)
+└─ ton/                       TON blockchain (9)
 ```
 
 ────────────────────────────────────────
