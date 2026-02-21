@@ -11,7 +11,7 @@ import "@openzeppelin/contracts/utils/Pausable.sol";
  *
  *  TOKENIZE | NEO SMART FACTORY v0.5.3
  */
-'
+
 contract NeoTokenBase is ERC20, Ownable, Pausable {
     uint256 public immutable PRICE;
     uint256 public immutable INITIAL_SUPPLY;

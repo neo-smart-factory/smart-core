@@ -8,7 +8,7 @@
 	deploy-evm-base deploy-evm-polygon deploy-ton-factory deploy-ton-neoflw \
 	verify-base verify-polygon \
 	ton-balance ton-wallet ton-jetton-addr \
-	clean lint
+	clean lint lint-sol lint-js analyze
 
 NODE := node
 NPM := npm
@@ -123,5 +123,13 @@ clean:
 	rm -rf contracts/ton/build
 	@echo "Cache EVM e build TON removidos."
 
-lint:
-	@echo "Lint: configurar conforme necessidade do projeto."
+lint: lint-sol lint-js
+
+lint-sol:
+	$(NPX) solhint 'contracts/**/*.sol'
+
+lint-js:
+	$(NPX) eslint 'scripts/**/*.js' 'integrations/**/*.js'
+
+analyze:
+	$(NODE) scripts/code-analysis.js

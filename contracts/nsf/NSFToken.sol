@@ -86,15 +86,15 @@ contract NSFToken is ERC20, ERC20Permit {
     
     /**
      * @notice Returns contract metadata for institutional verification
-     * @return name Token name
-     * @return symbol Token symbol
+     * @return tokenName Token name
+     * @return tokenSymbol Token symbol
      * @return supply Total supply (fixed)
      * @return deploymentTime Deployment timestamp
      * @return mintRenounced Confirmation that minting is impossible
      */
     function getTokenInfo() external view returns (
-        string memory name,
-        string memory symbol,
+        string memory tokenName,
+        string memory tokenSymbol,
         uint256 supply,
         uint256 deploymentTime,
         bool mintRenounced
