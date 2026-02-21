@@ -47,7 +47,7 @@
     "@ton/crypto": "^3.3.0",
     "@ton/sandbox": "^0.20.0",
     "@ton/test-utils": "^0.4.2",
-    "@ton/ton": "^16.1.0",
+    "@ton/ton": "^16.2.2",
     "@types/jest": "^30.0.0",
     "@types/node": "^25.0.10",
     "hardhat": "^2.22.0",
