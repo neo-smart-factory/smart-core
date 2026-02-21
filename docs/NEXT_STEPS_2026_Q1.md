@@ -1,238 +1,302 @@
-# 🧭 NΞØ SMART FACTORY — Next Steps Roadmap
+<!-- markdownlint-disable MD003 MD007 MD013 MD022 MD023 MD025 MD029 MD032 MD033 MD034 -->
+
+```text
+========================================
+   NΞØ SMART FACTORY · NEXT STEPS
+         ROADMAP Q1 2026
+========================================
+```
 
 > **Atualizado:** 21 de Fevereiro de 2026  
 > **Versão:** v0.5.3-neural-core  
-> **Branch:** `main` (commit `322a8f8` → pushed)  
-> **Autor:** NODE NEØ
+> **Branch:** `main` (commit `2cfd354` → pushed)
 
----
+────────────────────────────────────────
 
-## 📊 Status de Sincronização (21/02/2026)
+## 📊 Status de Sincronização
 
-| Check | Status |
-|-------|--------|
-| **Branch local vs origin/main** | ✅ Sincronizado (commit `322a8f8`) |
-| **Mudanças locais não comitadas** | ✅ Nenhuma |
-| **Commits locais não enviados** | ✅ Zero — tudo pushed |
-| **Commits remotos pendentes** | ✅ Zero — tudo pulled |
-| **PRs Dependabot abertos** | ⚠️ 2 restantes (hardhat 3.x, test-utils 0.12) |
-| **72 contratos EVM** | ✅ Compilados com sucesso |
+```text
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+┃ CHECK                     STATUS
+┣━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+┃ Branch vs origin/main     ✅ Sync
+┃ Mudanças não comitadas    ✅ Zero
+┃ Commits não enviados      ✅ Zero
+┃ PRs Dependabot restantes  ⚠️  2
+┃ Contratos EVM             ✅ 72 compiled
+┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+```
 
-### PRs Dependabot Pendentes
+────────────────────────────────────────
 
-| Branch | Atualização | Status |
-|--------|-------------|--------|
-| `dependabot/npm_and_yarn/dotenv-17.2.4` | dotenv 16.6.1 → 17.2.4 | ✅ Merged |
-| `dependabot/npm_and_yarn/hardhat-3.1.7` | hardhat 2.22 → 3.1.7 ⚠️ **Major** | ⛔ Não mergear (rewrite ESM) |
-| `dependabot/npm_and_yarn/ton/test-utils-0.12.0` | @ton/test-utils 0.4.2 → 0.12.0 ⚠️ **Major** | 🟡 Avaliar na Fase 1 |
-| `dependabot/npm_and_yarn/ton/ton-16.2.2` | @ton/ton 16.1.0 → 16.2.2 | ✅ Merged |
-| `dependabot/npm_and_yarn/types/node-25.2.1` | @types/node 25.0.10 → 25.2.1 | ✅ Merged |
+### PRs Dependabot
 
-> ⚠️ **Hardhat 3.x** é uma major version. Requer validação antes do merge.
-> ⚠️ **@ton/test-utils 0.12.0** é um salto grande (0.4.2 → 0.12.0). Testar compatibilidade.
+```text
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+┃ PACKAGE               UPDATE    STATUS
+┣━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+┃ dotenv                17.2.4    ✅ Merged
+┃ @ton/ton              16.2.2    ✅ Merged
+┃ @types/node           25.2.1    ✅ Merged
+┃ hardhat               3.1.7     ⛔ Major
+┃ @ton/test-utils       0.12.0    🟡 Fase 1
+┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+```
 
-### Branches Legadas (Cleanup Sugerido)
+> ⚠️ **Hardhat 3.x** é um rewrite completo
+> para ESM. Não mergear sem migração.
+>
+> ⚠️ **@ton/test-utils 0.12.0** salto
+> grande (0.4.2 → 0.12.0). Testar na Fase 1.
 
-- ~~`origin/copilot/analyze-nsf-implementation`~~ — ✅ Deletada
-- `origin/copilot/implement-complete-contracts` — 🟡 Manter (tem NSFGovernance Layer 3)
-- ~~`origin/copilot/sub-pr-1`~~ — ✅ Deletada
-- ~~`origin/copilot/update-readme-smart-core`~~ — ✅ Deletada
-- ~~`origin/feat/ton-factory-v2`~~ — ✅ Deletada (já em main)
+────────────────────────────────────────
 
----
+### Branches Legadas
+
+- ~~`copilot/analyze-nsf-implementation`~~
+  ✅ Deletada
+- `copilot/implement-complete-contracts`
+  🟡 Manter (NSFGovernance Layer 3)
+- ~~`copilot/sub-pr-1`~~
+  ✅ Deletada
+- ~~`copilot/update-readme-smart-core`~~
+  ✅ Deletada
+- ~~`feat/ton-factory-v2`~~
+  ✅ Deletada (já em main)
+
+────────────────────────────────────────
 
 ## ✅ O Que Já Foi Conquistado
 
 ### Contratos Deployados em Produção
 
-| Ativo | Rede | Endereço | Data |
-|-------|------|----------|------|
-| **NEOFLW Token** | Base Mainnet | `0xF4Fbd30e3Ea69457adD30F7C3D6fde25f7D8Db26` | 20/01/2026 |
-| **NEOFLW Token** | TON Mainnet | `EQAPngkZmIa1jbtQZJ9NSPZ-3sh3PnD8bp5cvxNeAEeEBTfl` | 31/01/2026 |
-| **Jetton Factory** | TON Mainnet | `EQA5mLN4-9DqZet7s3JQiyzK3XTEOSzF4SYOdHALofVJ4y9M` | 31/01/2026 |
+```text
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+┃ ATIVO              REDE       DATA
+┣━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+┃ NEOFLW Token       Base       20/01/26
+┃ NEOFLW Token       TON        31/01/26
+┃ Jetton Factory     TON        31/01/26
+┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Base:  0xF4Fbd30e3Ea69457adD30F7C3D6fde25f7D8Db26
+TON:   EQAPngkZmIa1jbtQZJ9NSPZ-3sh3PnD8bp5cvxNeAEeEBTfl
+```
 
 ### Infraestrutura Operacional
 
-- ✅ Nexus Ingress Adapter (HMAC-SHA256) — comunicação Smart Factory ↔ Nexus
-- ✅ MIO Logic Vault — assinaturas de segurança em deploys
+- ✅ Nexus Ingress Adapter (HMAC-SHA256)
+- ✅ MIO Logic Vault — assinaturas em deploys
 - ✅ Railway config + Node 22 forçado
 - ✅ GitHub Workflows template aplicado
-- ✅ Jest 30 + ts-jest compatibilidade resolvida
-- ✅ Exit Code 9 (Cell Underflow) corrigido no TON Factory v2
+- ✅ Jest 30 + ts-jest compatibilidade
+- ✅ Exit Code 9 corrigido (TON Factory v2)
 
 ### Documentação Completa
 
-- ✅ PROTOCOL_EVOLUTION_2026.md — Visão arquitetural
-- ✅ NSF_IMPLEMENTATION_SUMMARY.md — NSF Token production-ready
-- ✅ NEXUS_INTEGRATION_GUIDE.md — Protocolo Factory ↔ Nexus
-- ✅ MAINNET_LAUNCH_PLAN.md — Checklist de mainnet TON
-- ✅ TESTNET_TEST_PLAN.md — Plano de testes (pendente execução)
-- ✅ NSF_REGULATORY_COMPLIANCE_BR.md — Compliance CVM/SEC/MiCA
-- ✅ DEPLOY_V2.md — Guia de deploy NeoTokenV2
+- ✅ `PROTOCOL_EVOLUTION_2026.md`
+- ✅ `NSF_IMPLEMENTATION_SUMMARY.md`
+- ✅ `NEXUS_INTEGRATION_GUIDE.md`
+- ✅ `MAINNET_LAUNCH_PLAN.md`
+- ✅ `TESTNET_TEST_PLAN.md`
+- ✅ `NSF_REGULATORY_COMPLIANCE_BR.md`
+- ✅ `DEPLOY_V2.md`
 
----
+────────────────────────────────────────
 
-## 🎯 Next Steps — Roadmap Ordenado
+## 🎯 Roadmap Ordenado
 
-### Fase 0: Housekeeping (1 sessão)
+────────────────────────────────────────
+
+### Fase 0: Housekeeping ✅ COMPLETA
 
 > Limpar a casa antes de avançar.
 
-- [x] **0.1** Avaliar e mergear PRs Dependabot seguros:
-  - ✅ `dotenv-17.2.4` — compatível, merged
-  - ✅ `@ton/ton-16.2.2` — patch seguro, merged
-  - ✅ `@types/node-25.2.1` — patch seguro, merged
-- [x] **0.2** Avaliar PRs Dependabot com breaking changes:
-  - ⛔ `hardhat-3.1.7` — major rewrite (ESM), NÃO mergear
-  - 🟡 `@ton/test-utils-0.12.0` — avaliar na Fase 1 (testes TON)
-- [x] **0.3** Cleanup de branches obsoletas:
-  - ✅ Deletadas 3 branches remotas (`copilot/update-readme`, `copilot/analyze-nsf`, `copilot/sub-pr-1`)
-  - ✅ Deletadas 3 branches locais
-  - 🟡 `copilot/implement-complete-contracts` mantida (NSFGovernance)
-- [x] **0.4** Configurar lint real no Makefile:
-  - ✅ `solhint` instalado + `.solhint.json` configurado
-  - ✅ `eslint` v9 flat config instalado + `eslint.config.mjs`
-  - ✅ `make lint` / `make lint-sol` / `make lint-js` operacionais
-  - ✅ `make analyze` — pre-compilation code analysis (`scripts/code-analysis.js`)
-- [x] **0.5** Extras realizados:
-  - ✅ Fix `.npmrc` cache path (caminho antigo `/CODIGOS/` → relativo)
-  - ✅ Fix 4 erros de compilação (stray quote, NatSpec tag, param shadow)
-  - ✅ `.gitignore` atualizado (.npm-cache, .DS_Store, .tmp)
-  - ✅ Reorganização completa da pasta `scripts/` (47 scripts → 7 categorias)
-  - ✅ 72 contratos EVM compilados com sucesso
+- [x] **0.1** Merge Dependabot seguros
+  - ✅ `dotenv-17.2.4` — compatível
+  - ✅ `@ton/ton-16.2.2` — patch
+  - ✅ `@types/node-25.2.1` — patch
 
----
+- [x] **0.2** Avaliar breaking changes
+  - ⛔ `hardhat-3.1.7` — NÃO mergear
+  - 🟡 `test-utils-0.12.0` — Fase 1
+
+- [x] **0.3** Cleanup de branches
+  - ✅ 3 remotas deletadas
+  - ✅ 3 locais deletadas
+  - 🟡 `implement-complete-contracts` mantida
+
+- [x] **0.4** Lint toolchain
+  - ✅ `solhint` + `.solhint.json`
+  - ✅ `eslint` v9 + `eslint.config.mjs`
+  - ✅ `make lint` / `lint-sol` / `lint-js`
+  - ✅ `make analyze` — code-analysis.js
+
+- [x] **0.5** Extras
+  - ✅ Fix `.npmrc` cache path
+  - ✅ Fix 4 erros compilação
+  - ✅ `.gitignore` atualizado
+  - ✅ Reorganização `scripts/` (7 categorias)
+  - ✅ 72 contratos compilados
+  - ✅ README.md + SETUP.md reescritos
+
+────────────────────────────────────────
 
 ### Fase 1: Validação TON (1-2 sessões)
 
-> Fechar o ciclo de testes pendente no `TESTNET_TEST_PLAN.md`.
+> Fechar o ciclo de testes do
+> `TESTNET_TEST_PLAN.md`.
 
-- [ ] **1.1** Obter fundos de testnet TON (faucet)
-- [ ] **1.2** Executar Fase 2: Deploy da Factory v2.3.0 na testnet
+- [ ] **1.1** Obter fundos testnet (faucet)
+
+- [ ] **1.2** Deploy Factory v2.3.0 testnet
   ```bash
-  node scripts/deploy/deploy-ton-factory-v2.js --network testnet
+  node scripts/deploy/deploy-ton-factory-v2.js \
+    --network testnet
   ```
-- [ ] **1.3** Executar Fase 3: Deploy de token de teste via Factory
+
+- [ ] **1.3** Deploy token teste via Factory
   ```bash
   node scripts/deploy/deploy-nsf-token.js
   ```
-- [ ] **1.4** Executar Fase 4: Operações de Mint (mint, transfer, burn)
+
+- [ ] **1.4** Operações de Mint
   ```bash
   node scripts/ton/test-mint.js
   ```
-- [ ] **1.5** Executar Fase 5: Stress tests (múltiplos tokens, gas costs)
-- [ ] **1.6** Preencher `TESTNET_TEST_PLAN.md` com resultados e lições
 
----
+- [ ] **1.5** Stress tests
+
+- [ ] **1.6** Preencher `TESTNET_TEST_PLAN.md`
+
+────────────────────────────────────────
 
 ### Fase 2: Bridge Cross-Chain (2-3 sessões)
 
 > Conectar NEOFLW entre Base e TON.
 
-- [ ] **2.1** Revisar e auditar `contracts/bridge/ManualBridge.sol`
-- [ ] **2.2** Revisar e auditar `contracts/bridge/BridgeValidator.sol`
-- [ ] **2.3** Implementar testes unitários para o bridge
-- [ ] **2.4** Deploy do Bridge contract na Base testnet (Sepolia)
-- [ ] **2.5** Configurar `setBridgeMinter()` no NEOFLW (Base)
-- [ ] **2.6** Testar relay flow completo:
+- [ ] **2.1** Audit `ManualBridge.sol`
+- [ ] **2.2** Audit `BridgeValidator.sol`
+- [ ] **2.3** Testes unitários do bridge
+- [ ] **2.4** Deploy Base Sepolia testnet
+- [ ] **2.5** Configurar `setBridgeMinter()`
+- [ ] **2.6** Testar relay flow completo
   - Base → sign-proof → relay → TON mint
   - TON → burn → relay → Base unlock
-- [ ] **2.7** Documentar o fluxo em `docs/BRIDGE_OPERATIONS.md`
+- [ ] **2.7** Documentar em `BRIDGE_OPERATIONS.md`
 
----
+────────────────────────────────────────
 
 ### Fase 3: Governance On-Chain (3-4 sessões)
 
-> Ativar a camada de admissão e reputação do protocolo.
+> Ativar admissão e reputação do protocolo.
 
-- [ ] **3.1** Revisar `contracts/protocol/NeoNodeAdmission.sol`
-- [ ] **3.2** Revisar `contracts/protocol/NodeRegistry.sol`
-- [ ] **3.3** Revisar `contracts/protocol/ReputationBootstrap.sol`
-- [ ] **3.4** Implementar testes unitários completos
-- [ ] **3.5** Deploy na Base Sepolia testnet
-- [ ] **3.6** Integrar com Nexus (evento `NODE_ADMITTED`)
-- [ ] **3.7** Documentar arquitetura de governança
+- [ ] **3.1** Review `NeoNodeAdmission.sol`
+- [ ] **3.2** Review `NodeRegistry.sol`
+- [ ] **3.3** Review `ReputationBootstrap.sol`
+- [ ] **3.4** Testes unitários completos
+- [ ] **3.5** Deploy Base Sepolia testnet
+- [ ] **3.6** Integrar Nexus (`NODE_ADMITTED`)
+- [ ] **3.7** Documentar arquitetura
 
----
+────────────────────────────────────────
 
 ### Fase 4: Smart Factory UI (4-5 sessões)
 
 > Interface visual para criação de tokens.
 
-- [ ] **4.1** Scaffold do projeto `smart-ui` com Vite + React
-- [ ] **4.2** Integrar Dynamic Labs SDK para wallet connection
-- [ ] **4.3** Interface de criação de token (ERC20/ERC721/Jetton)
-- [ ] **4.4** Dashboard de contratos deployados
-- [ ] **4.5** Monitor de transações e eventos Nexus
-- [ ] **4.6** Deploy em Vercel com domínio custom
+- [ ] **4.1** Scaffold `smart-ui` (Vite + React)
+- [ ] **4.2** Dynamic Labs SDK (wallet)
+- [ ] **4.3** Interface criação de token
+- [ ] **4.4** Dashboard deploys
+- [ ] **4.5** Monitor Nexus
+- [ ] **4.6** Deploy Vercel + domínio
 
----
+────────────────────────────────────────
 
-### Fase 5: NSF Token — Caminho para Mainnet (Ongoing)
+### Fase 5: NSF Token — Mainnet (Ongoing)
 
-> Processo de longo prazo para o token de coordenação.
+> Processo de longo prazo para o token
+> de coordenação.
 
-- [ ] **5.1** Solicitar quotes de auditoria:
-  - Trail of Bits ou ConsenSys Diligence
+- [ ] **5.1** Quotes auditoria
+  - Trail of Bits / ConsenSys
   - OpenZeppelin Security
-  - Firma independente terceira
-- [ ] **5.2** Comissionar Formal Verification (Certora/Runtime Verification)
-- [ ] **5.3** Identificar 7 guardians para o EmergencyGuardian
-- [ ] **5.4** Configurar bug bounty no Immunefi ($500k pool)
-- [ ] **5.5** Obter legal opinions (Brasil CVM, US SEC, EU MiCA)
-- [ ] **5.6** Deploy na testnet para beta de qualificação (30 dias)
-- [ ] **5.7** Deploy em Mainnet após aprovação total
+  - Firma independente
+- [ ] **5.2** Formal Verification (Certora)
+- [ ] **5.3** Identificar 7 guardians
+- [ ] **5.4** Bug bounty Immunefi ($500k)
+- [ ] **5.5** Legal opinions (CVM/SEC/MiCA)
+- [ ] **5.6** Deploy testnet (30 dias beta)
+- [ ] **5.7** Deploy Mainnet
 
----
+────────────────────────────────────────
 
-### Fase 6: FlowPay Core Integration (3-4 sessões)
+### Fase 6: FlowPay Core (3-4 sessões)
 
-> Engine de pagamentos PIX ↔ Crypto conectado ao Nexus.
+> Engine PIX ↔ Crypto via Nexus.
 
-- [ ] **6.1** Implementar engine Fastify (porta 5050)
-- [ ] **6.2** Webhook receiver para providers PIX (Woovi, Efí, MP, Stark)
-- [ ] **6.3** Unlock Receipts com HMAC-SHA256
-- [ ] **6.4** Integração com Nexus: evento `FLOWPAY:PAYMENT_CONFIRMED`
-- [ ] **6.5** Deploy no Railway com healthcheck
-- [ ] **6.6** Testes end-to-end do flow: PIX → FlowPay → Nexus → Smart Factory → Mint
+- [ ] **6.1** Engine Fastify (porta 5050)
+- [ ] **6.2** Webhook PIX providers
+- [ ] **6.3** Unlock Receipts HMAC-SHA256
+- [ ] **6.4** Nexus `FLOWPAY:PAYMENT_CONFIRMED`
+- [ ] **6.5** Deploy Railway + healthcheck
+- [ ] **6.6** E2E: PIX → FlowPay → Nexus → Mint
 
----
+────────────────────────────────────────
 
-## 📋 REMINDERS Pendentes (de REMINDERS.md)
+## 📋 Reminders Pendentes
 
 - [ ] Registrar marca **NΞØ SMART FACTORY**
-- [ ] Migrar docs técnicos do Notion HUB → `smart-core/docs/`
-- [ ] Sweep de links `kauntdewn1` em projetos clonados
-- [ ] Verificar git remotes do WOD X PRO
+- [ ] Migrar docs Notion HUB → `docs/`
+- [ ] Sweep links `kauntdewn1`
+- [ ] Verificar git remotes WOD X PRO
 
----
+────────────────────────────────────────
 
-## 🗓️ Timeline Sugerida
+## 🗓️ Timeline
 
+```text
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+┃ SEMANA        FASE
+┣━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+┃ 22-28 Fev     Fase 0 ✅ Housekeeping
+┃ Mar 1-14      Fase 1   Validação TON
+┃ Mar 15-28     Fase 2   Bridge
+┃ Abr 1-18      Fase 3   Governance
+┃ Abr-Mai       Fase 4   Smart UI
+┃ Fev-Jun       Fase 5   NSF Audit
+┃ Mai           Fase 6   FlowPay
+┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ```
-Semana 1 (22-28 Fev)     → Fase 0: Housekeeping + Dependabot
-Semana 2-3 (Mar 1-14)    → Fase 1: Validação TON completa
-Semana 4-5 (Mar 15-28)   → Fase 2: Bridge Cross-Chain
-Semana 6-8 (Abr 1-18)    → Fase 3: Governance On-Chain
-Semana 9-12 (Abr-Mai)    → Fase 4: Smart Factory UI
-Ongoing (Fev-Jun)         → Fase 5: NSF Audit Process
-Semana 10-13 (Mai)        → Fase 6: FlowPay Core
-```
 
----
+────────────────────────────────────────
 
 ## 🏛️ Princípios Guia
 
-1. **Segurança primeiro** — Nenhum deploy sem testes e validação
-2. **Documentação acompanha código** — Todo avanço gera doc
-3. **Conventional Commits** — Sempre `feat:`, `fix:`, `docs:`, etc
-4. **Soberania** — Zero dependência de terceiros para infra crítica
-5. **Auditabilidade** — Todo artefato deve ter prova criptográfica
+1. **Segurança primeiro**
+   Nenhum deploy sem testes e validação
 
----
+2. **Documentação acompanha código**
+   Todo avanço gera doc
 
-**NODE NEØ**
-*Core Architect · NΞØ Protocol*
-*neo@neoprotocol.space*
+3. **Conventional Commits**
+   Sempre `feat:`, `fix:`, `docs:`, etc
 
-*"Expand until silence becomes structure."*
+4. **Soberania**
+   Zero dependência de terceiros
+   para infra crítica
+
+5. **Auditabilidade**
+   Todo artefato deve ter
+   prova criptográfica
+
+────────────────────────────────────────
+
+▓▓▓ NΞØ MELLØ
+────────────────────────────────────────
+Core Architect · NΞØ Protocol
+neo@neoprotocol.space
+
+"Expand until silence becomes structure."
+────────────────────────────────────────
