@@ -1,8 +1,8 @@
 # 🧭 NΞØ SMART FACTORY — Next Steps Roadmap
 
-> **Data:** 21 de Fevereiro de 2026
-> **Versão:** v0.5.3-neural-core
-> **Branch:** `main` (up to date com `origin/main`)
+> **Atualizado:** 21 de Fevereiro de 2026  
+> **Versão:** v0.5.3-neural-core  
+> **Branch:** `main` (commit `322a8f8` → pushed)  
 > **Autor:** NODE NEØ
 
 ---
@@ -11,32 +11,33 @@
 
 | Check | Status |
 |-------|--------|
-| **Branch local vs origin/main** | ✅ Sincronizado |
-| **Mudanças locais não comitadas** | ✅ Nenhuma (apenas `.DS_Store`) |
+| **Branch local vs origin/main** | ✅ Sincronizado (commit `322a8f8`) |
+| **Mudanças locais não comitadas** | ✅ Nenhuma |
 | **Commits locais não enviados** | ✅ Zero — tudo pushed |
 | **Commits remotos pendentes** | ✅ Zero — tudo pulled |
-| **PRs Dependabot abertos** | ⚠️ 5 branches aguardando merge |
+| **PRs Dependabot abertos** | ⚠️ 2 restantes (hardhat 3.x, test-utils 0.12) |
+| **72 contratos EVM** | ✅ Compilados com sucesso |
 
 ### PRs Dependabot Pendentes
 
-| Branch | Atualização |
-|--------|-------------|
-| `dependabot/npm_and_yarn/dotenv-17.2.4` | dotenv 16.6.1 → 17.2.4 |
-| `dependabot/npm_and_yarn/hardhat-3.1.7` | hardhat 2.28.3 → 3.1.7 ⚠️ **Major** |
-| `dependabot/npm_and_yarn/ton/test-utils-0.12.0` | @ton/test-utils 0.4.2 → 0.12.0 ⚠️ **Major** |
-| `dependabot/npm_and_yarn/ton/ton-16.2.2` | @ton/ton 16.1.0 → 16.2.2 |
-| `dependabot/npm_and_yarn/types/node-25.2.1` | @types/node 25.0.10 → 25.2.1 |
+| Branch | Atualização | Status |
+|--------|-------------|--------|
+| `dependabot/npm_and_yarn/dotenv-17.2.4` | dotenv 16.6.1 → 17.2.4 | ✅ Merged |
+| `dependabot/npm_and_yarn/hardhat-3.1.7` | hardhat 2.22 → 3.1.7 ⚠️ **Major** | ⛔ Não mergear (rewrite ESM) |
+| `dependabot/npm_and_yarn/ton/test-utils-0.12.0` | @ton/test-utils 0.4.2 → 0.12.0 ⚠️ **Major** | 🟡 Avaliar na Fase 1 |
+| `dependabot/npm_and_yarn/ton/ton-16.2.2` | @ton/ton 16.1.0 → 16.2.2 | ✅ Merged |
+| `dependabot/npm_and_yarn/types/node-25.2.1` | @types/node 25.0.10 → 25.2.1 | ✅ Merged |
 
 > ⚠️ **Hardhat 3.x** é uma major version. Requer validação antes do merge.
 > ⚠️ **@ton/test-utils 0.12.0** é um salto grande (0.4.2 → 0.12.0). Testar compatibilidade.
 
 ### Branches Legadas (Cleanup Sugerido)
 
-- `origin/copilot/analyze-nsf-implementation` — branch de análise, pode ser removida
-- `origin/copilot/implement-complete-contracts` — verificar se foi merged
-- `origin/copilot/sub-pr-1` — sub-PR, verificar status
-- `origin/copilot/update-readme-smart-core` — já merged em `main`
-- `origin/feat/ton-factory-v2` — verificar se funcionalidade está em main
+- ~~`origin/copilot/analyze-nsf-implementation`~~ — ✅ Deletada
+- `origin/copilot/implement-complete-contracts` — 🟡 Manter (tem NSFGovernance Layer 3)
+- ~~`origin/copilot/sub-pr-1`~~ — ✅ Deletada
+- ~~`origin/copilot/update-readme-smart-core`~~ — ✅ Deletada
+- ~~`origin/feat/ton-factory-v2`~~ — ✅ Deletada (já em main)
 
 ---
 
@@ -77,20 +78,28 @@
 
 > Limpar a casa antes de avançar.
 
-- [ ] **0.1** Avaliar e mergear PRs Dependabot seguros:
-  - `dotenv-17.2.4` — avaliar breaking changes no v17
-  - `@ton/ton-16.2.2` — patch seguro, mergear
-  - `@types/node-25.2.1` — patch seguro, mergear
-- [ ] **0.2** Avaliar PRs Dependabot com breaking changes:
-  - `hardhat-3.1.7` — major version, testar `make compile-evm && make test-evm`
-  - `@ton/test-utils-0.12.0` — testar `make test-ton`
-- [ ] **0.3** Cleanup de branches obsoletas:
-  - Deletar branches `copilot/*` já merged
-  - Avaliar `feat/ton-factory-v2` (merged ou abandonada?)
-- [ ] **0.4** Configurar lint real no Makefile:
-  - Adicionar `solhint` para Solidity
-  - Adicionar `eslint` para scripts JS
-  - Substituir o stub do `make lint`
+- [x] **0.1** Avaliar e mergear PRs Dependabot seguros:
+  - ✅ `dotenv-17.2.4` — compatível, merged
+  - ✅ `@ton/ton-16.2.2` — patch seguro, merged
+  - ✅ `@types/node-25.2.1` — patch seguro, merged
+- [x] **0.2** Avaliar PRs Dependabot com breaking changes:
+  - ⛔ `hardhat-3.1.7` — major rewrite (ESM), NÃO mergear
+  - 🟡 `@ton/test-utils-0.12.0` — avaliar na Fase 1 (testes TON)
+- [x] **0.3** Cleanup de branches obsoletas:
+  - ✅ Deletadas 3 branches remotas (`copilot/update-readme`, `copilot/analyze-nsf`, `copilot/sub-pr-1`)
+  - ✅ Deletadas 3 branches locais
+  - 🟡 `copilot/implement-complete-contracts` mantida (NSFGovernance)
+- [x] **0.4** Configurar lint real no Makefile:
+  - ✅ `solhint` instalado + `.solhint.json` configurado
+  - ✅ `eslint` v9 flat config instalado + `eslint.config.mjs`
+  - ✅ `make lint` / `make lint-sol` / `make lint-js` operacionais
+  - ✅ `make analyze` — pre-compilation code analysis (`scripts/code-analysis.js`)
+- [x] **0.5** Extras realizados:
+  - ✅ Fix `.npmrc` cache path (caminho antigo `/CODIGOS/` → relativo)
+  - ✅ Fix 4 erros de compilação (stray quote, NatSpec tag, param shadow)
+  - ✅ `.gitignore` atualizado (.npm-cache, .DS_Store, .tmp)
+  - ✅ Reorganização completa da pasta `scripts/` (47 scripts → 7 categorias)
+  - ✅ 72 contratos EVM compilados com sucesso
 
 ---
 
@@ -101,15 +110,15 @@
 - [ ] **1.1** Obter fundos de testnet TON (faucet)
 - [ ] **1.2** Executar Fase 2: Deploy da Factory v2.3.0 na testnet
   ```bash
-  node scripts/deploy-ton-factory-v2.js --network testnet
+  node scripts/deploy/deploy-ton-factory-v2.js --network testnet
   ```
 - [ ] **1.3** Executar Fase 3: Deploy de token de teste via Factory
   ```bash
-  node scripts/deploy-nsf-token.js
+  node scripts/deploy/deploy-nsf-token.js
   ```
 - [ ] **1.4** Executar Fase 4: Operações de Mint (mint, transfer, burn)
   ```bash
-  node scripts/testMint.js
+  node scripts/ton/test-mint.js
   ```
 - [ ] **1.5** Executar Fase 5: Stress tests (múltiplos tokens, gas costs)
 - [ ] **1.6** Preencher `TESTNET_TEST_PLAN.md` com resultados e lições

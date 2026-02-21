@@ -88,17 +88,17 @@ test-ton:
 
 # --- Deploy EVM ---
 deploy-evm-base:
-	$(NPX) hardhat run scripts/deployV2.js --network base
+	$(NPX) hardhat run scripts/deploy/deploy-v2.js --network base
 
 deploy-evm-polygon:
-	$(NPX) hardhat run scripts/deployV2.js --network polygon
+	$(NPX) hardhat run scripts/deploy/deploy-v2.js --network polygon
 
 # --- Deploy TON ---
 deploy-ton-factory:
-	$(NODE) scripts/deploy-ton-factory-v2.js
+	$(NODE) scripts/deploy/deploy-ton-factory-v2.js
 
 deploy-ton-neoflw:
-	$(NODE) scripts/deploy-neoflw-ton.js
+	$(NODE) scripts/deploy/deploy-neoflw-ton.js
 
 # --- Verificação (Etherscan/Basescan) ---
 verify-base:
@@ -109,13 +109,13 @@ verify-polygon:
 
 # --- Utilitários TON ---
 ton-balance:
-	$(NODE) scripts/check-ton-balance.js
+	$(NODE) scripts/ton/check-balance.js
 
 ton-wallet:
-	$(NODE) scripts/show-wallet.js
+	$(NODE) scripts/ton/show-wallet.js
 
 ton-jetton-addr:
-	$(NODE) scripts/calculate-jetton-address.js
+	$(NODE) scripts/ton/calculate-jetton-address.js
 
 # --- Limpeza ---
 clean:

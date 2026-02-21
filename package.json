@@ -13,8 +13,8 @@
     "test:ton": "jest test/ton",
     "compile": "npx hardhat compile",
     "compile:ton": "npx tact --config tact.config.json",
-    "deploy:polygon": "npx hardhat run scripts/deployV2.js --network polygon",
-    "deploy:base": "npx hardhat run scripts/deployV2.js --network base",
+    "deploy:polygon": "npx hardhat run scripts/deploy/deploy-v2.js --network polygon",
+    "deploy:base": "npx hardhat run scripts/deploy/deploy-v2.js --network base",
     "verify:base": "npx hardhat verify --network base",
     "verify:polygon": "npx hardhat verify --network polygon",
     "lint": "npm run lint:sol && npm run lint:js",
@@ -22,7 +22,8 @@
     "lint:js": "eslint 'scripts/**/*.js' 'integrations/**/*.js'",
     "security:check": "node scripts/security/validate-vault.js",
     "security:manifesto": "node scripts/security/generate-token-manifesto.js",
-    "nexus:start": "node scripts/nexus-ingress.js"
+    "nexus:start": "node scripts/nexus-ingress.js",
+    "analyze": "node scripts/code-analysis.js"
   },
   "keywords": [
     "blockchain",
