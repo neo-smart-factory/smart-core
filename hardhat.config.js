@@ -40,7 +40,7 @@ module.exports = {
     },
   },
   etherscan: {
-    apiKey: process.env.BASESCAN_KEY || process.env.POLYGONSCAN_KEY || "",
+    apiKey: process.env.ETHERSCAN_KEY || process.env.BASESCAN_KEY || process.env.POLYGONSCAN_KEY || "",
     customChains: [
       {
         network: "base",

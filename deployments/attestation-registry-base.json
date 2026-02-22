@@ -1,0 +1,12 @@
+{
+  "contract": "NeoAttestationRegistry",
+  "version": "1.0.0",
+  "network": "base",
+  "chainId": "8453",
+  "address": "0xd537619325676045d30667EABC617F4f9c8B8c03",
+  "guardian": "0x470a8c640fFC2C16aEB6bE803a948420e2aE8456",
+  "deployer": "0x470a8c640fFC2C16aEB6bE803a948420e2aE8456",
+  "deployedAt": "2026-02-22T02:48:11.915Z",
+  "blockNumber": 42469572,
+  "txHash": "0xd71d3d5a9d56655245a07467ec0f515db0a3072ade54a135591d7a2a050b462a"
+}
