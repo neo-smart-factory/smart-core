@@ -165,13 +165,13 @@ smart-core/
 ## ⚖️ Authorship & Legal
 
 - **Architecture & Lead:**
-  Eurycles Ramos Neto / NODE NEØ
+  NΞØ MELLØ
 - **Proof of Authorship:**
   Formally sealed via ICP-Brasil
   and Blockchain (2026-01-22)
 - **IP Protection:**
   All original architecture and code
-  are protected IP of Eurycles Ramos Neto
+  are protected IP of NΞØ MELLØ
 
 ────────────────────────────────────────
 
