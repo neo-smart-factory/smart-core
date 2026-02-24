@@ -37,12 +37,14 @@ const DEPLOY_AMOUNT = toNano("0.9");
  * Valida a assinatura HMAC-SHA256 vinda do Nexus
  */
 function validateSignature(payload, signature) {
+  if (!signature) return false;
+  const provided = Array.isArray(signature) ? signature[0] : String(signature);
   const hmac = crypto.createHmac("sha256", NEXUS_SECRET);
   const expectedSignature = hmac.update(JSON.stringify(payload)).digest("hex");
-  return crypto.timingSafeEqual(
-    Buffer.from(signature),
-    Buffer.from(expectedSignature)
-  );
+  const providedBuffer = Buffer.from(provided);
+  const expectedBuffer = Buffer.from(expectedSignature);
+  if (providedBuffer.length !== expectedBuffer.length) return false;
+  return crypto.timingSafeEqual(providedBuffer, expectedBuffer);
 }
 
 /**
@@ -180,11 +182,27 @@ const server = http.createServer((req, res) => {
       body += chunk;
     });
     req.on("end", async () => {
+      if (!body || !body.trim()) {
+        res.writeHead(400, { "Content-Type": "application/json" });
+        return res.end(
+          JSON.stringify({ error: "Bad Request: Empty JSON body" })
+        );
+      }
+
+      let payload;
       try {
-        const payload = JSON.parse(body);
+        payload = JSON.parse(body);
+      } catch {
+        res.writeHead(400, { "Content-Type": "application/json" });
+        return res.end(
+          JSON.stringify({ error: "Bad Request: Invalid JSON body" })
+        );
+      }
+
+      try {
         const signature = req.headers["x-nexus-signature"];
 
-        if (!signature || !validateSignature(payload, signature)) {
+        if (!validateSignature(payload, signature)) {
           res.writeHead(401, { "Content-Type": "application/json" });
           return res.end(
             JSON.stringify({ error: "Unauthorized: Invalid Genesis Signature" })
@@ -227,6 +245,7 @@ const server = http.createServer((req, res) => {
           res.end(JSON.stringify({ error: "Unsupported event type" }));
         }
       } catch (err) {
+        console.error("Ingress handler error:", err);
         res.writeHead(500, { "Content-Type": "application/json" });
         res.end(JSON.stringify({ error: "Internal Server Error" }));
       }
