@@ -36,14 +36,14 @@ and deployment.
 **1. Clone the repository:**
 
 ```bash
-git clone https://github.com/neo-smart-token-factory/smart-core.git
+git clone https://github.com/neo-smart-factory/smart-core.git
 cd smart-core
 ```
 
 **2. Configure GitHub Packages:**
 
 This repository uses GitHub Packages for
-`@neo-smart-token-factory` scope.
+`@neo-smart-factory` scope.
 
 ```bash
 # Set your GitHub token
