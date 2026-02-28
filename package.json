@@ -1,13 +1,13 @@
 {
-  "name": "@neo-smart-token-factory/core",
+  "name": "@neo-smart-factory/core",
   "version": "0.5.3",
   "description": "NΞØ SMART FACTORY — Core Engine (Multichain)",
   "main": "index.js",
   "repository": {
     "type": "git",
-    "url": "https://github.com/neo-smart-token-factory/smart-core.git"
+    "url": "https://github.com/neo-smart-factory/smart-core.git"
   },
-  "homepage": "https://github.com/neo-smart-token-factory/smart-core#readme",
+  "homepage": "https://github.com/neo-smart-factory/smart-core#readme",
   "scripts": {
     "test": "npx hardhat test",
     "test:ton": "jest test/ton",

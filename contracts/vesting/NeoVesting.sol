@@ -12,7 +12,7 @@ import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
  *
  *  NEO SMART FACTORY v0.5.3 - PROTOCOL | TOKENIZE-SE
  *
- *  Official Repository: https://github.com/neo-smart-token-factory/smart-core
+ *  Official Repository: https://github.com/neo-smart-factory/smart-core
  *  Maintained by: NEO Protocol (team[at]neosmart.factory)
  *  
  *  Licensed under MIT. Attribution to NEO Protocol is required for derivatives.
