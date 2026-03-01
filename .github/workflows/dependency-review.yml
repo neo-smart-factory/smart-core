@@ -10,10 +10,10 @@ permissions:
 jobs:
   dependency-review:
     runs-on: ubuntu-latest
-    continue-on-error: true
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
       - name: Dependency review
         uses: actions/dependency-review-action@v4
+        continue-on-error: true
