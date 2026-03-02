@@ -1,0 +1,26 @@
+{
+  "contract": "NeoSmartFactory",
+  "network": "base",
+  "chainId": "8453",
+  "factoryAddress": "0x2cE474b8F6a391a17C6aC58E447CF99d7aB14FD6",
+  "creationFeeWei": "10000000000000000",
+  "creationFeeEth": "0.01",
+  "protocolDeployerAddress": "0x848Bca0F7DfA35B6B64e549B7d753404d978e2c4",
+  "assetDeployerAddress": "0x5fAd0bB4eDED56EBe7431b233a3908801e07f8F7",
+  "owner": "0xB872d02B3b040c05925E186490e9564E32356129",
+  "guardian": "0xB872d02B3b040c05925E186490e9564E32356129",
+  "wiredAt": "2026-03-02T01:13:33.000Z",
+  "tx": {
+    "factoryDeploy": "0x11b72ebcee24eed779f6a1d7c64c6b16999b5088e048958de7a3d35f74655898",
+    "protocolDeployerDeploy": "0x3701b42fee1ac2a0c660c6a513793fb96f127f792aedd8b5d2e572c13cf28861",
+    "assetDeployerDeploy": "0xd68c3a674c1fd85ce5999936a25b6a7bb6fc193eb74b9258cc9c1ac6d2ebe3c4",
+    "setDeployers": "0xd53d5028c18a641caada3cf5cec9cb6024d30afb470b5d51710c665b7226a1b0",
+    "setGuardian": "0x8fce53aec3a85ce4d57792f22778bede1b05aa02479d7acd05acf2d26f3f8327",
+    "transferOwnership": "0x1e51c0acbef4b4ab9d117a7d84c6962165258b36655f07d22c9f9d2d9954b609"
+  },
+  "explorer": {
+    "factory": "https://basescan.org/address/0x2cE474b8F6a391a17C6aC58E447CF99d7aB14FD6",
+    "protocolDeployer": "https://basescan.org/address/0x848Bca0F7DfA35B6B64e549B7d753404d978e2c4",
+    "assetDeployer": "https://basescan.org/address/0x5fAd0bB4eDED56EBe7431b233a3908801e07f8F7"
+  }
+}
