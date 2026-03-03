@@ -18,7 +18,7 @@ describe("NSFToken", function () {
   beforeEach(async function () {
     [owner, distributor, user1, user2] = await ethers.getSigners();
 
-    const NSFToken = await ethers.getContractFactory("NSFToken");
+    const NSFToken = await ethers.getContractFactory("contracts/nsf/NSFToken.sol:NSFToken");
     nsfToken = await NSFToken.deploy(distributor.address);
     await nsfToken.waitForDeployment();
   });
@@ -52,7 +52,7 @@ describe("NSFToken", function () {
     });
 
     it("Should revert if distributor is zero address", async function () {
-      const NSFToken = await ethers.getContractFactory("NSFToken");
+      const NSFToken = await ethers.getContractFactory("contracts/nsf/NSFToken.sol:NSFToken");
       await expect(
         NSFToken.deploy(ethers.ZeroAddress)
       ).to.be.revertedWith("NSF: invalid distributor");

@@ -23,12 +23,12 @@ describe("FactoryQualification", function () {
     [owner, admin, qualifier, sanctioner, user1, user2] = await ethers.getSigners();
 
     // Deploy NSFToken
-    const NSFToken = await ethers.getContractFactory("NSFToken");
+    const NSFToken = await ethers.getContractFactory("contracts/nsf/NSFToken.sol:NSFToken");
     nsfToken = await NSFToken.deploy(owner.address);
     await nsfToken.waitForDeployment();
 
     // Deploy FactoryQualification as upgradeable proxy
-    const FactoryQualification = await ethers.getContractFactory("FactoryQualification");
+    const FactoryQualification = await ethers.getContractFactory("contracts/nsf/FactoryQualification.sol:FactoryQualification");
     qualification = await upgrades.deployProxy(
       FactoryQualification,
       [await nsfToken.getAddress(), MIN_BALANCE, admin.address],
@@ -75,7 +75,7 @@ describe("FactoryQualification", function () {
     });
 
     it("Should revert initialization with zero token address", async function () {
-      const FactoryQualification = await ethers.getContractFactory("FactoryQualification");
+      const FactoryQualification = await ethers.getContractFactory("contracts/nsf/FactoryQualification.sol:FactoryQualification");
       await expect(
         upgrades.deployProxy(
           FactoryQualification,
@@ -86,7 +86,7 @@ describe("FactoryQualification", function () {
     });
 
     it("Should revert initialization with zero admin address", async function () {
-      const FactoryQualification = await ethers.getContractFactory("FactoryQualification");
+      const FactoryQualification = await ethers.getContractFactory("contracts/nsf/FactoryQualification.sol:FactoryQualification");
       await expect(
         upgrades.deployProxy(
           FactoryQualification,
@@ -350,7 +350,7 @@ describe("FactoryQualification", function () {
     });
 
     it("Should revert upgrade by non-admin", async function () {
-      const FactoryQualificationV2 = await ethers.getContractFactory("FactoryQualification");
+      const FactoryQualificationV2 = await ethers.getContractFactory("contracts/nsf/FactoryQualification.sol:FactoryQualification");
       await expect(
         upgrades.upgradeProxy(
           await qualification.getAddress(),

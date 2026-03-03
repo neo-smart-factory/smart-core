@@ -277,10 +277,12 @@ describe("NeoTokenV2", function () {
 
         it("Should allow owner to withdraw accumulated ETH", async function () {
             const contractBalance = await ethers.provider.getBalance(await neoToken.getAddress());
+            const protocolFee = (contractBalance * 500n) / 10000n;
+            const ownerAmount = contractBalance - protocolFee;
 
             await expect(
                 neoToken.withdraw()
-            ).to.changeEtherBalance(owner, contractBalance);
+            ).to.changeEtherBalance(owner, ownerAmount);
         });
 
         it("Should fail if non-owner tries to withdraw", async function () {

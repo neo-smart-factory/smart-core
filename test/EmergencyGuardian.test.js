@@ -31,7 +31,7 @@ describe("EmergencyGuardian", function () {
     await pausableContract.waitForDeployment();
 
     // Deploy EmergencyGuardian
-    const EmergencyGuardian = await ethers.getContractFactory("EmergencyGuardian");
+    const EmergencyGuardian = await ethers.getContractFactory("contracts/nsf/EmergencyGuardian.sol:EmergencyGuardian");
     const guardianAddresses = guardians.map(g => g.address);
     guardian = await EmergencyGuardian.deploy(guardianAddresses, await timelock.getAddress());
     await guardian.waitForDeployment();
@@ -71,7 +71,7 @@ describe("EmergencyGuardian", function () {
     });
 
     it("Should revert with zero timelock address", async function () {
-      const EmergencyGuardian = await ethers.getContractFactory("EmergencyGuardian");
+      const EmergencyGuardian = await ethers.getContractFactory("contracts/nsf/EmergencyGuardian.sol:EmergencyGuardian");
       const guardianAddresses = guardians.map(g => g.address);
       
       await expect(
@@ -80,7 +80,7 @@ describe("EmergencyGuardian", function () {
     });
 
     it("Should revert with zero guardian address", async function () {
-      const EmergencyGuardian = await ethers.getContractFactory("EmergencyGuardian");
+      const EmergencyGuardian = await ethers.getContractFactory("contracts/nsf/EmergencyGuardian.sol:EmergencyGuardian");
       const guardianAddresses = guardians.map(g => g.address);
       guardianAddresses[3] = ethers.ZeroAddress; // Replace one with zero
       
