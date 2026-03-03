@@ -33,6 +33,7 @@ export default [
       "prefer-const": "warn",
       "no-var": "error",
       eqeqeq: ["warn", "always"],
+      "no-irregular-whitespace": "off",
     },
   },
   {
