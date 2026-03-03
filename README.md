@@ -187,7 +187,15 @@ smart-core/
 Core Architect · NΞØ Protocol
 neo@neoprotocol.space
 
-"Expand until silence becomes structure."
-
-v0.5.3-neural-core — NEØ PROTOCOL
+"Code is law. Expand until
+silence becomes structure."
 ────────────────────────────────────────
+```
+ █████ █         
+██╔═══██╗       
+██║ █ ██║  
+██ █  ██║      
+╚██████╔╝   
+█ ╚═══╝     
+
+```
