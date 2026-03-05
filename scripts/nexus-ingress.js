@@ -41,6 +41,7 @@ const DEPLOY_AMOUNT = toNano("0.9");
  * Valida a assinatura HMAC-SHA256 vinda do Nexus
  */
 function validateSignature(payload, signature) {
+  if (!NEXUS_SECRET) return false;
   if (!signature) return false;
   const provided = Array.isArray(signature) ? signature[0] : String(signature);
   const hmac = crypto.createHmac("sha256", NEXUS_SECRET);
