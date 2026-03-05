@@ -25,7 +25,11 @@ const { mnemonicToPrivateKey } = require("@ton/crypto");
 
 // Configurações
 const PORT = process.env.PORT || process.env.NEXUS_INGRESS_PORT || 5050;
-const NEXUS_SECRET = process.env.NEXUS_SECRET || "neo_nexus_vault_secret_2026";
+const NEXUS_SECRET =
+  process.env.NEXUS_SECRET_NEW ||
+  process.env.NEXUS_SECRET ||
+  process.env.NEXUS_SECRET_OLD ||
+  "";
 const NEXUS_CALLBACK_URL =
   process.env.NEXUS_WEBHOOK_URL || "https://nsfactory.xyz/api/webhooks/factory";
 
@@ -37,6 +41,7 @@ const DEPLOY_AMOUNT = toNano("0.9");
  * Valida a assinatura HMAC-SHA256 vinda do Nexus
  */
 function validateSignature(payload, signature) {
+  if (!NEXUS_SECRET) return false;
   if (!signature) return false;
   const provided = Array.isArray(signature) ? signature[0] : String(signature);
   const hmac = crypto.createHmac("sha256", NEXUS_SECRET);
