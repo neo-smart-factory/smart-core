@@ -8,7 +8,7 @@
 	deploy-evm-base deploy-evm-polygon deploy-ton-factory deploy-ton-neoflw \
 	verify-base verify-polygon \
 	ton-balance ton-wallet ton-jetton-addr \
-	clean lint
+	clean lint lint-sol lint-js analyze
 
 NODE := node
 NPM := npm
@@ -88,17 +88,17 @@ test-ton:
 
 # --- Deploy EVM ---
 deploy-evm-base:
-	$(NPX) hardhat run scripts/deployV2.js --network base
+	$(NPX) hardhat run scripts/deploy/deploy-v2.js --network base
 
 deploy-evm-polygon:
-	$(NPX) hardhat run scripts/deployV2.js --network polygon
+	$(NPX) hardhat run scripts/deploy/deploy-v2.js --network polygon
 
 # --- Deploy TON ---
 deploy-ton-factory:
-	$(NODE) scripts/deploy-ton-factory-v2.js
+	$(NODE) scripts/deploy/deploy-ton-factory-v2.js
 
 deploy-ton-neoflw:
-	$(NODE) scripts/deploy-neoflw-ton.js
+	$(NODE) scripts/deploy/deploy-neoflw-ton.js
 
 # --- Verificação (Etherscan/Basescan) ---
 verify-base:
@@ -109,13 +109,13 @@ verify-polygon:
 
 # --- Utilitários TON ---
 ton-balance:
-	$(NODE) scripts/check-ton-balance.js
+	$(NODE) scripts/ton/check-balance.js
 
 ton-wallet:
-	$(NODE) scripts/show-wallet.js
+	$(NODE) scripts/ton/show-wallet.js
 
 ton-jetton-addr:
-	$(NODE) scripts/calculate-jetton-address.js
+	$(NODE) scripts/ton/calculate-jetton-address.js
 
 # --- Limpeza ---
 clean:
@@ -123,5 +123,13 @@ clean:
 	rm -rf contracts/ton/build
 	@echo "Cache EVM e build TON removidos."
 
-lint:
-	@echo "Lint: configurar conforme necessidade do projeto."
+lint: lint-sol lint-js
+
+lint-sol:
+	$(NPX) solhint 'contracts/**/*.sol'
+
+lint-js:
+	$(NPX) eslint 'scripts/**/*.js' 'integrations/**/*.js'
+
+analyze:
+	$(NODE) scripts/code-analysis.js

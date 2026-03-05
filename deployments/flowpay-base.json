@@ -1,0 +1,15 @@
+{
+  "contract": "FlowPay",
+  "network": "base",
+  "chainId": "8453",
+  "address": "0xD49d3Fb2C2CBBA78a1E710660a628919eE78D82A",
+  "name": "FlowPay",
+  "symbol": "NEOPAY",
+  "initialOwner": "0x781Ec2fe7b23121097596c58a110e0ac0532ce28",
+  "deployer": "0x781Ec2fe7b23121097596c58a110e0ac0532ce28",
+  "deploymentTxHash": "0xa560def50c7dc61341ad6e2eea5225175c7e1e5a883450337e0ced9545a9ecfd",
+  "blockNumber": 42811632,
+  "status": 1,
+  "deployedAt": "2026-03-02T00:50:11.000Z",
+  "explorer": "https://basescan.org/address/0xD49d3Fb2C2CBBA78a1E710660a628919eE78D82A"
+}

@@ -10,3 +10,6 @@ deploy-info.json
 *.log
 
 build/
+.npm-cache/
+.DS_Store
+.tmp/

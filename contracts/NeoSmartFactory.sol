@@ -1,13 +1,11 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.0;
+pragma solidity ^0.8.20;
 
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 import "@openzeppelin/contracts/utils/Pausable.sol";
-import "./tokens/NeoERC20.sol";
-import "./tokens/NeoERC721.sol";
-import "./vesting/NeoVesting.sol";
-import "./rewards/NeoRewards.sol";
+import "./modules/FactoryTypes.sol";
+import "./modules/IFactoryDeployers.sol";
 
 /**
  *  █▄░█ █▀▀ █▀█   █▀ █▀▄▀█ ▄▀█ █▀█ ▀█▀
@@ -35,37 +33,20 @@ contract NeoSmartFactory is Ownable, ReentrancyGuard, Pausable {
         bool active;
     }
 
-    struct TokenConfig {
-        string name;
-        string symbol;
-        uint256 totalSupply;
-        uint8 decimals;
-        bool mintable;
-        bool burnable;
-        bool pausable;
-    }
-
-    struct VestingConfig {
-        address beneficiary;
-        uint256 totalAmount;
-        uint256 startTime;
-        uint256 duration;
-        uint256 cliff;
-        bool revocable;
-    }
-
     // Mapeamentos
     mapping(uint256 => Protocol) public protocols;
     mapping(address => uint256[]) public creatorProtocols;
     mapping(address => bool) public authorizedCreators;
-    
+
     // Contadores e Taxas
     uint256 public protocolCounter;
     uint256 public creationFee;
-    
+
     // Security & Governance
     address public guardian;
-    
+    address public protocolDeployer;
+    address public assetDeployer;
+
     // Limites de Segurança
     uint256 public constant MAX_VESTING_SCHEDULES = 20;
 
@@ -100,6 +81,8 @@ contract NeoSmartFactory is Ownable, ReentrancyGuard, Pausable {
 
     event ProtocolStatusChanged(uint256 indexed protocolId, bool active);
     event GuardianUpdated(address indexed newGuardian);
+    event ProtocolDeployerUpdated(address indexed newDeployer);
+    event AssetDeployerUpdated(address indexed newDeployer);
     event FactoryPaused(address account);
     event FactoryUnpaused(address account);
 
@@ -116,94 +99,34 @@ contract NeoSmartFactory is Ownable, ReentrancyGuard, Pausable {
      * @param rewardsEnabled Se deve criar sistema de recompensas
      */
     function createProtocol(
-        TokenConfig memory tokenConfig,
-        VestingConfig[] memory vestingConfigs,
+        FactoryTypes.TokenConfig calldata tokenConfig,
+        FactoryTypes.VestingConfig[] calldata vestingConfigs,
         bool rewardsEnabled
     ) external payable whenNotPaused nonReentrant returns (uint256 protocolId) {
         require(msg.value >= creationFee, "Insufficient fee");
         require(bytes(tokenConfig.name).length > 0, "Invalid token name");
         require(bytes(tokenConfig.symbol).length > 0, "Invalid token symbol");
         require(vestingConfigs.length <= MAX_VESTING_SCHEDULES, "Too many vesting schedules");
+        require(protocolDeployer != address(0), "Protocol deployer not set");
 
         protocolId = protocolCounter++;
-        
-        // Criar token ERC20 - Minta para o Factory primeiro para distribuir
-        NeoERC20 token = new NeoERC20(
-            tokenConfig.name,
-            tokenConfig.symbol,
-            tokenConfig.totalSupply,
-            tokenConfig.decimals,
-            tokenConfig.mintable,
-            tokenConfig.burnable,
-            tokenConfig.pausable,
-            address(this) // Factory recebe o supply inicial
+        (
+            address tokenAddress,
+            address vestingAddress,
+            address rewardsAddress
+        ) = IFactoryProtocolDeployer(protocolDeployer).deployProtocol(
+            msg.sender,
+            tokenConfig,
+            vestingConfigs,
+            rewardsEnabled
         );
-
-        address vestingAddress = address(0);
-        address rewardsAddress = address(0);
-
-        // Criar vesting se houver configurações
-        if (vestingConfigs.length > 0) {
-            NeoVesting vesting = new NeoVesting(
-                address(token),
-                msg.sender
-            );
-            vestingAddress = address(vesting);
-
-            // Configurar vestings
-            uint256 totalVestingRequested = 0;
-            for (uint256 i = 0; i < vestingConfigs.length; i++) {
-                VestingConfig memory v = vestingConfigs[i];
-                
-                // Validações robustas
-                require(v.beneficiary != address(0), "Invalid beneficiary");
-                require(v.totalAmount > 0, "Amount must be > 0");
-                require(v.duration > 0, "Duration must be > 0");
-                require(v.cliff <= v.duration, "Cliff > duration");
-                require(v.startTime >= block.timestamp, "Start time in past");
-                
-                totalVestingRequested += v.totalAmount;
-                require(totalVestingRequested <= tokenConfig.totalSupply, "Vesting exceeds supply");
-
-                token.transfer(vestingAddress, v.totalAmount);
-                
-                vesting.createVestingSchedule(
-                    v.beneficiary,
-                    v.totalAmount,
-                    v.startTime,
-                    v.duration,
-                    v.cliff,
-                    v.revocable
-                );
-
-                emit VestingScheduleAdded(protocolId, vestingAddress, v.beneficiary, v.totalAmount);
-            }
-        }
-
-        // Criar sistema de recompensas se habilitado
-        if (rewardsEnabled) {
-            NeoRewards rewards = new NeoRewards(
-                address(token),
-                msg.sender
-            );
-            rewardsAddress = address(rewards);
-        }
-
-        // Transferir tokens restantes para o criador
-        uint256 remainingTokens = token.balanceOf(address(this));
-        if (remainingTokens > 0) {
-            token.transfer(msg.sender, remainingTokens);
-        }
-
-        // Transferir ownership do token para o criador (se o token for Ownable)
-        token.transferOwnership(msg.sender);
 
         // Registrar protocolo
         protocols[protocolId] = Protocol({
             creator: msg.sender,
             name: tokenConfig.name,
             symbol: tokenConfig.symbol,
-            tokenAddress: address(token),
+            tokenAddress: tokenAddress,
             vestingAddress: vestingAddress,
             rewardsAddress: rewardsAddress,
             createdAt: block.timestamp,
@@ -216,13 +139,24 @@ contract NeoSmartFactory is Ownable, ReentrancyGuard, Pausable {
             protocolId,
             msg.sender,
             tokenConfig.name,
-            address(token),
+            tokenAddress,
             vestingAddress,
             rewardsAddress
         );
 
-        emit TokenCreated(protocolId, address(token), tokenConfig.name, tokenConfig.symbol);
-        
+        emit TokenCreated(protocolId, tokenAddress, tokenConfig.name, tokenConfig.symbol);
+
+        if (vestingAddress != address(0)) {
+            for (uint256 i = 0; i < vestingConfigs.length; i++) {
+                emit VestingScheduleAdded(
+                    protocolId,
+                    vestingAddress,
+                    vestingConfigs[i].beneficiary,
+                    vestingConfigs[i].totalAmount
+                );
+            }
+        }
+
         if (rewardsAddress != address(0)) {
             emit RewardsCreated(protocolId, rewardsAddress);
         }
@@ -243,7 +177,7 @@ contract NeoSmartFactory is Ownable, ReentrancyGuard, Pausable {
     /**
      * @notice Cria apenas um token ERC20
      */
-    function createToken(TokenConfig memory tokenConfig)
+    function createToken(FactoryTypes.TokenConfig calldata tokenConfig)
         external
         payable
         whenNotPaused
@@ -251,41 +185,30 @@ contract NeoSmartFactory is Ownable, ReentrancyGuard, Pausable {
         returns (address tokenAddress)
     {
         require(msg.value >= creationFee, "Insufficient fee");
-        
-        NeoERC20 token = new NeoERC20(
-            tokenConfig.name,
-            tokenConfig.symbol,
-            tokenConfig.totalSupply,
-            tokenConfig.decimals,
-            tokenConfig.mintable,
-            tokenConfig.burnable,
-            tokenConfig.pausable,
-            msg.sender
-        );
+        require(assetDeployer != address(0), "Asset deployer not set");
 
-        return address(token);
+        return IFactoryAssetDeployer(assetDeployer).deployToken(msg.sender, tokenConfig);
     }
 
     /**
      * @notice Cria apenas um NFT (ERC721)
      */
     function createNFT(
-        string memory name,
-        string memory symbol,
-        string memory baseURI,
+        string calldata name,
+        string calldata symbol,
+        string calldata baseURI,
         bool mintable
     ) external payable whenNotPaused nonReentrant returns (address nftAddress) {
         require(msg.value >= creationFee, "Insufficient fee");
-        
-        NeoERC721 nft = new NeoERC721(
+        require(assetDeployer != address(0), "Asset deployer not set");
+
+        return IFactoryAssetDeployer(assetDeployer).deployNFT(
+            msg.sender,
             name,
             symbol,
             baseURI,
-            mintable,
-            msg.sender
+            mintable
         );
-
-        return address(nft);
     }
 
     /**
@@ -315,6 +238,27 @@ contract NeoSmartFactory is Ownable, ReentrancyGuard, Pausable {
      */
     function setCreationFee(uint256 _creationFee) external onlyOwner {
         creationFee = _creationFee;
+    }
+
+    function setProtocolDeployer(address _protocolDeployer) external onlyOwner {
+        require(_protocolDeployer != address(0), "Invalid protocol deployer");
+        protocolDeployer = _protocolDeployer;
+        emit ProtocolDeployerUpdated(_protocolDeployer);
+    }
+
+    function setAssetDeployer(address _assetDeployer) external onlyOwner {
+        require(_assetDeployer != address(0), "Invalid asset deployer");
+        assetDeployer = _assetDeployer;
+        emit AssetDeployerUpdated(_assetDeployer);
+    }
+
+    function setDeployers(address _protocolDeployer, address _assetDeployer) external onlyOwner {
+        require(_protocolDeployer != address(0), "Invalid protocol deployer");
+        require(_assetDeployer != address(0), "Invalid asset deployer");
+        protocolDeployer = _protocolDeployer;
+        assetDeployer = _assetDeployer;
+        emit ProtocolDeployerUpdated(_protocolDeployer);
+        emit AssetDeployerUpdated(_assetDeployer);
     }
 
     /**

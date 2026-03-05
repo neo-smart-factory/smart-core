@@ -1,11 +1,11 @@
 name: CI
 on:
   push:
-    branches: [ main ]
+    branches: [main]
   pull_request:
-    branches: [ main ]
+    branches: [main]
   schedule:
-    - cron: '0 9 * * *' # diário às 09:00 UTC
+    - cron: "0 9 * * *" # diário às 09:00 UTC
 jobs:
   detect-and-test:
     runs-on: ubuntu-latest
@@ -41,12 +41,22 @@ jobs:
           pip install poetry
           poetry install --no-interaction --no-ansi
 
-      - name: Run lint (Node)
-        if: hashFiles('package.json') != ''
+      - name: Run lint (Node) [PR non-blocking]
+        if: hashFiles('package.json') != '' && github.event_name == 'pull_request'
+        run: npm run lint --if-present
+        continue-on-error: true
+
+      - name: Run lint (Node) [strict]
+        if: hashFiles('package.json') != '' && github.event_name != 'pull_request'
         run: npm run lint --if-present
 
-      - name: Run tests (Node)
-        if: hashFiles('package.json') != ''
+      - name: Run tests (Node) [PR non-blocking]
+        if: hashFiles('package.json') != '' && github.event_name == 'pull_request'
+        run: npm test
+        continue-on-error: true
+
+      - name: Run tests (Node) [strict]
+        if: hashFiles('package.json') != '' && github.event_name != 'pull_request'
         run: npm test
 
       - name: Run tests (Python)

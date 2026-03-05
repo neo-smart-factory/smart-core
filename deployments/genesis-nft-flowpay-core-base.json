@@ -1,0 +1,21 @@
+{
+  "contract": "NeoGenesisNFT",
+  "version": "1.0.0",
+  "project": "FlowPay-Core",
+  "symbol": "FLOWGEN",
+  "network": "base",
+  "chainId": "8453",
+  "address": "0x72Fda6796Bfff604113586083227366343944a87",
+  "poeHash": "0xc326ec80ec0b0f3f0b6884aea8233e2e0b7b523a29952790c210cb70df1756b8",
+  "poeRegistry": "0xd537619325676045d30667EABC617F4f9c8B8c03",
+  "tokenURI": "ipfs://Qma7hduaNcLSXetfXjows9v16Z658akTP627zCo61EGPDq",
+  "owner": "0x470a8c640fFC2C16aEB6bE803a948420e2aE8456",
+  "deployer": "0x470a8c640fFC2C16aEB6bE803a948420e2aE8456",
+  "minted": true,
+  "deployedAt": "2026-02-22T02:50:05.211Z",
+  "blockNumber": 42469628,
+  "txHash": "0x0de7d8666fcbbcbd135bb8d793c5e428cf91fcc6b626089b23cc4dda7cbd8d79",
+  "mintedAt": "2026-02-22T02:50:21.933Z",
+  "mintTxHash": "0x0c69701ea27a85af1eff8fe030924794e6f978f345d1f6ad44eeb80cf7ea282c",
+  "mintBlock": 42469636
+}

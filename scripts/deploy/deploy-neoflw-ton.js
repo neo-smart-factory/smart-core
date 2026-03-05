@@ -18,7 +18,7 @@ const TOKEN_CONFIG = {
     symbol: "NEOFLW",
     description: "Official multichain token of NEO Protocol - Powered by NEO SMART FACTORY",
     decimals: 9,
-    image: "https://raw.githubusercontent.com/neo-smart-token-factory/assets/main/neoflw-logo.png",
+    image: "https://raw.githubusercontent.com/neo-smart-factory/assets/main/neoflw-logo.png",
 
     maxSupply: toNano('1000000000'), // 1 billion
     mintPrice: toNano('0.1'),         // 0.1 TON per public mint
