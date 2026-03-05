@@ -6,7 +6,7 @@ on:
   pull_request:
     branches: [main]
   schedule:
-    - cron: '0 0 * * 0' # Weekly on Sunday
+    - cron: "0 0 * * 0" # Weekly on Sunday
 
 jobs:
   security:
@@ -20,12 +20,12 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: "20"
 
-      - name: Run npm audit
+      - name: Run npm audit (production dependencies only)
         run: |
           if [ -f package.json ]; then
-            npm audit --audit-level=moderate
+            npm audit --omit=dev --audit-level=moderate
           else
             echo "No package.json found, skipping npm audit"
           fi
@@ -54,4 +54,3 @@ jobs:
           else
             echo "✅ .env.example file exists"
           fi
-

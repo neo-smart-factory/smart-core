@@ -95,7 +95,7 @@ Compare byte-por-byte com código oficial TON Minter.
 
 ⚠️ **BUG ATIVO:** Factory não está criando Jetton Minter (2026-01-25)
 
-Ver documentação completa em: `neo-smart-token-factory/docs`
+Ver documentação completa em: `neo-smart-factory/docs`
 - `CHECKPOINT_TON_FACTORY_2026-01-25.md`
 - `SESSAO_APRENDIZADO_TON_FACTORY.md`
 - `PLANO_REORGANIZACAO.md`

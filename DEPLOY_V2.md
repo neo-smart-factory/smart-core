@@ -195,8 +195,8 @@ cast call $TOKEN_ADDRESS "balanceOf(address)(uint256)" $YOUR_ADDRESS --rpc-url $
 ## 📚 Referências
 
 - **Contrato**: `contracts/NeoTokenV2.sol`
-- **NeoTokenV2 (spec)**: [docs — architecture/specs/neotoken-v2.md](https://github.com/neo-smart-token-factory/docs/blob/main/architecture/specs/neotoken-v2.md)
-- **Bridge System**: [docs — operations/guides/manual-bridge.md](https://github.com/neo-smart-token-factory/docs/blob/main/operations/guides/manual-bridge.md)
+- **NeoTokenV2 (spec)**: [docs — architecture/specs/neotoken-v2.md](https://github.com/neo-smart-factory/docs/blob/main/architecture/specs/neotoken-v2.md)
+- **Bridge System**: [docs — operations/guides/manual-bridge.md](https://github.com/neo-smart-factory/docs/blob/main/operations/guides/manual-bridge.md)
 
 ---
 

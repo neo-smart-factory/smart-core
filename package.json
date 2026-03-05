@@ -1,25 +1,33 @@
 {
-  "name": "@neo-smart-token-factory/core",
+  "name": "@neo-smart-factory/core",
   "version": "0.5.3",
   "description": "NΞØ SMART FACTORY — Core Engine (Multichain)",
   "main": "index.js",
   "repository": {
     "type": "git",
-    "url": "https://github.com/neo-smart-token-factory/smart-core.git"
+    "url": "https://github.com/neo-smart-factory/smart-core.git"
   },
-  "homepage": "https://github.com/neo-smart-token-factory/smart-core#readme",
+  "homepage": "https://github.com/neo-smart-factory/smart-core#readme",
   "scripts": {
     "test": "npx hardhat test",
     "test:ton": "jest test/ton",
     "compile": "npx hardhat compile",
     "compile:ton": "npx tact --config tact.config.json",
-    "deploy:polygon": "npx hardhat run scripts/deployV2.js --network polygon",
-    "deploy:base": "npx hardhat run scripts/deployV2.js --network base",
+    "deploy:polygon": "npx hardhat run scripts/deploy/deploy-v2.js --network polygon",
+    "deploy:base": "npx hardhat run scripts/deploy/deploy-v2.js --network base",
+    "deploy:flowpay:base": "npx hardhat run scripts/deploy/deploy-flowpay.js --network base",
+    "deploy:factory:modules:base": "npx hardhat run scripts/deploy/deploy-factory-router-modules.js --network base",
+    "verify:flowpay:base": "npx hardhat run scripts/deploy/verify-flowpay.js --network base",
+    "bootstrap:flowpay:base": "npx hardhat run scripts/deploy/bootstrap-flowpay.js --network base",
     "verify:base": "npx hardhat verify --network base",
     "verify:polygon": "npx hardhat verify --network polygon",
+    "lint": "npm run lint:sol && npm run lint:js",
+    "lint:sol": "solhint 'contracts/**/*.sol'",
+    "lint:js": "eslint 'scripts/**/*.js' 'integrations/**/*.js'",
     "security:check": "node scripts/security/validate-vault.js",
     "security:manifesto": "node scripts/security/generate-token-manifesto.js",
-    "nexus:start": "node scripts/nexus-ingress.js"
+    "nexus:start": "node scripts/nexus-ingress.js",
+    "analyze": "node scripts/code-analysis.js"
   },
   "keywords": [
     "blockchain",
@@ -36,7 +44,7 @@
   "dependencies": {
     "@openzeppelin/contracts": "^5.4.0",
     "@openzeppelin/contracts-upgradeable": "^5.4.0",
-    "dotenv": "^16.4.0",
+    "dotenv": "^17.2.4",
     "ethers": "^6.10.0"
   },
   "devDependencies": {
@@ -49,15 +57,18 @@
     "@ton/test-utils": "^0.12.0",
     "@ton/ton": "^16.1.0",
     "@types/jest": "^30.0.0",
-    "@types/node": "^25.0.10",
+    "@types/node": "^25.2.1",
+    "eslint": "^9.22.0",
     "hardhat": "^2.22.0",
     "jest": "^30.2.0",
     "qs": "^6.14.1",
+    "solhint": "^5.1.0",
     "ts-jest": "^29.4.6",
     "ts-node": "^10.9.2",
     "typescript": "^5.9.3"
   },
   "engines": {
     "node": ">=22.0.0"
-  }
+  },
+  "packageManager": "npm@10.9.2"
 }

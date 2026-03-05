@@ -9,7 +9,11 @@ app.use(express.json());
 
 const PORT = process.env.FACTORY_PORT || 3005;
 const FACTORY_API_KEY = process.env.FACTORY_API_KEY;
-const NEXUS_SECRET = process.env.NEXUS_SECRET;
+const NEXUS_SECRET =
+    process.env.NEXUS_SECRET_NEW ||
+    process.env.NEXUS_SECRET ||
+    process.env.NEXUS_SECRET_OLD ||
+    "";
 const NEXUS_WEBHOOK_URL = process.env.NEXUS_WEBHOOK_URL || 'https://nexus.neoprotocol.space/api/webhooks/factory';
 
 // Middleware for Bearer Token Auth (SF2)

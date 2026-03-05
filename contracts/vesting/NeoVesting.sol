@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.0;
+pragma solidity ^0.8.20;
 
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
@@ -12,8 +12,8 @@ import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
  *
  *  NEO SMART FACTORY v0.5.3 - PROTOCOL | TOKENIZE-SE
  *
- *  Official Repository: https://github.com/neo-smart-token-factory/smart-core
- *  Maintained by: NEO Protocol (team@neosmart.factory)
+ *  Official Repository: https://github.com/neo-smart-factory/smart-core
+ *  Maintained by: NEO Protocol (team[at]neosmart.factory)
  *  
  *  Licensed under MIT. Attribution to NEO Protocol is required for derivatives.
  *  Any fork or usage of this factory for financial protocols must reference:

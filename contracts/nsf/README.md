@@ -23,21 +23,23 @@ FactoryNSF.sol (1,310 lines)
 **Purpose:** Immutable coordination token with fixed supply
 
 **Key Features:**
-- ✅ Fixed supply: 1,000,000,000 NSF (1 billion tokens)
-- ✅ No owner (complete power renunciation)
-- ✅ No mint function (supply is permanent)
-- ✅ ERC20 + ERC20Permit (gasless transactions)
-- ✅ Deployment timestamp for transparency
-- ✅ Initial distribution event
+
+- Fixed supply: 1,000,000,000 NSF (1 billion tokens)
+- No owner (complete power renunciation)
+- No mint function (supply is permanent)
+- ERC20 + ERC20Permit (gasless transactions)
+- Deployment timestamp for transparency
+- Initial distribution event
 
 **Regulatory Defense:**
+
 - No "monetary policy" risk (fixed supply)
 - No "centralized control" risk (no owner)
 - Pure ERC20 standard (battle-tested)
 
 ```solidity
-constructor(address initialDistributor) 
-    ERC20("Neural Sync Factory", "NSF") 
+constructor(address initialDistributor)
+    ERC20("Neural Sync Factory", "NSF")
     ERC20Permit("Neural Sync Factory")
 ```
 
@@ -48,25 +50,29 @@ constructor(address initialDistributor)
 **Purpose:** Upgradeable access control module with anti-gaming
 
 **Key Features:**
-- ✅ UUPS upgradeable pattern
-- ✅ Role-based access control (QUALIFIER, SANCTIONER)
-- ✅ Balance snapshot at qualification (anti-flash-loan)
-- ✅ 7-day lock period (sustained holding requirement)
-- ✅ KYC hash integration
-- ✅ Sanction list (OFAC compliance)
-- ✅ Expiry-based requalification
+
+- UUPS upgradeable pattern
+- Role-based access control (QUALIFIER, SANCTIONER)
+- Balance snapshot at qualification (anti-flash-loan)
+- 7-day lock period (sustained holding requirement)
+- KYC hash integration
+- Sanction list (OFAC compliance)
+- Expiry-based requalification
 
 **Critical Separation:**
+
 ```
 Token Ownership (transferable) ≠ Access Rights (qualified)
 ```
 
 This separation is KEY for regulatory defense:
+
 - Token transfer doesn't grant automatic access
 - Access requires active qualification process
 - Compliance checks independent of token possession
 
 **Anti-Gaming Protection:**
+
 ```solidity
 struct QualificationData {
     bool termsAccepted;
@@ -87,14 +93,16 @@ After lock period: Must maintain minimum balance
 **Purpose:** Decentralized 4-of-7 multisig circuit breaker
 
 **Key Features:**
-- ✅ 4-of-7 voting threshold (decentralized decision)
-- ✅ Transparent on-chain voting
-- ✅ 48-hour auto-unpause (forces active management)
-- ✅ Proposal expiry (24 hours)
-- ✅ Permissionless unpause after delay
-- ✅ Timelock override capability
+
+- 4-of-7 voting threshold (decentralized decision)
+- Transparent on-chain voting
+- 48-hour auto-unpause (forces active management)
+- Proposal expiry (24 hours)
+- Permissionless unpause after delay
+- Timelock override capability
 
 **Security Design:**
+
 ```
 Guardian 1 proposes (1/4 votes)
        ↓
@@ -111,6 +119,7 @@ OR timelock can unpause anytime
 ```
 
 **Anti-Abuse Mechanisms:**
+
 - Requires quorum (4/7, not 1/7)
 - Proposals expire after 24 hours
 - Double-voting prevented
@@ -123,6 +132,7 @@ OR timelock can unpause anytime
 **Purpose:** Single-transaction deployment of complete system
 
 **Deployment:**
+
 ```solidity
 constructor(
     address initialDistributor,     // Multi-sig wallet
@@ -133,6 +143,7 @@ constructor(
 ```
 
 **What It Does:**
+
 1. Deploys NSFToken with entire supply to distributor
 2. Deploys FactoryQualification and initializes
 3. Deploys EmergencyGuardian with 7 guardians
@@ -140,6 +151,7 @@ constructor(
 5. Emits complete deployment event
 
 **Post-Deployment State:**
+
 - ✅ NSFToken: 1B tokens in distributor, no owner
 - ✅ FactoryQualification: Initialized, pausable by guardian
 - ✅ EmergencyGuardian: 7 guardians configured, timelock has override
@@ -160,7 +172,7 @@ const GUARDIANS = [
   "0x...", // Guardian 4
   "0x...", // Guardian 5
   "0x...", // Guardian 6
-  "0x..."  // Guardian 7
+  "0x...", // Guardian 7
 ];
 const TIMELOCK = "0x..."; // 48h timelock contract
 const MIN_BALANCE = ethers.parseEther("1000"); // 1,000 NSF
@@ -192,7 +204,7 @@ console.log("EmergencyGuardian:", guardian);
 ### 4. Verify System Status
 
 ```javascript
-const [supply, minBalance, isPaused, guardiansPaused] = 
+const [supply, minBalance, isPaused, guardiansPaused] =
   await factory.getSystemStatus();
 
 console.log("Supply:", ethers.formatEther(supply));
@@ -212,7 +224,7 @@ const qualification = await ethers.getContractAt(
   qualificationAddress
 );
 const guardian = await ethers.getContractAt(
-  "EmergencyGuardian", 
+  "EmergencyGuardian",
   guardianAddress
 );
 
@@ -222,7 +234,10 @@ await qualification.grantRole(DEFAULT_ADMIN_ROLE, TIMELOCK);
 await qualification.revokeRole(DEFAULT_ADMIN_ROLE, deployerAddress);
 
 // Verify deployer has no roles
-const hasRole = await qualification.hasRole(DEFAULT_ADMIN_ROLE, deployerAddress);
+const hasRole = await qualification.hasRole(
+  DEFAULT_ADMIN_ROLE,
+  deployerAddress
+);
 console.log("Deployer has admin:", hasRole); // Should be false
 ```
 
@@ -234,17 +249,18 @@ console.log("Deployer has admin:", hasRole); // Should be false
 
 Estimated deployment gas (varies by network):
 
-| Component | Gas | Cost @ 30 gwei |
-|-----------|-----|----------------|
-| NSFToken | ~1.2M | ~$0.36 |
-| FactoryQualification | ~2.5M | ~$0.75 |
-| EmergencyGuardian | ~1.5M | ~$0.45 |
-| Wiring | ~0.3M | ~$0.09 |
-| **Total** | **~5.5M** | **~$1.65** |
+| Component            | Gas       | Cost @ 30 gwei |
+| -------------------- | --------- | -------------- |
+| NSFToken             | ~1.2M     | ~$0.36         |
+| FactoryQualification | ~2.5M     | ~$0.75         |
+| EmergencyGuardian    | ~1.5M     | ~$0.45         |
+| Wiring               | ~0.3M     | ~$0.09         |
+| **Total**            | **~5.5M** | **~$1.65**     |
 
 ### Immutability Verification
 
 **NSFToken:**
+
 - ❌ No `mint()` function
 - ❌ No `burn()` enforcement
 - ❌ No `pause()` function
@@ -252,12 +268,14 @@ Estimated deployment gas (varies by network):
 - ✅ Pure ERC20 + Permit
 
 **FactoryQualification:**
+
 - ✅ Upgradeable (UUPS pattern)
 - ✅ Admin required for upgrade
 - ✅ Pausable (emergency only)
 - ✅ Role-based access
 
 **EmergencyGuardian:**
+
 - ✅ Multisig required (4/7)
 - ✅ Auto-unpause (48h)
 - ✅ Transparent voting
@@ -302,13 +320,13 @@ Estimated deployment gas (varies by network):
 function hasAccess(address user) public view returns (bool) {
     // 1. Check sanctions (compliance)
     if (sanctioned[user]) return false;
-    
+
     // 2. Check qualification exists
     if (!termsAccepted[user]) return false;
-    
+
     // 3. Check not expired
     if (expiryDate <= now) return false;
-    
+
     // 4. Check balance (anti-gaming during lock)
     if (now < lockUntil) {
         return balance >= qualifiedBalance;  // Snapshot
@@ -355,18 +373,21 @@ npx hardhat test test/FactoryNSF.test.js
 ## ⚖️ Regulatory Summary
 
 ### Brazil (CVM)
+
 - ✅ Utility token (not security)
 - ✅ No promise of return
 - ✅ No revenue distribution
 - ✅ Parecer 40/2022 compliant
 
 ### USA (SEC)
+
 - ✅ Fails Howey Test (not security)
 - ✅ No common enterprise
 - ✅ No expectation of profit
 - ✅ Utility independent of efforts
 
 ### EU (MiCA)
+
 - ✅ Category 3 utility token
 - ✅ No fundraising
 - ✅ No payment function
@@ -392,6 +413,7 @@ npx hardhat test test/FactoryNSF.test.js
 ## 📞 Support
 
 For questions about deployment or usage:
+
 - 📧 Technical: dev@neo-protocol.org
 - 📧 Compliance: compliance@neo-protocol.org
 - 📖 Documentation: https://docs.neo-protocol.org
