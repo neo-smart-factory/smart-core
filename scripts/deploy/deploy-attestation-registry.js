@@ -7,7 +7,7 @@
  */
 
 const hre = require("hardhat");
-const fs  = require("fs");
+const fs = require("fs");
 const path = require("path");
 
 // ─── Configuration ────────────────────────────────────────────────────────────
@@ -24,7 +24,7 @@ async function main() {
   console.log("📜 Deploying NeoAttestationRegistry...\n");
 
   const [deployer] = await hre.ethers.getSigners();
-  const balance    = await hre.ethers.provider.getBalance(deployer.address);
+  const balance = await hre.ethers.provider.getBalance(deployer.address);
 
   console.log("Deployer :", deployer.address);
   console.log("Balance  :", hre.ethers.formatEther(balance), "ETH");
@@ -37,7 +37,7 @@ async function main() {
   // ─── Deploy ────────────────────────────────────────────────────────────────
 
   console.log("\n📦 Deploying...");
-  const Factory  = await hre.ethers.getContractFactory("NeoAttestationRegistry");
+  const Factory = await hre.ethers.getContractFactory("NeoAttestationRegistry");
   const registry = await Factory.deploy(CONFIG.guardian);
   await registry.waitForDeployment();
 
@@ -50,10 +50,10 @@ async function main() {
   await new Promise(r => setTimeout(r, 5000));
 
   console.log("\n🔍 Verifying deployment...");
-  const guardian  = await registry.guardian();
-  const module_   = await registry.MODULE();
-  const version   = await registry.VERSION();
-  const protocol  = await registry.PROTOCOL();
+  const guardian = await registry.guardian();
+  const module_ = await registry.MODULE();
+  const version = await registry.VERSION();
+  const protocol = await registry.PROTOCOL();
 
   console.log("  PROTOCOL :", protocol);
   console.log("  MODULE   :", module_);
@@ -65,19 +65,19 @@ async function main() {
   const network = await hre.ethers.provider.getNetwork();
 
   const deployInfo = {
-    contract:        "NeoAttestationRegistry",
-    version:         version,
-    network:         hre.network.name,
-    chainId:         network.chainId.toString(),
-    address:         registryAddress,
-    guardian:        guardian,
-    deployer:        deployer.address,
-    deployedAt:      new Date().toISOString(),
-    blockNumber:     await hre.ethers.provider.getBlockNumber(),
-    txHash:          registry.deploymentTransaction().hash,
+    contract: "NeoAttestationRegistry",
+    version: version,
+    network: hre.network.name,
+    chainId: network.chainId.toString(),
+    address: registryAddress,
+    guardian: guardian,
+    deployer: deployer.address,
+    deployedAt: new Date().toISOString(),
+    blockNumber: await hre.ethers.provider.getBlockNumber(),
+    txHash: registry.deploymentTransaction().hash,
   };
 
-  const deployDir  = path.join(__dirname, "../../deployments");
+  const deployDir = path.join(__dirname, "../../deployments");
   if (!fs.existsSync(deployDir)) fs.mkdirSync(deployDir, { recursive: true });
 
   const deployFile = path.join(deployDir, `attestation-registry-${hre.network.name}.json`);
@@ -98,7 +98,7 @@ async function main() {
   console.log(`   await registry.registerAttestation(poeHash, metadata)`);
 
   console.log("\n4. Update flowpay-core-genesis-metadata.json:");
-  console.log(`   \"PoE Registry\": \"${registryAddress}\"`);
+  console.log(`   "PoE Registry": "${registryAddress}"`);
 
   console.log("\n5. Deploy NeoGenesisNFT:");
   console.log(`   npx hardhat run scripts/deploy/deploy-genesis-nft.js --network ${hre.network.name}`);
