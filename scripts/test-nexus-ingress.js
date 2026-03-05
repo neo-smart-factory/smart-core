@@ -2,10 +2,19 @@ const http = require('http');
 const crypto = require('crypto');
 require('dotenv').config();
 
-const NEXUS_SECRET = process.env.NEXUS_SECRET || "neo_nexus_vault_secret_2026";
+const NEXUS_SECRET =
+    process.env.NEXUS_SECRET_NEW ||
+    process.env.NEXUS_SECRET ||
+    process.env.NEXUS_SECRET_OLD ||
+    "";
 const PORT = process.env.NEXUS_INGRESS_PORT || 5050;
 
 async function testIngress() {
+    if (!NEXUS_SECRET) {
+        console.error("❌ NEXUS secret não configurado.");
+        process.exit(1);
+    }
+
     console.log("🧪 Testing Nexus Ingress Auth...");
 
     const payload = {
